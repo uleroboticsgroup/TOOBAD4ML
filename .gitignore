@@ -1,0 +1,36 @@
+# CMake
+# -----------------------------------------------------------------------------
+
+build/
+bin/
+lib/
+CMakeFiles/
+CMakeScripts/
+Testing/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+
+# Eclipse
+# -----------------------------------------------------------------------------
+
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+.settings/
+.project
+.cproject
+Default/
+
+
+# Dia
+# -----------------------------------------------------------------------------
+
+*.dia.autosave
