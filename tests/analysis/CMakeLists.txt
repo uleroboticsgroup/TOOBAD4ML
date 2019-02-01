@@ -25,11 +25,6 @@ target_link_libraries(${PROJECT_NAME}
 # Register the test for CMake
 # -----------------------------------------------------------------------------
 
-#add_test(
-#    NAME    ${PROJECT_NAME}
-#    COMMAND test_main
-#)
-
 add_test(
     NAME    ${PROJECT_NAME}
     COMMAND ${PROJECT_NAME}
