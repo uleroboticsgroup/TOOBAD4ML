@@ -21,6 +21,8 @@ target_link_libraries(${PROJECT_NAME}
         LibGoogleTest
 )
 
+# TODO we temporary need this to link the test main with the test suites
+set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 1)
 
 # Register the test for CMake
 # -----------------------------------------------------------------------------

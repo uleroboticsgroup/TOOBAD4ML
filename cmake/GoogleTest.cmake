@@ -16,9 +16,6 @@
 # list of imported targets in order to wrap the dependencies
 set(GOOGLETEST_IMPORTED_TARGETS "")
 
-# enable CMake support for tests
-enable_testing()
-
 
 # GoogleTest target
 # -----------------------------------------------------------------------------

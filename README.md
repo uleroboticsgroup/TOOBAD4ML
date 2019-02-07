@@ -7,7 +7,7 @@ A tool for describing buffer overflow vulnerabilities (previously tagged in C so
 ### Prerequisites
 
 * [CMake](https://cmake.org) 3.1 or later is required to build the project.
-* In-source builds are not allowed. So before building TOOBAD4ML you must create a separate directory for the build files.
+* In-source builds are not allowed. So before building TOOBAD4ML you *must* create a separate directory for the build files.
 
 ### Dependencies
 
@@ -24,7 +24,7 @@ conan remote add manu343726 https://api.bintray.com/conan/manu343726/conan-packa
 
 ### Installing dependencies with Conan
 
-If you don't plan to use Conan, you can ignore this step. Otherwise, first go to the `build` directory and then type the following command *before* using CMake:
+If you don't plan to use Conan you can ignore this step. Otherwise, first go to the `build` directory and then type the following command *before* using CMake:
 
 ```
 conan install .. --build=missing -s compiler.libcxx=libstdc++11
@@ -32,7 +32,7 @@ conan install .. --build=missing -s compiler.libcxx=libstdc++11
 
 ### Building the project
 
-You can build TOOBAD4ML using your preferred generator; just be sure that you run any CMake commands inside the `build` directory. For instance:
+You can build TOOBAD4ML using your preferred generator, just be sure that you run any CMake commands inside the `build` directory. For instance, to build with [Ninja](https://ninja-build.org), type:
 
 ```
 cmake .. -G "Ninja"
@@ -50,7 +50,7 @@ Finally, build the project with:
 cmake --build .
 ```
 
-The binary can be found in the `<TOOBAD4ML_ROOT_DIR>/bin/` directory.
+The binary can be found in the `<TOOBAD4ML_ROOT_DIR>/bin` directory.
 
 ### Testing the project
 
@@ -58,19 +58,24 @@ Tests can be enabled by adding the argument `-DTOOBAD4ML_ENABLE_TESTING=ON` to t
 
 ```
 cmake .. -G "Ninja" -DTOOBAD4ML_ENABLE_TESTING=ON
-cmake --build .
 ```
 
-The test executables can be found in the `<TOOBAD4ML_ROOT_DIR>/bin/` directory. However, you can use CTest to run the testing process. CMake generates its configuration files inside the `build/tests` directory. So in order to run CTest just type:
+To build all unit tests, type:
 
 ```
-cd tests && ctest -V
+cmake --build . --target tests
+```
+
+It is recommended to run the unit tests with CTest; although all the tests executables can be found in the `<TOOBAD4ML_ROOT_DIR>/bin/tests` directory. CMake generates the CTest configuration files inside the `build` directory, so in order to run it just type:
+
+```
+ctest -VV
 ```
 
 ## Usage
 
 ```
-./TOOBAD4ML <path_to_file_or_to_multiple_files.c>
+./TOOBAD4ML <path_to_file_or_to_multiple_files.c> --
 ```
 
 ### Sample tagged source file

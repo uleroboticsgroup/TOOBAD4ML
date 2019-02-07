@@ -1,5 +1,8 @@
 #
-#   CMakeLists.txt - Script to build the source code
+#   CMakeLists.txt - CMake file to build TOOBAD4ML. This file provides the
+#                    following target:
+#
+#                            * TOOBAD4ML
 #
 
 # Dependencies
@@ -20,9 +23,9 @@ endforeach()
 # Target
 # ----------------------------------------------------------------------------
 
-add_executable(main main.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
-target_link_libraries(main
+target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${TOOBAD4ML_MODULES}
 )

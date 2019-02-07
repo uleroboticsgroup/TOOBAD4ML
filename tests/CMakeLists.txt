@@ -1,6 +1,10 @@
 #
-#   CMakeLists.txt -
+#   CMakeLists.txt - CMake file to build unit tests for TOOBAD4ML. This file
+#                    provides the following target:
 #
+#                           * tests
+#
+
 
 # Modules
 # -----------------------------------------------------------------------------
@@ -8,24 +12,26 @@
 include(GoogleTest)
 
 
-
-# Targets
+# Test suites
 # -----------------------------------------------------------------------------
 
-add_executable(test_main test_main.cpp)
-
-target_link_libraries(test_main LibGoogleTest)
-
-
-
-# Unit tests
-# -----------------------------------------------------------------------------
-
-set(TOOBAD4ML_MODULES
+# TODO add test suites for each module
+set(TOOBAD4ML_TEST_SUITES
     analysis
-    #ASTTraversal
 )
 
-foreach(MODULE IN LISTS TOOBAD4ML_MODULES)
-    add_subdirectory(${MODULE})
+foreach(TEST_SUITE IN LISTS TOOBAD4ML_TEST_SUITES)
+    add_subdirectory(${TEST_SUITE})
 endforeach()
+
+
+# Target
+# -----------------------------------------------------------------------------
+
+add_executable(tests test_main.cpp)
+
+target_link_libraries(tests
+    PRIVATE
+        LibGoogleTest
+        analysis_test
+)

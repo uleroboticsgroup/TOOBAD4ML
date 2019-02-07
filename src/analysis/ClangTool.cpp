@@ -1,49 +1,64 @@
 #include "analysis/ClangTool.h"
 
+#include <clang/Tooling/CommonOptionsParser.h>
+#include <clang/Tooling/CompilationDatabase.h>
+
+
 using namespace TOOBAD4ML;
 using namespace analysis;
 
-//TODO: To complete with our own args
-static llvm::cl::OptionCategory MyToolCategory("MY GOD");
+
+// OTHER STUFF
+// ----------------------------------------------------------------------------
+
+// set some options to show when asking for help about the tool
+static llvm::cl::OptionCategory toolCategory("TOOBAD4ML options");
+static llvm::cl::extrahelp CommonHelp(
+        clang::tooling::CommonOptionsParser::HelpMessage
+);
 
 
-/*!
- *
- *
- * @param
- * @param
- * @param
- */
-cClangTool::cClangTool(
-        int argc,
-        const char **argv,
-        std::vector<std::string> sources) :
-    m_optionsParser(argc, argv, MyToolCategory),
-    m_tool(NULL) {
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
 
-        std::vector<std::string> sourcePathList =
-            (argc > 0) ? m_optionsParser.getSourcePathList() : sources;
+cClangTool::cClangTool(int argc, const char** argv) : m_tool(NULL) {
+    // argc must be at least 2 (including program name), in order to parse the
+    // contents of argv
+    assert(argc > 1);
 
-        m_tool = new clang::tooling::ClangTool(
-                m_optionsParser.getCompilations(),
-                sourcePathList);
+    clang::tooling::CommonOptionsParser optionsParser(
+            argc, argv, toolCategory
+    );
+
+    m_tool = new clang::tooling::ClangTool(
+            optionsParser.getCompilations(),
+            optionsParser.getSourcePathList()
+    );
 }
 
 
-/*!
- *
- */
+cClangTool::cClangTool(const llvm::Twine& path) : m_tool(NULL) {
+    llvm::ArrayRef<std::string> cmdLineArgs;
+    clang::tooling::FixedCompilationDatabase compilations(
+            path,
+            cmdLineArgs
+    );
+
+    m_tool = new clang::tooling::ClangTool(
+            compilations,
+            compilations.getAllFiles()
+    );
+}
+
+
 cClangTool::~cClangTool() {
     delete m_tool;
 }
 
 
-/*!
- *
- * @param
- *
- * @return
- */
+// METHODS
+// ----------------------------------------------------------------------------
+
 int cClangTool::Run(clang::tooling::ToolAction* action) {
     return m_tool->run(action);
 }
