@@ -1,18 +1,27 @@
 #include "description/SinkClassification.h"
+#include "description/BufferOverflow.h"
+
 
 using namespace TOOBAD4ML;
 using namespace description;
 
-cSinkClassification::cSinkClassification(IFeatureExtractor *decoratedComponent) :
-		cFeatureExtractorDecorator(decoratedComponent) {
+
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
+
+cSinkClassification::cSinkClassification(IDescriptor* decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
 };
 
+
+// INHERITED METHODS
+// ----------------------------------------------------------------------------
+
 llvm::StringRef cSinkClassification::ExtractFeature(
-		cCodePseudoPropertyGraph &cppg,
-		cBufferOverflow &bufferOverflow) {
+        cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	std::string decoratedFeature =
-			cFeatureExtractorDecorator::ExtractFeature(cppg, bufferOverflow);
+			cDescriptorDecorator::ExtractFeature(cpg, bof);
 
 	std::map<llvm::StringRef, llvm::StringRef> sinkTypes = {
 			{ "strcpy", "1" }, { "strncpy", "1" },
@@ -25,11 +34,11 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 	std::string feature;
 
 	//TODO Get rid of magic literals string to actual constants
-	if (bufferOverflow.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+	if (bof.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {
 		feature = "7";
 	} else {
 		// CallExpr
-		for(clang::Stmt::child_iterator it = bufferOverflow.GetSink()->child_begin(); it != bufferOverflow.GetSink()->child_end(); it++) {
+		for(clang::Stmt::child_iterator it = bof.GetSink()->child_begin(); it != bof.GetSink()->child_end(); it++) {
 			// ImplicitCastExpr
 			for(clang::Stmt::child_iterator it2 = it->child_begin(); it2 != it->child_end(); it2++) {
 				//DeclRefExpr
@@ -50,4 +59,3 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 	llvm::outs() << "SinkClassification: " <<  feature << "\n";
 	return decoratedFeature + feature.append(";");
 }
-

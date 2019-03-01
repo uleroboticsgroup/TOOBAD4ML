@@ -1,16 +1,29 @@
 #include "description/SinkCharacteristicsClassification.h"
 
+
+// ----------------------------------------------------------------------------
+
 using namespace TOOBAD4ML;
 using namespace description;
 
+
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
+
 cSinkCharacteristicsClassification::cSinkCharacteristicsClassification(
-		IFeatureExtractor *decoratedComponent) :
-		cFeatureExtractorDecorator(decoratedComponent) {
+		IDescriptor *decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
 };
 
-llvm::StringRef cSinkCharacteristicsClassification::ExtractFeature(cCodePseudoPropertyGraph &cppg, cBufferOverflow &bufferOverflow)
+
+// INHERITED METHODS
+// ----------------------------------------------------------------------------
+
+llvm::StringRef cSinkCharacteristicsClassification::ExtractFeature(
+        cCodePropertyGraph &cpg, cBufferOverflow &bof)
 {
-	std::string decoratedFeature = cFeatureExtractorDecorator::ExtractFeature(cppg, bufferOverflow);
+	std::string decoratedFeature =
+        cDescriptorDecorator::ExtractFeature(cpg, bof);
 
 	return decoratedFeature + "sinkcharacter..";
 }

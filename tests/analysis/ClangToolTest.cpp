@@ -15,7 +15,7 @@ namespace analysis {
 TEST(ClangToolDeathTest, CreateWithValidCmdLineInput) {
 
     int argc = 3;
-    const char* argv[argc] = {"TOOBAD4ML", "test.c", "--"};
+    const char* argv[3] = {"TOOBAD4ML", "test.c", "--"};
 
     EXPECT_EXIT(
             cClangTool(argc, argv),

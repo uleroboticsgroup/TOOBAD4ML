@@ -1,22 +1,33 @@
-#ifndef SRC_MODELLING_BUFFERSIZEPREDICATECLASSIFICATION_H_
-#define SRC_MODELLING_BUFFERSIZEPREDICATECLASSIFICATION_H_
+#ifndef TOOBAD4ML_DESCRIPTION_BUFFERSIZEPREDICATECLASSIFICATION_H
+#define TOOBAD4ML_DESCRIPTION_BUFFERSIZEPREDICATECLASSIFICATION_H
 
-#include "description/BufferOverflow.h"
-#include "description/FeatureExtractorDecorator.h"
+
+#include "description/DescriptorDecorator.h"
+
 
 namespace TOOBAD4ML {
 
 namespace description {
 
-class cBufferSizePredicateClassification: public cFeatureExtractorDecorator {
+
+/*!
+ *
+ */
+class cBufferSizePredicateClassification: public cDescriptorDecorator {
 public:
+
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
 	 * @param decoratedComponent
 	 */
-	cBufferSizePredicateClassification(
-			IFeatureExtractor*);
+	cBufferSizePredicateClassification(IDescriptor*);
+
+
+    // INHERITED METHODS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
@@ -24,14 +35,13 @@ public:
 	 * @param
 	 * @return
 	 */
-	llvm::StringRef ExtractFeature(cCodePseudoPropertyGraph&,
-			cBufferOverflow&);
+	llvm::StringRef ExtractFeature(cCodePropertyGraph&,	cBufferOverflow&);
 
 };
 /* cBufferSizePredicateClassification */
 
-} /* namespace description */
+} /* description */
 
-} /* namespace TOOBAD4ML */
+} /* TOOBAD4ML */
 
-#endif /* SRC_MODELLING_BUFFERSIZEPREDICATECLASSIFICATION_H_ */
+#endif /* TOOBAD4ML_DESCRIPTION_BUFFERSIZEPREDICATECLASSIFICATION_H */

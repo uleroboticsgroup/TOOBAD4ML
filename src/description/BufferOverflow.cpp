@@ -1,12 +1,16 @@
-#include <llvm/Support/Casting.h>
-
+// ----------------------------------------------------------------------------
 #include "description/BufferOverflow.h"
-#include "description/CodePseudoPropertyGraph.h"
+#include "description/CodePropertyGraph.h"
 #include "ASTTraversal/FindVariableVisitor.h"
-
+/// ----------------------------------------------------------------------------
+#include <llvm/Support/Casting.h>
+// ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
+// ----------------------------------------------------------------------------
 
+
+//TODO: move this class out of this file.
 /*!
  * This class is called with CFG.VisitBlockStmts. That is,
  * given a CFG, clang will internally call this class each time
@@ -76,39 +80,9 @@ private:
 
 };
 
-clang::DeclRefExpr* cBufferOverflow::GetBuffer() {
-	return m_buffer;
-}
 
-std::vector<clang::CallExpr*> cBufferOverflow::GetInput() {
-	return m_input;
-}
-
-clang::Expr* cBufferOverflow::GetSink() {
-	return m_sink;
-}
-
-clang::Stmt::StmtClass cBufferOverflow::GetSinkType() {
-	return m_sink->getStmtClass();
-}
-
-void cBufferOverflow::SetInput(cCodePseudoPropertyGraph& cppg) {
-	//TODO Traverse cppg in order to find all input nodes.
-
-	clang::CFG& CFG = const_cast<clang::CFG&>(cppg.GetCFG());
-
-	//GetBuffer()->dump();
-
-	//cppg.GetAST().dump();
-
-	cFindInputNodes finder(GetBuffer(), CFG);
-
-	//CFG.dump(clang::LangOptions(), false);
-	CFG.VisitBlockStmts(finder);
-
-	m_input = finder.GetInput();
-
-}
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
 
 cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 		m_sink(&sink), m_buffer(0) {
@@ -194,5 +168,48 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 //		}
 //
 //	}
+}
+
+cBufferOverflow::~cBufferOverflow() {
+}
+
+
+// CLASS METHODS
+// ----------------------------------------------------------------------------
+
+clang::Stmt::StmtClass cBufferOverflow::GetSinkType() {
+	return m_sink->getStmtClass();
+}
+
+// ACCESSOR METHODS
+// ----------------------------------------------------------------------------
+
+clang::Expr* cBufferOverflow::GetSink() {
+	return m_sink;
+}
+
+clang::DeclRefExpr* cBufferOverflow::GetBuffer() {
+	return m_buffer;
+}
+
+std::vector<clang::CallExpr*> cBufferOverflow::GetInput() {
+	return m_input;
+}
+
+void cBufferOverflow::SetInput(cCodePropertyGraph& cpg) {
+	//TODO Traverse cppg in order to find all input nodes.
+
+	clang::CFG& CFG = const_cast<clang::CFG&>(cpg.GetCFG());
+
+	//GetBuffer()->dump();
+
+	//cppg.GetAST().dump();
+
+	cFindInputNodes finder(GetBuffer(), CFG);
+
+	//CFG.dump(clang::LangOptions(), false);
+	CFG.VisitBlockStmts(finder);
+
+	m_input = finder.GetInput();
 
 }

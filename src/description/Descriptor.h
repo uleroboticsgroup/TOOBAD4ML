@@ -1,30 +1,63 @@
-#ifndef SRC_MODELLING_DESCRIPTOR_H_
-#define SRC_MODELLING_DESCRIPTOR_H_
+// ----------------------------------------------------------------------------
+#ifndef TOOBAD4ML_DESCRIPTION_DESCRIPTOR_H
+#define TOOBAD4ML_DESCRIPTION_DESCRIPTOR_H
+// ----------------------------------------------------------------------------
+#include <llvm/ADT/StringRef.h>
+// ----------------------------------------------------------------------------
 
-#include "description/FeatureExtractor.h"
 
 namespace TOOBAD4ML {
 
 namespace description {
 
-class cDescriptor: public IFeatureExtractor {
+
+// CLASS FORWARDING
+// ----------------------------------------------------------------------------
+
+class cCodePropertyGraph;
+class cBufferOverflow;
+
+
+// CLASS DEFINITION
+// ----------------------------------------------------------------------------
+
+/*!
+ * \class IDescriptor
+ *
+ * \brief
+ * A description, as a sequence of numbers, of a Buffer Overflow vulnerability.
+ *
+ * \details
+ * This is just the interface for the Decorator design pattern. It declares a
+ * single method intended for defining a feature of a Buffer Overflow (BOF).
+ * These features are patterns present in the source code, and can be either
+ * simple (just one feature) or complex (more than one feature). Features are
+ * represented as a string of numbers separated by semicolons and defined by
+ * analizing their presence in a {\ref cCodePropertyGraph}.
+ */
+class IDescriptor {
+
+    // INTERFACE METHODS
+    // ------------------------------------------------------------------------
 
 public:
 
 	/*!
-	 *
-	 * @param
-	 * @param
-	 * @return
+	 * Extracts a Buffer Overflow feature from a Code Property Graph.
+     *
+	 * @param cpg Code Property Graph.
+	 * @param bof Buffer Overflow vulnerability present in the CPG.
+	 * @return A string of numbers separated by semicolons representing the
+     *         feature, or an empty string in case the BOF is not present in
+     *         the CPG.
 	 */
-	llvm::StringRef ExtractFeature(cCodePseudoPropertyGraph&,
-			cBufferOverflow&);
+	virtual llvm::StringRef ExtractFeature(cCodePropertyGraph&,
+            cBufferOverflow&) = 0;
 
-};
-/* cDescriptor */
+}; /* IDescriptor */
 
-} /* namespace description */
+} // namespace description
 
-} /* namespace TOOBAD4ML */
+} // namespace TOOBAD4ML
 
-#endif /* SRC_MODELLING_FEATUREEXTRACTORDECORATOR_H_ */
+#endif

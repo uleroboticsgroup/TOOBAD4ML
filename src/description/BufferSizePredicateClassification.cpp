@@ -1,19 +1,29 @@
 #include "description/BufferSizePredicateClassification.h"
 
+
 using namespace TOOBAD4ML;
 using namespace description;
 
+
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
+
 cBufferSizePredicateClassification::cBufferSizePredicateClassification(
-		IFeatureExtractor * decoratedComponent) :
-		cFeatureExtractorDecorator(decoratedComponent) {
+		IDescriptor * decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
 
 }
 
+
+// INHERITED METHODS
+// ----------------------------------------------------------------------------
+
 llvm::StringRef cBufferSizePredicateClassification::ExtractFeature(
-		cCodePseudoPropertyGraph &cppg, cBufferOverflow &bufferOverflow) {
+		cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
-	std::string decoratedFeature = cFeatureExtractorDecorator::ExtractFeature(cppg, bufferOverflow); // delegate to base class
+	std::string decoratedFeature =
+        cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	return decoratedFeature + "buffer"; // extrat Feature BufferSizePredicateClassification
+	return decoratedFeature + "bufferSizePredicateClass";
 
 }

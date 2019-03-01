@@ -1,17 +1,26 @@
 #include "description/InputClassification.h"
+#include "description/BufferOverflow.h"
+
+
+// ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
 using namespace description;
 
+
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
+
 cInputClassification::cInputClassification(
-		IFeatureExtractor *decoratedComponent) :
-		cFeatureExtractorDecorator(decoratedComponent) {
-}
-;
+		IDescriptor* decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
+};
+
+// INHERITED METHODS
+// ----------------------------------------------------------------------------
 
 llvm::StringRef cInputClassification::ExtractFeature(
-		cCodePseudoPropertyGraph &cppg,
-		cBufferOverflow &bufferOverflow) {
+        cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	llvm::outs() << "Al extractFeature llega.\n";
 
@@ -25,8 +34,8 @@ llvm::StringRef cInputClassification::ExtractFeature(
 
 
 	//TODO cambiar los std::string por llvm::SmallString
-	std::string decoratedFeature = cFeatureExtractorDecorator::ExtractFeature(
-			cppg, bufferOverflow);
+	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(
+			cpg, bof);
 
 	llvm::outs() << "Después de decoratedFeature llega.\n";
 
@@ -45,7 +54,7 @@ llvm::StringRef cInputClassification::ExtractFeature(
 
 	//bufferOverflow.SetInput(cppg);
 
-	std::vector<clang::CallExpr*> input = bufferOverflow.GetInput();
+	std::vector<clang::CallExpr*> input = bof.GetInput();
 	llvm::outs() << "Input size from InputClassi: " << input.size() << "\n";
 
 	int index = 0;
@@ -66,9 +75,9 @@ llvm::StringRef cInputClassification::ExtractFeature(
 	}
 
 	for(int i = 0; i < ARRAYLENGTH; i++){
-		feature += std::to_string(featuresArray[i]) + cFeatureExtractorDecorator::FEATURE_SEPARATOR;
+		feature += std::to_string(featuresArray[i]) + cDescriptorDecorator::FEATURE_SEPARATOR;
 	}
 
 	llvm::outs() << "InputClassification: " <<  feature << "\n";
-	return decoratedFeature + feature.append(cFeatureExtractorDecorator::FEATURE_SEPARATOR);
+	return decoratedFeature + feature.append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

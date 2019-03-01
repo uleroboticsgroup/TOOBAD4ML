@@ -1,23 +1,32 @@
-#ifndef SRC_MODELLING_INPUTCLASSIFICATION_H_
-#define SRC_MODELLING_INPUTCLASSIFICATION_H_
+#ifndef TOOBAD4ML_DESCRIPTION_INPUTCLASSIFICATION_H
+#define TOOBAD4ML_DESCRIPTION_INPUTCLASSIFICATION_H
 
-#include "description/CodePseudoPropertyGraph.h"
-#include "description/BufferOverflow.h"
-#include "description/FeatureExtractorDecorator.h"
+
+#include "description/DescriptorDecorator.h"
 
 
 namespace TOOBAD4ML {
 
 namespace description {
 
-class cInputClassification: public cFeatureExtractorDecorator {
+/*!
+ *
+ */
+class cInputClassification: public cDescriptorDecorator {
 public:
+
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
 	 * @param
 	 */
-	cInputClassification(IFeatureExtractor*);
+	cInputClassification(IDescriptor*);
+
+
+    // INHERITED METHODS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
@@ -25,13 +34,13 @@ public:
 	 * @param
 	 * @return
 	 */
-	llvm::StringRef ExtractFeature(cCodePseudoPropertyGraph&,
-			cBufferOverflow&);
+	llvm::StringRef ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
+
 };
 /* cInputClassification */
 
-} /* namespace description */
+} /* description */
 
-} /* namespace TOOBAD4ML */
+} /* TOOBAD4ML */
 
-#endif /* SRC_MODELLING_INPUTCLASSIFICATION_H_ */
+#endif /* TOOBAD4ML_DESCRIPTION_INPUTCLASSIFICATION_H */

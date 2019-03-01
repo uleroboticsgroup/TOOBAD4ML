@@ -1,83 +1,115 @@
-#ifndef SRC_CORE_BUFFER_OVERFLOW_H_
-#define SRC_CORE_BUFFER_OVERFLOW_H_
-
+// ----------------------------------------------------------------------------
+#ifndef TOOBAD4ML_DESCRIPTION_BUFFEROVERFLOW_H
+#define TOOBAD4ML_DESCRIPTION_BUFFEROVERFLOW_H
+// ----------------------------------------------------------------------------
 #include <clang/AST/Expr.h>
+// ----------------------------------------------------------------------------
+
 
 namespace TOOBAD4ML {
 
 namespace description {
 
-class cCodePseudoPropertyGraph;
+
+// CLASS FORWARDING
+// ----------------------------------------------------------------------------
+
+class cCodePropertyGraph;
+
+
+// CLASS DEFINITION
+// ----------------------------------------------------------------------------
 
 /*!
+ * \class cBufferOverflow
  *
+ * \brief
+ * A representation of a Buffer Overflow vulnerability in terms of AST nodes.
+ *
+ * \details
+ * A Buffer Overflow (BOF) is a condition that exists when a program attempts
+ * to access through an array a memory location that is outside its boundaries.
+ * This class encapsulates all the data assumed to be related to such
+ * vulnerability. The data is comprised of statements and variables from
+ * the source code, which are extracted by searching for patterns in a Code
+ * Property Graph using the sink statement; that is, the statement where the
+ * vulnerability originated.
  */
 class cBufferOverflow {
+
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
+
 public:
 
 	/*!
-	 * Constructor
-	 * @param The AST Expr Node representing the actual buffer
-	 * overflow vulnerability, AKA the sink node.
+	 * Creates a Buffer Overflow representation.
+     *
+	 * @param sink  AST node of the statement where the BOF originally
+     *              occurred.
 	 */
 	cBufferOverflow(clang::Expr&);
 
-	/*!
-	 *	Getter for retrieving the node that represent the BOF
-	 *	vulnerability. The buffer that could be overflowed/overriden.
-	 * @return DeclRefExpr
-	 */
+    ~cBufferOverflow();
+
+
+    // CLASS METHODS
+    // ------------------------------------------------------------------------
+
+public:
+
+	clang::Stmt::StmtClass GetSinkType();
+
+
+    // ACCESSOR METHODS
+    // ------------------------------------------------------------------------
+
+public:
+
+	clang::Expr* GetSink();
+
 	clang::DeclRefExpr* GetBuffer();
 
-	/*!
-	 * Returns the vector of actual nodes that represent an input call
-	 * related to the buffer.
-	 * @return Vector of CallExpr
-	 */
 	std::vector<clang::CallExpr*> GetInput();
 
 	/*!
-	 * Getter for retrieving the actual node where the vulnerability
-	 * happens. This could be either a BinaryOperator or a CallExpr, both
-	 * of them given as Expr.
-	 * @return Expr
+     * Stores all AST nodes corresponding to input function calls by traversing
+     * a Control Flow Graph (CFG) where the BOF is present.
+     * TODO: change CPG for CFG??
+     *
+     * @param cfg   CFG in which to search for input node patterns.
 	 */
-	clang::Expr* GetSink();
+	void SetInput(cCodePropertyGraph&);
 
-	/*!
-	 *	Getter for retrieving the actual sink node type. Since GetSink()
-	 *	always return Expr, its original type can be obtaind via this
-	 *	getter.
-	 * @return StmtClass
-	 */
-	clang::Stmt::StmtClass GetSinkType();
 
-	/*!
-	 * Given the pseudo-property-graph, traverses it trying to find all
-	 * those nodes corresponding to input functions calls. Traversing and
-	 * finding is carried out by internal class called cFindInputNodes.
-	 * Within that class, () operator is overwritten.
-	 */
-	void SetInput(cCodePseudoPropertyGraph&);
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
 
 private:
 
-	//!
+	//! AST node of the statement that triggered the vulnerability.
 	clang::Expr* m_sink;
 
-	//!
+	//! AST node of the variable representing a memory region (i.e. array), in
+    /// which the vulnerability occurred.
 	clang::DeclRefExpr* m_buffer;
 
-	//!
+	//! List of AST nodes containing statements involved in reading input data,
+    /// that affects {\ref m_buffer}.
 	std::vector<clang::CallExpr*> m_input;
 
 }; /* cBufferOverflow */
 
-//!
+
+// ALIAS DEFINITIONS
+// ----------------------------------------------------------------------------
+
 typedef std::vector<cBufferOverflow> BOFList;
 
-} /* namespace description */
 
-} /* namespace TOOBAD4ML */
+} // namespace description
 
-#endif /* SRC_CORE_BUFFER_OVERFLOW_H_ */
+} // namespace TOOBAD4ML
+
+// ----------------------------------------------------------------------------
+#endif

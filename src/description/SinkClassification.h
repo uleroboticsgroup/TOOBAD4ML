@@ -1,22 +1,32 @@
-#ifndef SRC_MODELLING_SINKCLASSIFICATION_H_
-#define SRC_MODELLING_SINKCLASSIFICATION_H_
+#ifndef TOOBAD4ML_DESCRIPTION_SINKCLASSIFICATION_H
+#define TOOBAD4ML_DESCRIPTION_SINKCLASSIFICATION_H
 
-#include "description/CodePseudoPropertyGraph.h"
-#include "description/BufferOverflow.h"
-#include "description/FeatureExtractorDecorator.h"
+
+#include "description/DescriptorDecorator.h"
+
 
 namespace TOOBAD4ML {
 
 namespace description {
 
-class cSinkClassification: public cFeatureExtractorDecorator {
+/*!
+ *
+ */
+class cSinkClassification: public cDescriptorDecorator {
 public:
+
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
 	 * @param
 	 */
-	cSinkClassification(IFeatureExtractor*);
+	cSinkClassification(IDescriptor*);
+
+
+    // INHERITED METHODS
+    // ------------------------------------------------------------------------
 
 	/*!
 	 *
@@ -24,14 +34,13 @@ public:
 	 * @param
 	 * @return
 	 */
-	llvm::StringRef ExtractFeature(cCodePseudoPropertyGraph&,
-			cBufferOverflow&);
+	llvm::StringRef ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 };
 /* cSinkClassification */
 
-} /* namespace description */
+} /* description */
 
-} /* namespace TOOBAD4ML */
+} /* TOOBAD4ML */
 
-#endif /* SRC_MODELLING_SINKCLASSIFICATION_H_ */
+#endif /* TOOBAD4ML_DESCRIPTION_SINKCLASSIFICATION_H */

@@ -1,6 +1,6 @@
 #
-#   CMakeLists.txt - CMake file for the "description" module. This file
-#                    provides the following target:
+#   CMakeLists.txt - CMake file for the TOOBAD4ML::description module. This
+#                    file provides the following target:
 #
 #                           * description
 #
@@ -16,15 +16,15 @@ project(description)
 add_library(${PROJECT_NAME}
     SHARED
         BufferOverflow.cpp
-        CodePseudoPropertyGraph.cpp
-        CPPGExplorer.cpp
-        Descriptor.cpp
-        FeatureExtractorDecorator.cpp
+        CodePropertyGraph.cpp
+        CPGExplorer.cpp
+        MockDescriptor.cpp
+        DescriptorDecorator.cpp
         SinkClassification.cpp
-        SinkCharacteristicsClassification.cpp
         InputClassification.cpp
         InputValidationClassification.cpp
         BufferSizePredicateClassification.cpp
+        SinkCharacteristicsClassification.cpp
         PadmanabhuniBuilder.cpp
 )
 

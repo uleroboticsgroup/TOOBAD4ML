@@ -3,7 +3,9 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 
 #include "description/PadmanabhuniBuilder.h"
-#include "description/CPPGExplorer.h"
+#include "description/CPGExplorer.h"
+#include "description/CodePropertyGraph.h"
+#include "description/BufferOverflow.h"
 
 
 using namespace TOOBAD4ML;
@@ -30,18 +32,18 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 
 	// iterate through the vulnerabilities to extract the descriptors
 	description::cPadmanabhuniBuilder pmd;
-	description::cCPPGExplorer explorer(pmd.CreateDescriptor());
+	description::cCPGExplorer explorer(pmd.CreateDescriptor());
 
 	for (ASTTraversal::BOFNodesPerFunctionMap::iterator iterFunction =
 			vulnerabilities.begin(); iterFunction != vulnerabilities.end();
 			iterFunction++) {
 		/**
 		 * For each function within BOFNodesPerFunctionMap we declare
-		 * a new CodePseudoPropertyGraph.
+		 * a new CodePropertyGraph.
 		 */
-        description::cCodePseudoPropertyGraph cppg(*(iterFunction->first));
+        description::cCodePropertyGraph cpg(*(iterFunction->first));
 
-		// use the CPPG to extract the vulnerabilities
+		// use the CPG to extract the vulnerabilities
 		for (std::vector<clang::Expr*>::iterator iterBOF =
 				iterFunction->second.begin();
 				iterBOF != iterFunction->second.end(); iterBOF++) {
@@ -50,9 +52,9 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 			// and its implementation is yet undone.
 
             description::cBufferOverflow BOF(**iterBOF);
-			BOF.SetInput(cppg);
+			BOF.SetInput(cpg);
 
-			std::string features = explorer.Inspect(cppg, BOF);
+			std::string features = explorer.Inspect(cpg, BOF);
 			m_dataset.push_back(features);
 		}
 	}
