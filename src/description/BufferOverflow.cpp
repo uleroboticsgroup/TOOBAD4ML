@@ -2,6 +2,7 @@
 #include "description/BufferOverflow.h"
 #include "description/CodePropertyGraph.h"
 #include "ASTTraversal/FindVariableVisitor.h"
+#include "ASTTraversal/FindBufferVisitor.h"
 /// ----------------------------------------------------------------------------
 #include <llvm/Support/Casting.h>
 // ----------------------------------------------------------------------------
@@ -32,8 +33,8 @@ public:
 
 			ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
 
-			llvm::outs() << "IMPRIMIENDO DESDE CFINDINPUTNODES.\n";
-			m_buffer->dumpColor();
+			//llvm::outs() << "IMPRIMIENDO DESDE CFINDINPUTNODES.\n";
+			//m_buffer->dumpColor();
 
 			m_visitor.TraverseStmt(aux);
 
@@ -86,6 +87,13 @@ private:
 
 cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 		m_sink(&sink), m_buffer(0) {
+
+	ASTTraversal::cFindBufferVisitor m_visitor(m_sink);
+	m_visitor.TraverseStmt(m_sink);
+	m_buffer = m_visitor.getBuffer();
+
+	llvm::outs() << "ESTE ES EL BUFFER\n";
+	m_buffer->dumpColor();
 
 	//llvm::outs() << "Printing from cBufferOverflow constructor.\n";
 	//m_sink->dumpColor();
