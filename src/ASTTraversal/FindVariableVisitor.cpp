@@ -7,11 +7,11 @@ using namespace ASTTraversal;
  * m_variable is the buffer that might be overrun
  * @param declRefExpr
  */
-cFindVariableVisitor::cFindVariableVisitor(clang::DeclRefExpr* declRefExpr) :
+cFindVariableVisitor::cFindVariableVisitor(clang::Expr* declRefExpr) :
 		m_variable(declRefExpr), m_found(false) {}
 
 
-bool cFindVariableVisitor::VisitDeclRefExpr(clang::DeclRefExpr* declRefExpr) {
+bool cFindVariableVisitor::VisitDeclRefExpr(clang::Expr* declRefExpr) {
 
 //		clang::ValueDecl* currentVar;
 //		clang::ValueDecl* targetVar;

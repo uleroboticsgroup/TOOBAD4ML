@@ -7,7 +7,7 @@
 #define MAX 15
 
 struct Persons{
-  char name[40];
+  char name[2];
   int age;
 };
 
@@ -16,8 +16,8 @@ int main() {
 
  
   // 1. String copy
-  char str1[200];
-  char str2[200];
+  char str1[2];
+  char str2[6];
   strcpy(str1,"To be ");
   strcpy(str2,"or not to be");
   strncpy(str2, str1, sizeof(str2));
@@ -49,9 +49,9 @@ int main() {
   sprintf(buffer, "Sum of %d and %d is %d", a, b, c); 
   printf("%s", buffer); 
 
-  char buffer2[50]; 
-  char* bu = "geeksforgeeks";  
-  int j = snprintf(buffer2, 6, "%s\n", bu); 
+  char buffer2[11]; 
+  char* cadena = "geeksforgeeks";  
+  int j = snprintf(buffer2, 6, "%s\n", cadena); 
   printf("string:\n%s\ncharacter count = %d\n", buffer2, j); 
 
   // 5. Unformatted string input 
@@ -72,8 +72,7 @@ int main() {
   printf("%s %d, %d = %s\n", month, day, year, weekday );
 
   // 7. Array element writes
-  char *ch;
-  *ch = ';';
+  char name[5] = "AAAAA";
 
 /// ###BEGIN_VULNERABLE_LINES###
 
@@ -99,7 +98,7 @@ int main() {
 /// 49,3;49,52
 
 // snprintf
-/// 54,3;54,43
+/// 54,11;54,46
 
 // gets
 /// 59,3;59,14
@@ -114,7 +113,7 @@ int main() {
 /// 71,3;71,60
 
 // Array writes
-/// 76,3;76,9
+/// 75,3;75,25
 
 }
 

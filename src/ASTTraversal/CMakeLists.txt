@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME}
         FindSelectedASTNodesVisitor.cpp
         FindVariableVisitor.cpp
         FindBufferVisitor.cpp
+        FindFunctionVisitor.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -12,14 +12,16 @@ class cFindBufferVisitor : public clang::RecursiveASTVisitor<cFindBufferVisitor>
 
 public:
 
-	cFindBufferVisitor(clang::Expr* decl);
+	cFindBufferVisitor(clang::Expr* e);
 
-	bool VisitDeclRefExpr(clang::Expr* decl);
+	bool VisitMemberExpr(clang::Expr* e);
 
-	clang::DeclRefExpr* getBuffer();
+	bool VisitDeclRefExpr(clang::Expr* e);
+
+	clang::Expr* getBuffer();
 
 private:
-	clang::DeclRefExpr* m_buffer;
+	clang::Expr* m_buffer;
 
 };
 

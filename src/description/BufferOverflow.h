@@ -68,7 +68,7 @@ public:
 
 	clang::Expr* GetSink();
 
-	clang::DeclRefExpr* GetBuffer();
+	clang::Expr* GetBuffer();
 
 	std::vector<clang::CallExpr*> GetInput();
 
@@ -92,7 +92,7 @@ private:
 
 	//! AST node of the variable representing a memory region (i.e. array), in
     /// which the vulnerability occurred.
-	clang::DeclRefExpr* m_buffer;
+	clang::Expr* m_buffer;
 
 	//! List of AST nodes containing statements involved in reading input data,
     /// that affects {\ref m_buffer}.

@@ -1,6 +1,7 @@
 #include "description/SinkClassification.h"
 #include "description/BufferOverflow.h"
 
+#include "ASTTraversal/FindFunctionVisitor.h"
 
 using namespace TOOBAD4ML;
 using namespace description;
@@ -37,23 +38,16 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 	if (bof.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {
 		feature = "7";
 	} else {
-		// CallExpr
-		for(clang::Stmt::child_iterator it = bof.GetSink()->child_begin(); it != bof.GetSink()->child_end(); it++) {
-			// ImplicitCastExpr
-			for(clang::Stmt::child_iterator it2 = it->child_begin(); it2 != it->child_end(); it2++) {
-				//DeclRefExpr
-				if(clang::DeclRefExpr* declRef =  llvm::dyn_cast<clang::DeclRefExpr>(*it2)){
-					// Function or Var
-					if(clang::ValueDecl* var = declRef->getDecl()) { // -> Function or Var
-						// Function
-						if(var->getKind() == clang::Decl::Function) { // -> Function
-							feature = sinkTypes.find(var->getName())->second;
-							break;
-						}
-					}
-				}
-			}
+
+		ASTTraversal::cFindFunctionVisitor fun(bof.GetSink());
+		fun.TraverseStmt(bof.GetSink());
+
+		if(sinkTypes.find(fun.getFunctionName()) == sinkTypes.end()) {
+			llvm::outs() << "No function found in sinki types." << "\n";
+		} else {
+			feature = sinkTypes.find(fun.getFunctionName())->second;
 		}
+
 	}
 
 	llvm::outs() << "SinkClassification: " <<  feature << "\n";
