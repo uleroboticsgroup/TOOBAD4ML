@@ -54,7 +54,7 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             description::cBufferOverflow BOF(**iterBOF);
 			BOF.SetInput(cpg);
 
-			std::string features = explorer.Inspect(cpg, BOF);
+			std::string features= explorer.Inspect(cpg, BOF);
 			m_dataset.push_back(features);
 		}
 	}

@@ -41,7 +41,7 @@ public:
 	 */
 	cDescriptorDecorator(IDescriptor*);
 
-    ~cDescriptorDecorator();
+	~cDescriptorDecorator();
 
 
     // IDESCRIPTOR INHERITED METHODS
@@ -58,7 +58,7 @@ public:
      *         feature, or an empty string in case the BOF is not present in
      *         the CPG.
 	 */
-	virtual llvm::StringRef ExtractFeature(cCodePropertyGraph&,
+	virtual std::string ExtractFeature(cCodePropertyGraph&,
 			cBufferOverflow&);
 
 

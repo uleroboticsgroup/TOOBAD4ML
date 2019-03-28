@@ -14,16 +14,15 @@ cBufferSizePredicateClassification::cBufferSizePredicateClassification(
 
 }
 
-
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cBufferSizePredicateClassification::ExtractFeature(
+std::string cBufferSizePredicateClassification::ExtractFeature(
 		cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	std::string decoratedFeature =
         cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	return decoratedFeature + "bufferSizePredicateClass";
+	return decoratedFeature.append("bufferSizePredicateClass");
 
 }

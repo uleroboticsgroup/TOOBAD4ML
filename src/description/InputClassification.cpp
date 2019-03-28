@@ -19,7 +19,7 @@ cInputClassification::cInputClassification(
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cInputClassification::ExtractFeature(
+std::string cInputClassification::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	llvm::outs() << "Al extractFeature llega.\n";
@@ -62,8 +62,6 @@ llvm::StringRef cInputClassification::ExtractFeature(
 			it != input.end(); it++) {
 
 
-
-
 		llvm::outs() << "THAT'S THE GETDIRECTCALLE!!!!: " << (*it)->getDirectCallee()->getNameAsString() << "\n";
 		inputClassificationtypes.find(
 						(*it)->getDirectCallee()->getNameAsString())->second.getAsInteger(0, index);
@@ -75,9 +73,10 @@ llvm::StringRef cInputClassification::ExtractFeature(
 	}
 
 	for(int i = 0; i < ARRAYLENGTH; i++){
-		feature += std::to_string(featuresArray[i]) + cDescriptorDecorator::FEATURE_SEPARATOR;
+		feature = feature.append(std::to_string(featuresArray[i]).append(cDescriptorDecorator::FEATURE_SEPARATOR));
 	}
 
 	llvm::outs() << "InputClassification: " <<  feature << "\n";
-	return decoratedFeature + feature.append(cDescriptorDecorator::FEATURE_SEPARATOR);
+	//return decoratedFeature.append("InputClassification: ");
+	return decoratedFeature.append(feature);
 }

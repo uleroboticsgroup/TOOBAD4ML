@@ -19,11 +19,11 @@ cSinkCharacteristicsClassification::cSinkCharacteristicsClassification(
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cSinkCharacteristicsClassification::ExtractFeature(
+std::string cSinkCharacteristicsClassification::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof)
 {
 	std::string decoratedFeature =
         cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	return decoratedFeature + "sinkcharacter..";
+	return decoratedFeature.append("...sinkcharacter..");
 }

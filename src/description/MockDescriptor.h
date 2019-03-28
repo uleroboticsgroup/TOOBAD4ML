@@ -36,7 +36,7 @@ public:
      *
 	 * @return An empty string.
 	 */
-	llvm::StringRef ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
+	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 }; /* cMockDescriptor */
 

@@ -24,8 +24,7 @@ cCPGExplorer::~cCPGExplorer() {
 // CLASS METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef
-cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
+std::string cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 	return m_descriptor->ExtractFeature(cpg, bof);
 }
 

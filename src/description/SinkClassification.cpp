@@ -18,7 +18,7 @@ cSinkClassification::cSinkClassification(IDescriptor* decoratedComponent) :
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cSinkClassification::ExtractFeature(
+std::string cSinkClassification::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	std::string decoratedFeature =
@@ -43,7 +43,7 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 		fun.TraverseStmt(bof.GetSink());
 
 		if(sinkTypes.find(fun.getFunctionName()) == sinkTypes.end()) {
-			llvm::outs() << "No function found in sinki types." << "\n";
+			llvm::outs() << "No function found in sink types." << "\n";
 		} else {
 			feature = sinkTypes.find(fun.getFunctionName())->second;
 		}
@@ -51,5 +51,6 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 	}
 
 	llvm::outs() << "SinkClassification: " <<  feature << "\n";
-	return decoratedFeature + feature.append(";");
+	//return decoratedFeature.append("SinkClassification: ");
+	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }
