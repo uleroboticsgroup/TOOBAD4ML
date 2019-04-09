@@ -8,38 +8,33 @@ using namespace ASTTraversal;
  * @param declRefExpr
  */
 cFindVariableVisitor::cFindVariableVisitor(clang::Expr* declRefExpr) :
-		m_variable(declRefExpr), m_found(false) {}
+		m_buffer(declRefExpr), m_found(false) {}
 
 
-bool cFindVariableVisitor::VisitDeclRefExpr(clang::Expr* declRefExpr) {
+bool cFindVariableVisitor::VisitDeclRefExpr(clang::Stmt* S) {
 
-//		clang::ValueDecl* currentVar;
-//		clang::ValueDecl* targetVar;
-//
-//		if (clang::ValueDecl* var = declRefExpr->getDecl()) {
-//			if (var->getKind() == clang::Decl::Var) {
-//				currentVar = var;
-//			}
-//		}
-//		llvm::outs() << "Dentro de visitDeclRefExpr de findVariableVisitro3.\n";
-//		declRefExpr->dumpColor();
-//		llvm::outs() << "CAMBIO DE DUMPEOS A COLOR HEHE\n";
-//
-//		m_variable->dumpColor();
-//		if (clang::ValueDecl* var = m_variable->getDecl()) { //PROBLEMS
-//			if (var->getKind() == clang::Decl::Var) {
-//				targetVar = var;
-//			}
-//		}
-//
-//		llvm::outs() << "Dentro de visitDeclRefExpr de findVariableVisitro4.\n";
-//		if(currentVar == targetVar) {
-//			m_found = true;
-//		}
-//
-//		llvm::outs() << "Dentro de visitDeclRefExpr de findVariableVisitro5.\n";
-//
-//		return !m_found;
+		clang::ValueDecl* currentVar;
+		clang::ValueDecl* targetVar;
+
+		clang::FunctionDecl* targetFunc;
+
+		if( clang::DeclRefExpr* Ref = llvm::dyn_cast<clang::DeclRefExpr>(m_buffer) ) {
+			if(clang::VarDecl* VD = llvm::dyn_cast<clang::VarDecl>(Ref->getDecl())) {
+				//llvm::outs() << "current\n";
+				currentVar = VD;
+			}
+		}
+
+		if(clang::DeclRefExpr* Ref = llvm::dyn_cast<clang::DeclRefExpr>(S) ) {
+			  if(clang::VarDecl* VD = llvm::dyn_cast<clang::VarDecl>(Ref->getDecl())) {
+				   //llvm::outs() << "target\n";
+				   targetVar = VD;
+				   if(currentVar == targetVar) {
+					   m_found = true;
+					   return false;
+				   }
+			  }
+		}
 
 	return true;
 }

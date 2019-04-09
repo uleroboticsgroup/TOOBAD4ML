@@ -18,6 +18,7 @@ include(GoogleTest)
 # TODO add test suites for each module
 set(TOOBAD4ML_TEST_SUITES
     analysis
+    ASTTraversal
 )
 
 foreach(TEST_SUITE IN LISTS TOOBAD4ML_TEST_SUITES)

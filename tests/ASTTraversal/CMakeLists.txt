@@ -7,7 +7,10 @@ project(ASTTraversal_test)
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}
-    FindVariableVisitorTest.cpp
+   # FindVariableVisitorTest.cpp
+    VisitorTest.cpp
+    ../analysis/StubModelBOFAction.cpp
+    ../analysis/MockModelBOFConsumer.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -17,6 +20,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
+    	analysis
         ASTTraversal
         LibGoogleTest
 )

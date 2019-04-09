@@ -42,3 +42,7 @@ bool cFindBufferVisitor::VisitDeclRefExpr(clang::Expr* e) {
 clang::Expr* cFindBufferVisitor::getBuffer() {
 	return m_buffer;
 }
+
+int cFindBufferVisitor::getA() {
+	return a;
+}

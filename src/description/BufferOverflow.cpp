@@ -27,21 +27,21 @@ public:
 	void operator()(const clang::Stmt* stmt) {
 
 		clang::Stmt* aux = const_cast<clang::Stmt*>(stmt);
+
+		//m_cfg.dump(clang::LangOptions(), true);
+
+		//llvm::outs() << "OPERATOR\n";
+
 		switch (aux->getStmtClass()) {
 
 		case clang::Stmt::StmtClass::CallExprClass: {
 
 			ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
 
-			//llvm::outs() << "IMPRIMIENDO DESDE CFINDINPUTNODES.\n";
-			//m_buffer->dumpColor();
-
 			m_visitor.TraverseStmt(aux);
 
 			if (m_visitor.IsFound()) {
-
 				m_input.push_back(llvm::cast<clang::CallExpr>(aux));
-
 			}
 
 		}
@@ -130,13 +130,29 @@ void cBufferOverflow::SetInput(cCodePropertyGraph& cpg) {
 
 	clang::CFG& CFG = const_cast<clang::CFG&>(cpg.GetCFG());
 
-	//GetBuffer()->dump();
 
-	//cppg.GetAST().dump();
+
+//	  for (clang::CFG::const_iterator I=CFG.begin(), E=CFG.end(); I != E; ++I){
+//
+//		  const clang::CFGBlock *pred = *I;
+//
+//		  pred->op
+//
+//		  llvm::outs() <<  pred->getBlockID() << "\n";
+//
+//	      for (clang::CFGBlock::const_succ_iterator BI=pred->succ_begin(), BE=pred->succ_end();
+//	           BI != BE; ++BI) {
+//
+//	    	  const clang::CFGBlock::AdjacentBlock B = *BI;
+//
+//
+//
+//	      }
+//	  }
+//
 
 	cFindInputNodes finder(GetBuffer(), CFG);
 
-	//CFG.dump(clang::LangOptions(), false);
 	CFG.VisitBlockStmts(finder);
 
 	m_input = finder.GetInput();

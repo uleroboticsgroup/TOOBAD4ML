@@ -13,6 +13,8 @@ namespace analysis {
  *
  */
 class cMockModelBOFConsumer : public cModelBOFConsumer {
+public:
+	cMockModelBOFConsumer(clang::ASTContext*);
 
     MOCK_METHOD1(HandleTranslationUnit, void(clang::ASTContext*));
     MOCK_METHOD0(Output, bool());

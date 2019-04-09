@@ -1,6 +1,5 @@
 [requires]
 gtest/1.8.1@bincrafters/stable
-clang/6.0.1@Manu343726/testing
 
 [generators]
 cmake_find_package

@@ -20,8 +20,11 @@ public:
 
 	clang::Expr* getBuffer();
 
+	int getA();
+
 private:
 	clang::Expr* m_buffer;
+	int a = 1;
 
 };
 

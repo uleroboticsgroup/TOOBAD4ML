@@ -26,7 +26,7 @@ public:
 	 * @param
 	 * @return
 	 */
-	bool VisitDeclRefExpr(clang::Expr*);
+	bool VisitDeclRefExpr(clang::Stmt*);
 
 	/*!
 	 *
@@ -37,7 +37,7 @@ public:
 private:
 
     //!
-	clang::Expr* m_variable;
+	clang::Expr* m_buffer;
 
     //!
 	bool m_found;

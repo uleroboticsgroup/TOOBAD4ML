@@ -2,7 +2,10 @@
 #include "description/PadmanabhuniBuilder.h"
 #include "description/MockDescriptor.h"
 #include "description/SinkClassification.h"
-#include "description/InputClassification.h"
+#include "description/CommandLine.h"
+#include "description/EnvironmentVariable.h"
+#include "description/File.h"
+#include "description/Network.h"
 #include "description/InputValidationClassification.h"
 #include "description/BufferSizePredicateClassification.h"
 #include "description/SinkCharacteristicsClassification.h"
@@ -20,7 +23,10 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
     return new cSinkCharacteristicsClassification(
             new cBufferSizePredicateClassification(
                 new cInputValidationClassification(
-                    new cInputClassification(
-                        new cSinkClassification(new cMockDescriptor)))));
+                	new cNetwork(
+                		new cFile(
+                			new cEnvironmentVariable(
+                				new cCommandLine(
+                					new cSinkClassification(new cMockDescriptor))))))));
 
 }

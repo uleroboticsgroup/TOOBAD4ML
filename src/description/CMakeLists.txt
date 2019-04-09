@@ -21,7 +21,10 @@ add_library(${PROJECT_NAME}
         MockDescriptor.cpp
         DescriptorDecorator.cpp
         SinkClassification.cpp
-        InputClassification.cpp
+        CommandLine.cpp
+        EnvironmentVariable.cpp
+        File.cpp
+        Network.cpp
         InputValidationClassification.cpp
         BufferSizePredicateClassification.cpp
         SinkCharacteristicsClassification.cpp

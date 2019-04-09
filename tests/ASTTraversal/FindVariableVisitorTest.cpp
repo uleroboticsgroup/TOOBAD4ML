@@ -20,14 +20,14 @@ cFindVariableVisitorTest::cFindVariableVisitorTest() {
     clang::tooling::ClangTool Tool(
             OptionsParser.getCompilations(), testSources);
     int result = Tool.run(
-        clang::tooling::newFrontendActionFactory<cStubModelBOFAction>().get()
+        clang::tooling::newFrontendActionFactory<analysis::cStubModelBOFAction>().get()
     );
 }
 
-void cFindVariableVisitorTest::SetUp() override {
+void cFindVariableVisitorTest::SetUp(){
 }
 
-void cFindVariableVisitorTest::TearDown() override {
+void cFindVariableVisitorTest::TearDown(){
 }
 
 

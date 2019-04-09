@@ -3,6 +3,8 @@
 
 #include <analysis/ModelBOFAction.h>
 
+#include "analysis/MockModelBOFConsumer.h"
+
 namespace TOOBAD4ML {
 
 namespace analysis {
@@ -14,6 +16,8 @@ class cStubModelBOFAction :
     public cModelBOFAction {
 public:
 
+	cStubModelBOFAction();
+
     /*!
      *
      *
@@ -23,6 +27,17 @@ public:
      */
     std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
             clang::CompilerInstance&, llvm::StringRef);
+
+	analysis::cMockModelBOFConsumer* getConsumer(){
+		return m_consumer;
+	}
+
+	void setConsumer(analysis::cMockModelBOFConsumer* consumer) {
+		m_consumer = consumer;
+	}
+
+private:
+    analysis::cMockModelBOFConsumer *m_consumer;
 
 }; /* cStubModelBOFAction */
 
