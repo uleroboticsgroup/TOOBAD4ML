@@ -1,94 +1,75 @@
-#include <gtest/gtest.h>
-
+// ----------------------------------------------------------------------------
 #include "analysis/ClangTool.h"
-#include "analysis/ModelBOFAction.h"
+// ----------------------------------------------------------------------------
+#include <gtest/gtest.h>
+// ----------------------------------------------------------------------------
+
+// TODO Create a directory with tests files.
 
 
 namespace TOOBAD4ML {
 
 namespace analysis {
 
-
-// DEATH TESTS
+// FIXTURE CLASS
 // ----------------------------------------------------------------------------
 
-TEST(ClangToolDeathTest, CreateWithValidCmdLineInput) {
+class ClangToolTest
+    : public ::testing::Test {
 
-    int argc = 3;
-    const char* argv[3] = {"TOOBAD4ML", "test.c", "--"};
-
-    EXPECT_EXIT(
-            cClangTool(argc, argv),
-            ::testing::ExitedWithCode(0),
-            "Success"
-    );
-
-}
-
-TEST(ClangToolDeathTest, CreateWithInvalidCmdLineInput) {
-
-    int argc = 0;
-    const char** argv = nullptr;
-
-    ASSERT_EXIT(
-            cClangTool(argc, argv),
-            ::testing::KilledBySignal(SIGABRT),
-            ".*"
-    );
-
-}
-
-TEST(ClangToolDeathTest, CreateWithValidFixedInput) {}
-
-TEST(ClangToolDeathTest, CreateWithInvalidFixedInput) {}
-
-
-// FIXTURE TESTS
-// ----------------------------------------------------------------------------
-
-class ClangToolTest : public ::testing::Test {
 protected:
 
-    ClangToolTest() :
-        toolWithData("test.c"),
-        toolWithoutData("") {}
+    ClangToolTest()
+    : fileSource({PROGRAM_NAME, "test.c"}),
+      dirSource({PROGRAM_NAME, "."}),
+      mixedSource({PROGRAM_NAME, "test.c", "."}) {}
 
-    cClangTool toolWithData;
-    cClangTool toolWithoutData;
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
+    const std::string PROGRAM_NAME = "TOOBAD4ML";
+    std::vector<char*> fileSource;
+    std::vector<char*> dirSource;
+    std::vector<char*> mixedSources;
 
 };
 
-// As this suite includes death tests, create an alias for the fixture
-// src: https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#death-test-naming
-using ClangToolDeathTest = ClangToolTest;
+// CONSTRUCTORS TESTS
+// ----------------------------------------------------------------------------
 
+TEST_F(ClangToolTest, CreateFromCmdLineWithFileSource) {
+    // TODO
+}
+
+TEST_F(ClangToolTest, CreateWithFileSource) {
+    // TODO
+}
+
+TEST_F(ClangToolTest, CreateFromCmdLineWithDirSource) {
+    // TODO
+}
+
+TEST_F(ClangToolTest, CreateWithDirSource) {
+    // TODO
+}
+
+TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleMixedSources) {
+    // TODO
+}
+
+TEST_F(ClangToolTest, CreateWithMultipleMixedSources) {
+    //TODO
+}
+
+
+// METHODS TESTS
+// ----------------------------------------------------------------------------
 
 TEST_F(ClangToolTest, RunValidAction) {
-
-    clang::tooling::ToolAction* action =
-            clang::tooling::newFrontendActionFactory<cModelBOFAction>().get();
-    ASSERT_TRUE(action != nullptr);
-
-    EXPECT_EQ(0, toolWithData.Run(action));
-
+    // TODO
 }
-
-
-TEST_F(ClangToolTest, RunValidActionWithoutData) {
-
-    clang::tooling::ToolAction* action =
-            clang::tooling::newFrontendActionFactory<cModelBOFAction>().get();
-    ASSERT_TRUE(action != nullptr);
-
-    EXPECT_EQ(0, toolWithoutData.Run(action));
-
-}
-
 
 TEST_F(ClangToolTest, RunInvalidAction) {
-
-    EXPECT_EQ(0, toolWithData.Run(nullptr));
-
+    // TODO
 }
 
 } /* analysis */

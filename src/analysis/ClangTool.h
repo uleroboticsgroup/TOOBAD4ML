@@ -1,7 +1,9 @@
+// ----------------------------------------------------------------------------
 #ifndef TOOBAD4ML_ANALYSIS_CLANGTOOL_H
 #define TOOBAD4ML_ANALYSIS_CLANGTOOL_H
-
+// ----------------------------------------------------------------------------
 #include <clang/Tooling/Tooling.h>
+// ----------------------------------------------------------------------------
 
 
 namespace TOOBAD4ML {
@@ -9,53 +11,84 @@ namespace TOOBAD4ML {
 namespace analysis {
 
 /*!
- * Utility to run a <CODE>clang::FrontendAction</CODE> over a list of files.
+ * \class cClangTool
  *
- * This class is a wrapper for <CODE>clang::tooling::ClangTool</CODE> in order
- * to facilitate the creation of such tool either by command-line arguments or
- * by a fixed resource (file or directory).
+ * \brief
+ * A utility to run actions over a list of sources within Clang's Frontend.
+ *
+ * \details
+ * This class is a wrapper for <CODE>clang::tooling::ClangTool</CODE>. It
+ * facilitates the creation of instances of such class from a compilation
+ * database, which can be done either by parsing command-line arguments or by a
+ * fixed source (i.e. a file or a directory). A compilation database is a
+ * resource used by Clang during the compilation process and is mainly
+ * comprised of two things: a set of source files and their related compile
+ * options. Likewise, this class wraps the execution of
+ * <CODE>clang::FrontendAction</CODE>, which are actions performed by Clang's
+ * frontend.
+ *
+ * NOTE. For the time being, the class only supports actions over
+ * a list of files. Support for directories will be added in future releases.
  */
 class cClangTool {
+
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
+
 public:
 
     /*!
-     * Creates an utility to run actions over a list of files.
+     * Creates a utility to run frontend actions over a list of sources.
      *
-     * @param argc Number of command line arguments containing paths (must be
-     *             greater than 1).
-     * @param argv List of paths containing resources (either files or
-     *             directories).
+     * @param argc   Number of command-line arguments. It must be greater than
+     *               1 because the binary already counts as an argument.
+     * @param argv   List of command-line arguments, including: program's name,
+     *               list of sources and/or program's options.
      */
     cClangTool(int, const char**);
 
     /*!
-     * Creates an utility to run actions over a list of files.
+     * Creates a utility to run frontend actions over a source.
      *
-     * @param path A path containing a single resource (either a file or a
-     *             directory).
+     * @param sources   A list of sources.
      */
-    cClangTool(const llvm::Twine&);
+
+    cClangTool(const std::vector<std::string>);
 
     ~cClangTool();
 
+
+    // CLASS METHODS
+    // ------------------------------------------------------------------------
+
+public:
+
     /*!
-     * Runs an action over a list of files.
+     * Runs an action over the current list of sources.
      *
-     * @param action Tool action.
+     * @param action    Tool action.
      * @returns 0 on success; 1 if any error occurred; 2 if there is no error
      *          but some files are skipped due to missing compile commands.
      */
     int Run(clang::tooling::ToolAction*);
 
+
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
+
 private:
 
-    /// Tool to run actions.
-    clang::tooling::ClangTool* m_tool;
+    //! A compilation database.
+    std::unique_ptr<clang::tooling::CompilationDatabase> m_compilationDB;
 
-}; /* cClangTool */
+    //! Tool to run actions.
+    std::unique_ptr<clang::tooling::ClangTool> m_tool;
 
-} /* analysis */
+}; /* class cClangTool */
 
-} /* TOOBAD4ML */
+} // namespace analysis
 
-#endif /* TOOBAD4ML_ANALYSIS_CLANGTOOL_H */
+} // namespace TOOBAD4ML
+
+// ----------------------------------------------------------------------------
+#endif

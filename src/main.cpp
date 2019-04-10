@@ -1,5 +1,7 @@
+// ----------------------------------------------------------------------------
 #include "analysis/ClangTool.h"
 #include "analysis/ModelBOFAction.h"
+// ----------------------------------------------------------------------------
 
 
 int main(int argc, const char **argv) {
