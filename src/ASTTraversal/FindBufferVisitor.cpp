@@ -24,10 +24,12 @@ bool cFindBufferVisitor::VisitDeclRefExpr(clang::Expr* e) {
 
 	if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(e)) {
 		clang::QualType t = e->getType();
+
 		// if the DeclRefExpr is of type Array
 		if(t.getTypePtr()->isArrayType()) {
 			//decl->dumpColor();
 			//t->getSize().dump();
+
 			if(m_buffer == NULL){
 				m_buffer = e;
 				return false;

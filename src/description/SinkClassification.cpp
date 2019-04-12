@@ -1,6 +1,5 @@
 #include "description/SinkClassification.h"
 #include "description/BufferOverflow.h"
-
 #include "ASTTraversal/FindFunctionVisitor.h"
 
 using namespace TOOBAD4ML;
@@ -44,6 +43,7 @@ std::string cSinkClassification::ExtractFeature(
 
 		if(sinkTypes.find(fun.getFunctionName()) == sinkTypes.end()) {
 			llvm::outs() << "No function found in sink types." << "\n";
+			feature = "0";
 		} else {
 			feature = sinkTypes.find(fun.getFunctionName())->second;
 		}

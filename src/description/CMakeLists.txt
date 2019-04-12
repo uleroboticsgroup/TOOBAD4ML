@@ -27,7 +27,10 @@ add_library(${PROJECT_NAME}
         Network.cpp
         InputValidationClassification.cpp
         BufferSizePredicateClassification.cpp
-        SinkCharacteristicsClassification.cpp
+        DataBufferDeclaration.cpp
+        ArrayWriteIndexWithinBounds.cpp
+        FormatStringPrecisionWithinBounds.cpp
+        NumberOfElementsCopiedWithinBounds.cpp
         PadmanabhuniBuilder.cpp
 )
 

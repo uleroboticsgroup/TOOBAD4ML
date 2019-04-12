@@ -1,35 +1,41 @@
 
 #include "ASTTraversal/FindFunctionVisitor.h"
 
-namespace TOOBAD4ML {
+using namespace TOOBAD4ML;
+using namespace ASTTraversal;
 
-namespace ASTTraversal {
+cFindFunctionVisitor::cFindFunctionVisitor(clang::Expr *e) {};
 
+bool cFindFunctionVisitor::VisitDeclRefExpr(clang::Expr *e) {
 
-	cFindFunctionVisitor::cFindFunctionVisitor(clang::Expr *e) {};
+	if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(e)) {
+		if(clang::FunctionDecl *fun  = llvm::dyn_cast<clang::FunctionDecl>(ref->getDecl())) {
 
-	bool cFindFunctionVisitor::VisitDeclRefExpr(clang::Expr *e) {
+			m_function = fun;
 
-		if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(e)) {
-			if(clang::FunctionDecl *fun  = llvm::dyn_cast<clang::FunctionDecl>(ref->getDecl())) {
+			//llvm::outs() <<  "SINK\n";
 
-				m_function = ref;
+			//m_function->dumpColor();
 
-				if(clang::ValueDecl* var = ref->getDecl()) {
-					//llvm::outs() << var->getName() << "\n";
-					//e->dumpColor();
-					m_functionName = var->getName();
-				}
+			if(clang::ValueDecl* value = ref->getDecl()) {
+				//llvm::outs() <<  "VALUEDECL" << value->getName() << "\n";
+				//e->dumpColor();
+				m_functionName = value->getName();
+
 			}
 		}
 
-		return false;
 	}
 
-	std::string cFindFunctionVisitor::getFunctionName() {
-		return m_functionName;
-	}
 
-} /* namespace ASTTraversal */
+	return true;
+}
 
-} /* namespace TOOBAD4ML */
+
+std::string cFindFunctionVisitor::getFunctionName() {
+	return m_functionName;
+}
+
+clang::FunctionDecl* cFindFunctionVisitor::getFunctionDecl() {
+	return m_function;
+}

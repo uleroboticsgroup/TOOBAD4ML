@@ -17,9 +17,13 @@ public:
 
 	std::string getFunctionName();
 
+	clang::FunctionDecl* getFunctionDecl();
+
+	clang::Expr* getArgs();
+
 private:
 
-	clang::DeclRefExpr *m_function;
+	clang::FunctionDecl *m_function;
 
 	std::string m_functionName;
 

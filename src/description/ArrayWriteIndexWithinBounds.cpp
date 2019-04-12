@@ -1,0 +1,30 @@
+#include "description/ArrayWriteIndexWithinBounds.h"
+#include "description/BufferOverflow.h"
+
+
+// ----------------------------------------------------------------------------
+
+using namespace TOOBAD4ML;
+using namespace description;
+
+
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
+
+cArrayWriteIndexWithinBounds::cArrayWriteIndexWithinBounds(
+		IDescriptor* decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
+};
+
+// INHERITED METHODS
+// ----------------------------------------------------------------------------
+std::string cArrayWriteIndexWithinBounds::ExtractFeature(
+        cCodePropertyGraph &cpg, cBufferOverflow &bof) {
+
+	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
+
+
+
+
+	return decoratedFeature.append("0;");
+}
