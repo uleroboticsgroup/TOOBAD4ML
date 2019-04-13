@@ -1,12 +1,9 @@
 #include "analysis/ModelBOFConsumer.h"
-
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
-
 #include "description/PadmanabhuniBuilder.h"
 #include "description/CPGExplorer.h"
 #include "description/CodePropertyGraph.h"
 #include "description/BufferOverflow.h"
-
 
 using namespace TOOBAD4ML;
 using namespace analysis;

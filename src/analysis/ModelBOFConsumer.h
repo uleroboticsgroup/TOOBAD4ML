@@ -3,6 +3,7 @@
 
 #include <clang/AST/ASTConsumer.h>
 #include <llvm/ADT/StringRef.h>
+#include <vector>
 
 namespace TOOBAD4ML {
 

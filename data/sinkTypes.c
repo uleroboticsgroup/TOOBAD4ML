@@ -16,11 +16,11 @@ int main() {
 
  
   // 1. String copy
-  char str1[2];
+  char str1[10];
   char str2[6];
   strcpy(str1,"To be ");
   strcpy(str2,"or not to be");
-  strncpy(str2, str1, sizeof(str2));
+  strncpy(str2, str1, 10);
 
   // 2. String concatenation
   strcat(str1, str2);
@@ -80,7 +80,7 @@ int main() {
 /// 21,3;21,23
 
 // strncpy
-/// 23,3;23,35
+/// 23,3;23,25
 
 // strcat
 /// 26,3;26,20
