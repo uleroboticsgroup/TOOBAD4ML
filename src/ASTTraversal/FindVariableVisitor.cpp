@@ -18,8 +18,8 @@ bool cFindVariableVisitor::VisitDeclRefExpr(clang::Stmt* S) {
 
 		clang::FunctionDecl* targetFunc;
 
-		if( clang::DeclRefExpr* Ref = llvm::dyn_cast<clang::DeclRefExpr>(m_buffer) ) {
-			if(clang::VarDecl* VD = llvm::dyn_cast<clang::VarDecl>(Ref->getDecl())) {
+		if(clang::DeclRefExpr* Ref = llvm::dyn_cast_or_null<clang::DeclRefExpr>(m_buffer) ) {
+			if(clang::VarDecl* VD = llvm::dyn_cast_or_null<clang::VarDecl>(Ref->getDecl())) {
 				//llvm::outs() << "current\n";
 				currentVar = VD;
 			}

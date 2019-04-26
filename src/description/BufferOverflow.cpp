@@ -2,7 +2,6 @@
 #include "description/BufferOverflow.h"
 #include "description/CodePropertyGraph.h"
 #include "ASTTraversal/FindVariableVisitor.h"
-#include "ASTTraversal/FindBufferVisitor.h"
 /// ----------------------------------------------------------------------------
 #include <llvm/Support/Casting.h>
 // ----------------------------------------------------------------------------
@@ -30,18 +29,25 @@ public:
 
 		//m_cfg.dump(clang::LangOptions(), true);
 
-		//llvm::outs() << "OPERATOR\n";
+//		llvm::outs() << "OPERATOR\n";
+//
+//		m_buffer->dumpColor();
+//		aux->dumpColor();
+//
+//		if(m_buffer==nullptr) {
+//			llvm::outs() << "NULLL\n";
+//		}
 
 		switch (aux->getStmtClass()) {
 
 		case clang::Stmt::StmtClass::CallExprClass: {
 
-			ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
-
-			m_visitor.TraverseStmt(aux);
-
-			if (m_visitor.IsFound()) {
-				m_input.push_back(llvm::cast<clang::CallExpr>(aux));
+			//if(m_buffer!=nullptr) {
+				ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
+				m_visitor.TraverseStmt(aux);
+				if (m_visitor.IsFound()) {
+					m_input.push_back(llvm::cast<clang::CallExpr>(aux));
+				//}
 			}
 
 		}
@@ -88,14 +94,55 @@ private:
 cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 		m_sink(&sink), m_buffer(0) {
 
-	ASTTraversal::cFindBufferVisitor m_visitor(m_sink);
+	clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(m_sink);
 
-	m_visitor.TraverseStmt(m_sink);
+	llvm::outs() << "AQUI\n";
 
-	m_buffer = m_visitor.getBuffer();
+	// map {sink Type, buffer position}
+	std::map<llvm::StringRef, int> sinkTypes = {
+			{ "strcpy", 0 }, { "strncpy", 0 },
+			{ "strcat", 0 }, { "strncat", 0 },
+			{ "memcpy", 0 }, { "memmove", 0 },
+			{ "sprintf", 0 }, { "snprintf", 0 },
+			{ "gets", 0 }, { "fgets", 0 },
+			{ "scanf", 1 },{ "sscanf", 0 }, };
 
-	llvm::outs() << "ESTE ES EL BUFFER\n";
-	m_buffer->dump();
+	// get function name of sink
+	std::string nameFunction = call->getDirectCallee()->getNameAsString();
+
+	// if the sink is the above type, buffer is in the position 0
+	auto it = sinkTypes.find(nameFunction);
+	if(it == sinkTypes.end()) {
+		// ERROR not found synk type
+	} else {
+
+		int posBufferArg = it->second;
+
+		if(clang::Expr* buff = call->getArg(posBufferArg)->IgnoreCasts()) {
+
+			std::string nameExpr = buff->getStmtClassName();
+			llvm::outs() <<  nameExpr << "\n";
+
+			if(nameExpr.compare("DeclRefExpr") == 0) {
+
+				if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
+					clang::QualType t = buff->getType();
+
+					// if the DeclRefExpr is of type Array
+					if(t.getTypePtr()->isArrayType()) {
+						buff->dumpColor();
+						m_buffer = buff;
+					}
+				}
+
+			} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
+				buff->dumpColor();
+				m_buffer = buff;
+			}
+
+		}
+	}
+
 
 }
 
@@ -130,6 +177,14 @@ void cBufferOverflow::SetInput(cCodePropertyGraph& cpg) {
 
 	clang::CFG& CFG = const_cast<clang::CFG&>(cpg.GetCFG());
 
+	cFindInputNodes finder(GetBuffer(), CFG);
+
+	CFG.VisitBlockStmts(finder);
+
+//	m_input = finder.GetInput();
+
+
+
 
 
 //	  for (clang::CFG::const_iterator I=CFG.begin(), E=CFG.end(); I != E; ++I){
@@ -150,11 +205,5 @@ void cBufferOverflow::SetInput(cCodePropertyGraph& cpg) {
 //	      }
 //	  }
 //
-
-	cFindInputNodes finder(GetBuffer(), CFG);
-
-	CFG.VisitBlockStmts(finder);
-
-	m_input = finder.GetInput();
 
 }
