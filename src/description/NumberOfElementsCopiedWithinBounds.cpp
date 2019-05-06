@@ -89,7 +89,7 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 					llvm::outs() << "INTEGER LITERAL" << "\n";
 
 					clang::IntegerLiteral* intLiteral = llvm::dyn_cast<clang::IntegerLiteral>(s);
-
+					//TODO repasar esto
 					// if source is greater limit adding '\0'
 					if(source > limit){
 						limit = intLiteral->getValue().getLimitedValue() + 1;

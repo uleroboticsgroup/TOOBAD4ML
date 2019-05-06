@@ -23,8 +23,28 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
 
+	std::vector<llvm::StringRef> sinkTypes = {"strcpy", "strncpy", "sprintf", "snprintf"};
+
+	std::string feature = "-1";
 
 
+	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
 
-	return decoratedFeature.append("0;");
+		clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
+
+
+		if (std::find(sinkTypes.begin(), sinkTypes.end(), call->getDirectCallee()->getName()) != sinkTypes.end())
+		{
+
+			llvm::outs() << call->getDirectCallee()->getName();
+
+		}
+
+	} else {
+
+		feature = "-1";
+	}
+
+
+	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

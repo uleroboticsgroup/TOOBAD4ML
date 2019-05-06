@@ -8,9 +8,14 @@ int main () {
 	strcpy(str1,"To be ");
 
 	// 3. Array write index within bounds. 
-	char array[4] = {'A', 'B', 'C',  '\0'};
-	array[5] = 'A';
+	char array[4] = {'A', 'B', 'C', '\0'};
+	array[3] = 'A'; /*BAD*/
 	printf("%s\n", array);
+
+	// 4. Format String Precision Within Bounds
+	char *str = "QWERYUIOPASDFGHJKLNZXCVBNMQWEQWE";
+	char buf[32];
+	sprintf(buf, "<%.32s>", str); /*BAD*/
 
 }
 
@@ -21,4 +26,7 @@ int main () {
 
 
 // 3. Array write index within bounds.
-/// 11,2;11,13
+/// 12,2;12,13
+
+// 4. Format String Precision Within Bounds
+/// 18,2;18,29
