@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "ASTTraversal/FindBufferVisitor.h"
 #include "analysis/MockModelBOFConsumer.h"
 
 #ifndef TESTS_ASTTRAVERSAL_FINDBUFFERVISITORTEST_H_
@@ -17,8 +16,6 @@ protected:
 	void SetUp() override;
 
 	void TearDown() override;
-
-	cFindBufferVisitor m_findBuffer;
 
 public:
 	analysis::cMockModelBOFConsumer m_consumer;

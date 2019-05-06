@@ -94,55 +94,103 @@ private:
 cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 		m_sink(&sink), m_buffer(0) {
 
-	clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(m_sink);
+	// get type of stmt class
+	switch (sink.getStmtClass()) {
 
-	llvm::outs() << "AQUI\n";
+		case clang::Stmt::StmtClass::CallExprClass: {
 
-	// map {sink Type, buffer position}
-	std::map<llvm::StringRef, int> sinkTypes = {
-			{ "strcpy", 0 }, { "strncpy", 0 },
-			{ "strcat", 0 }, { "strncat", 0 },
-			{ "memcpy", 0 }, { "memmove", 0 },
-			{ "sprintf", 0 }, { "snprintf", 0 },
-			{ "gets", 0 }, { "fgets", 0 },
-			{ "scanf", 1 },{ "sscanf", 0 }, };
+			clang::CallExpr* call = llvm::dyn_cast_or_null<clang::CallExpr>(m_sink);
 
-	// get function name of sink
-	std::string nameFunction = call->getDirectCallee()->getNameAsString();
+			llvm::outs() << "AQUI\n";
 
-	// if the sink is the above type, buffer is in the position 0
-	auto it = sinkTypes.find(nameFunction);
-	if(it == sinkTypes.end()) {
-		// ERROR not found synk type
-	} else {
+			// map {sink Type, buffer position}
+			std::map<llvm::StringRef, int> sinkTypes = {
+					{ "strcpy", 0 }, { "strncpy", 0 },
+					{ "strcat", 0 }, { "strncat", 0 },
+					{ "memcpy", 0 }, { "memmove", 0 },
+					{ "sprintf", 0 }, { "snprintf", 0 },
+					{ "gets", 0 }, { "fgets", 0 },
+					{ "scanf", 1 },{ "sscanf", 0 }, };
 
-		int posBufferArg = it->second;
+			// get function name of sink
+			std::string nameFunction;
+			if(call==nullptr) {
+				// error
+			} else {
 
-		if(clang::Expr* buff = call->getArg(posBufferArg)->IgnoreCasts()) {
+				nameFunction = call->getDirectCallee()->getNameAsString();
 
-			std::string nameExpr = buff->getStmtClassName();
-			llvm::outs() <<  nameExpr << "\n";
+				// if the sink is the above type
+				auto it = sinkTypes.find(nameFunction);
+				if(it == sinkTypes.end()) {
+					// ERROR not found synk type
+				} else {
 
-			if(nameExpr.compare("DeclRefExpr") == 0) {
+					int posBufferArg = it->second;
 
-				if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
-					clang::QualType t = buff->getType();
+					if(clang::Expr* buff = call->getArg(posBufferArg)->IgnoreCasts()) {
 
-					// if the DeclRefExpr is of type Array
-					if(t.getTypePtr()->isArrayType()) {
-						buff->dumpColor();
-						m_buffer = buff;
+						std::string nameExpr = buff->getStmtClassName();
+
+						if(nameExpr.compare("DeclRefExpr") == 0) {
+
+							if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
+								clang::QualType t = buff->getType();
+
+								// if the DeclRefExpr is of type Array
+								if(t.getTypePtr()->isArrayType()) {
+									buff->dumpColor();
+									m_buffer = buff;
+								}
+							}
+
+						} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
+							buff->dumpColor();
+							m_buffer = buff;
+						}
+
 					}
 				}
-
-			} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
-				buff->dumpColor();
-				m_buffer = buff;
 			}
 
 		}
-	}
 
+		break;
+
+		case clang::Stmt::StmtClass::BinaryOperatorClass: {
+
+			if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(m_sink)) {
+
+				if(binaryOperator->getLHS()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass) {
+
+					if(clang::ArraySubscriptExpr* arrayExpr =  llvm::dyn_cast<clang::ArraySubscriptExpr>(binaryOperator->getLHS())) {
+
+						if(clang::Expr* buff = arrayExpr->getLHS()->IgnoreCasts()) {
+
+							std::string nameExpr = buff->getStmtClassName();
+
+							if(nameExpr.compare("DeclRefExpr") == 0) {
+
+								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
+									clang::QualType t = buff->getType();
+
+									// if the DeclRefExpr is of type Array
+									if(t.getTypePtr()->isArrayType()) {
+										buff->dumpColor();
+										m_buffer = buff;
+									}
+								}
+
+							}
+						}
+					}
+
+				}
+			}
+
+		}
+
+	}
 
 }
 

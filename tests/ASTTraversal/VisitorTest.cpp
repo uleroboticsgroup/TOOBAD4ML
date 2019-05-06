@@ -11,7 +11,7 @@ namespace TOOBAD4ML {
 
 namespace ASTTraversal {
 
-cVisitorTest::cVisitorTest(): m_findBuffer(nullptr) , m_consumer(nullptr) {
+cVisitorTest::cVisitorTest(): m_consumer(nullptr) {
 
 	analysis::cClangTool toolWithData("../data/sinkTypes.c");
 

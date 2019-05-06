@@ -72,7 +72,8 @@ int main() {
   printf("%s %d, %d = %s\n", month, day, year, weekday );
 
   // 7. Array element writes
-  char name[5] = "AAAAA";
+  char name[5] = "AAAA";
+  name[5] = "A";
 
 /// ###BEGIN_VULNERABLE_LINES###
 
@@ -113,7 +114,7 @@ int main() {
 /// 71,3;71,60
 
 // Array writes
-/// 75,3;75,25
+/// 76,3;76,13
 
 }
 

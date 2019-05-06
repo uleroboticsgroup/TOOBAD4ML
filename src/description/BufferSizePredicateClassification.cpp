@@ -23,6 +23,6 @@ std::string cBufferSizePredicateClassification::ExtractFeature(
 	std::string decoratedFeature =
         cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	return decoratedFeature.append("bufferSizePredicateClass");
+	return decoratedFeature.append("bufferSizePredicateClass;");
 
 }
