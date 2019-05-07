@@ -30,6 +30,13 @@ public:
 	 */
 	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
+	/*!
+	 *
+	 * @param
+	 * @return
+	 */
+	int FormatStringParser(llvm::StringRef, std::string);
+
 }; /*cFormatStringPrecisionWithinBounds*/
 
 } /* description */

@@ -20,13 +20,14 @@ int main () {
 	char buffer[7]; 
     char* s = "geeksforgeeks";  
     snprintf(buffer, 6, "%s\n", s); 
-    printf("string:\n%s", buffer); 
+    printf("string:\n%s\n", buffer); 
 
-    char str1[20];
+    char str2[5];
    	printf("Enter name: ");
-   	scanf("%s", str1);
+   	scanf("%3s", str2);
+   	printf("Entered Name: %s\n", str2);
 
-   	
+
 
 }
 
@@ -42,3 +43,5 @@ int main () {
 /// 18,2;18,29
 
 /// 22,5;22,34
+
+/// 27,5;27,22

@@ -31,6 +31,9 @@ public:
 	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 
+	int StringLiteralParser(llvm::StringRef);
+
+
 
 }; /*cNumberOfElementsCopiedWithinBounds*/
 

@@ -12,8 +12,50 @@ using namespace description;
 cFormatStringPrecisionWithinBounds::cFormatStringPrecisionWithinBounds(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
+};
+
+int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef formatString, std::string function) {
+
+		int limit = 0;
+
+
+		if(function.compare("scanf") == 0) {
+
+			// [=%[*][width][modifiers]type=]
+
+			std::string number = "";
+
+			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
+
+				if((*it)=='%') {
+					llvm::outs() << "%";
+					it++;
+				}
+
+				if((*it)=='*'){
+					llvm::outs() << "*";
+					it++;
+				}
+
+				if(isdigit((*it))) {
+					llvm::outs() << (*it);
+					number.push_back((*it));
+				}
+
+				if((*it) == 's') {
+					break;
+				}
+			}
+
+			llvm::outs() <<  number;
+
+		}
+
+
+
+
+	return limit;
 }
-;
 
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
@@ -23,7 +65,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg,
 			bof);
 
-	std::vector<llvm::StringRef> sinkTypes = { "strcpy", "strncpy", "sprintf",
+	std::vector<llvm::StringRef> sinkTypes = { "scanf", "sscanf", "sprintf",
 			"snprintf" };
 
 	std::string feature = "-1";
@@ -127,6 +169,32 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 					}
 				}
+
+
+			} else if (call->getDirectCallee()->getName() == "scanf") {
+
+
+				if (clang::Expr* s = call->getArg(0)->IgnoreCasts()) {
+
+					std::string name = s->getStmtClassName();
+
+					if (name.compare("StringLiteral") == 0) {
+
+						clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
+
+						llvm::StringRef formatString =
+								strLiteral->getString();
+
+						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf");
+
+
+
+					}
+				}
+
+
+
+			} else if (call->getDirectCallee()->getName() == "sscanf") {
 
 
 			}
