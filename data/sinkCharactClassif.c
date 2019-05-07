@@ -17,6 +17,17 @@ int main () {
 	char buf[32];
 	sprintf(buf, "<%.32s>", str); /*BAD*/
 
+	char buffer[7]; 
+    char* s = "geeksforgeeks";  
+    snprintf(buffer, 6, "%s\n", s); 
+    printf("string:\n%s", buffer); 
+
+    char str1[20];
+   	printf("Enter name: ");
+   	scanf("%s", str1);
+
+   	
+
 }
 
 /// ###BEGIN_VULNERABLE_LINES###
@@ -24,9 +35,10 @@ int main () {
 // 2. Number of elements Copied within bounds
 /// 8,2;8,22
 
-
 // 3. Array write index within bounds.
 /// 12,2;12,13
 
 // 4. Format String Precision Within Bounds
 /// 18,2;18,29
+
+/// 22,5;22,34
