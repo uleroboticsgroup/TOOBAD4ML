@@ -18,6 +18,8 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 		int limit = 0;
 
+		std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g'};
+
 
 		if(function.compare("scanf") == 0) {
 
@@ -28,26 +30,23 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
 				if((*it)=='%') {
-					llvm::outs() << "%";
 					it++;
 				}
 
 				if((*it)=='*'){
-					llvm::outs() << "*";
 					it++;
 				}
 
 				if(isdigit((*it))) {
-					llvm::outs() << (*it);
 					number.push_back((*it));
 				}
 
-				if((*it) == 's') {
+				if(std::find(modifiers.begin(), modifiers.end(), (*it)) != modifiers.end()) {
 					break;
 				}
 			}
 
-			llvm::outs() <<  number;
+			limit = std::stoi(number);
 
 		}
 
@@ -187,14 +186,28 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf");
 
+						if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
 
+						uint64_t destinationSize = t->getSize().getLimitedValue();
+
+						if (limit < destinationSize) { // null terminator included
+							feature = "1";
+						} else {
+							feature = "0";
+						}
+					}
 
 					}
 				}
 
 
 
-			} else if (call->getDirectCallee()->getName() == "sscanf") {
+			}
+			//TODO
+			else if (call->getDirectCallee()->getName() == "sscanf") {
+
+
+
 
 
 			}

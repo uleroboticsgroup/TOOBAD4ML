@@ -22,9 +22,9 @@ int main () {
     snprintf(buffer, 6, "%s\n", s); 
     printf("string:\n%s\n", buffer); 
 
-    char str2[5];
+    char str2[4];
    	printf("Enter name: ");
-   	scanf("%3s", str2);
+   	scanf("%5s", str2); /*BAD*/
    	printf("Entered Name: %s\n", str2);
 
 
