@@ -4,8 +4,10 @@
 int main () {
 
 	// 2. Number of elements Copied within bounds
-	char str1[10]; 
-	strcpy(str1,"To be ");
+	char str3[] = "To be or not to be";
+  	char str4[4];
+  	strncpy(str4, str3, 4); /*BAD*/ // null terminator
+  	puts(str4);
 
 	// 3. Array write index within bounds. 
 	char array[4] = {'A', 'B', 'C', '\0'};
@@ -27,21 +29,26 @@ int main () {
    	scanf("%5s", str2); /*BAD*/
    	printf("Entered Name: %s\n", str2);
 
-
+   	// 5. Srting Copy within bounds
+   	char str1[4]; 
+	strcpy(str1,"To be "); /*BAD*/
 
 }
 
 /// ###BEGIN_VULNERABLE_LINES###
 
 // 2. Number of elements Copied within bounds
-/// 8,2;8,22
+/// 9,4;9,25
 
 // 3. Array write index within bounds.
-/// 12,2;12,13
+/// 14,2;14,13
 
 // 4. Format String Precision Within Bounds
-/// 18,2;18,29
+/// 20,2;20,29
 
-/// 22,5;22,34
+/// 24,5;24,34
 
-/// 27,5;27,22
+/// 29,5;29,22
+
+// 5. Srting Copy within bounds
+/// 34,2;34,22

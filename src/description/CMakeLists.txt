@@ -31,6 +31,7 @@ add_library(${PROJECT_NAME}
         ArrayWriteIndexWithinBounds.cpp
         FormatStringPrecisionWithinBounds.cpp
         NumberOfElementsCopiedWithinBounds.cpp
+        StringCopyWithinBounds.cpp
         PadmanabhuniBuilder.cpp
 )
 

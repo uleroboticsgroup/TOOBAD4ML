@@ -23,103 +23,59 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	std::vector<llvm::StringRef> sinkTypes = {"strcpy", "strncpy"};
+	std::vector<llvm::StringRef> sinkTypes = {"strncpy"};
 
-	ASTTraversal::cFindFunctionVisitor fun(bof.GetSink());
-			fun.TraverseStmt(bof.GetSink());
-
-	std::string feature = "";
-	unsigned source = 0;
-	unsigned destination = 0;
+	std::string feature = "-1";
 	unsigned limit = 0;
+	unsigned destination = 0;
 
-	if (std::find(sinkTypes.begin(), sinkTypes.end(), fun.getFunctionName()) != sinkTypes.end())
-	{
-		clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
+	if (bof.GetSink()->getStmtClass()
+			== clang::Stmt::StmtClass::CallExprClass) {
 
-		// get size of destination buffer
-		if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
-			destination = t->getSize().getLimitedValue();
-		}
+		if(clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink())){
 
-		if(fun.getFunctionName() == "strcpy") {
+			if (std::find(sinkTypes.begin(), sinkTypes.end(),
+					call->getDirectCallee()->getName()) != sinkTypes.end()) {
 
-			// get size of source
-			if(clang::Expr* s = call->getArg(1)->IgnoreCasts()) {
-				//uint64_t size;
-				//s->tryEvaluateObjectSize(size, cpg.GetAST().getASTContext(), clang::Type::VariableArray);
-
-				std::string name = s->getStmtClassName();
-
-				//TODO when the source is -DeclRefExpr array
-				if(name.compare("StringLiteral") == 0) {
-
-					llvm::outs() << "StringLiteralStringLiteralStringLiteralStringLiteral" << "\n";
-
-					clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
-
-					source = strLiteral->getLength() + 1;
-
-					llvm::outs() <<  source << "\n";
-
-				} else { // when cannot be evaluated
-					feature = "2";
+				// get size of destination buffer
+				if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+					destination = t->getSize().getLimitedValue();
 				}
-			}
 
-		} else if(fun.getFunctionName() == "strncpy") {
+				if(call->getDirectCallee()->getName() == "strncpy") {
 
-			// strncpy(destination, source, limit)
+					// strncpy(destination, source, limit)
+					if(call->getNumArgs() == 3){
 
-			// get size of source buffer
-			if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(call->getArg(1)->IgnoreCasts()->getType().getTypePtr())) {
-				source = t->getSize().getLimitedValue();
-			}
+						// get limit to be copied
+						if(clang::Expr* s = call->getArg(2)->IgnoreCasts()) {
 
-			// get limit to be copied
-			if(clang::Expr* s = call->getArg(2)->IgnoreCasts()) {
-				//uint64_t size;
-				//s->tryEvaluateObjectSize(size, cpg.GetAST().getASTContext(), clang::Type::VariableArray);
+							std::string name = s->getStmtClassName();
 
-				std::string name = s->getStmtClassName();
+							if(name.compare("IntegerLiteral") == 0) {
 
-				//TODO when the source is -DeclRefExpr array
-				if(name.compare("IntegerLiteral") == 0) {
+								llvm::outs() << "INTEGER LITERAL" << "\n";
 
-					llvm::outs() << "INTEGER LITERAL" << "\n";
+								clang::IntegerLiteral* intLiteral = llvm::dyn_cast<clang::IntegerLiteral>(s);
 
-					clang::IntegerLiteral* intLiteral = llvm::dyn_cast<clang::IntegerLiteral>(s);
-					//TODO repasar esto
-					// if source is greater limit adding '\0'
-					if(source > limit){
-						limit = intLiteral->getValue().getLimitedValue() + 1;
-					}
-					else { // need add '\0' manually
-						limit = intLiteral->getValue().getLimitedValue() + 1;
+								limit = intLiteral->getValue().getLimitedValue();
+
+								feature = (limit < destination ? "1" : "0");
+
+							} else { // when cannot be evaluated
+								feature = "2";
+							}
+						}
 					}
 
-					llvm::outs() <<  limit << "\n";
-
-				} else { // when cannot be evaluated
-					feature = "2";
 				}
-			}
-		}
 
-		if(feature.empty()){
-			// if the number of elements to be copied is no greater than destination
-			if(source<=destination) {
-				feature = "1";
-			} else if(source>destination) {
-				feature = "0";
 			}
 		}
 
 	} else { // if sink is not type of sinkTypes
 		feature = "-1";
 	}
-
-	llvm::outs() << "FEATURE NUMBER OF ELEMENT COPIED" << feature << "\n";
 
 	return decoratedFeature.append(feature.append(cDescriptorDecorator::FEATURE_SEPARATOR));
 
