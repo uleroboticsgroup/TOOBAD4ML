@@ -60,9 +60,7 @@ std::string cStringCopyWithinBounds::ExtractFeature(
 
 									source = strLiteral->getLength();
 
-									llvm::outs() <<  source << "\n";
-
-									feature = (source < destination ? "1" : "0");
+									feature = ((source != 0 && source < destination) ? "1" : "0");
 
 
 								} else { // when cannot be evaluated

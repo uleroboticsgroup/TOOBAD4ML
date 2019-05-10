@@ -21,6 +21,15 @@ std::vector<BOFLocation> extractComments(clang::ASTContext& context) {
 	const llvm::StringRef LINECOL_SEPARATOR = ",";
 	clang::FileID mainFID = context.getSourceManager().getMainFileID();
 
+	bool find = false;
+	for (llvm::ArrayRef<clang::RawComment*>::iterator it = comments.begin(); it != comments.end(); it++ ) {
+		if(strcmp((*it)->getBriefText(context), COMMENT_DELIMITER) == 0) {
+			find = true;
+		}
+	}
+
+	if(!find) {llvm::outs() << "Comment "<< COMMENT_DELIMITER << " not found in code file.\n" ; exit(1);};
+
 	// Reverse iteration through the comments until COMMENT_DELIMETER
 	for (llvm::ArrayRef<clang::RawComment*>::iterator it = (comments.end() - 1);
 			!comments.empty()
@@ -57,6 +66,7 @@ std::vector<BOFLocation> extractComments(clang::ASTContext& context) {
 	}
 
 	return vulnerableLines;
+
 
 }
 

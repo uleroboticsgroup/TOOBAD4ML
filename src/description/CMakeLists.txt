@@ -32,6 +32,10 @@ add_library(${PROJECT_NAME}
         FormatStringPrecisionWithinBounds.cpp
         NumberOfElementsCopiedWithinBounds.cpp
         StringCopyWithinBounds.cpp
+        DataDependentOnDestinationBufferSize.cpp
+        DataDependentOnDestinationBufferSizeVariant.cpp
+        IsCharacterCaseConversionSink.cpp
+        ResetsInControlPredicates.cpp
         PadmanabhuniBuilder.cpp
 )
 

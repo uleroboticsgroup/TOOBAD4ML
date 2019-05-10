@@ -92,7 +92,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 
 				} break;
 
-				default: feature = -1;
+				default: feature = "-1";
 			}
 
 		} else {

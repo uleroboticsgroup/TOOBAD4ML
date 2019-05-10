@@ -14,14 +14,14 @@ int main(int argc, const char **argv) {
 //                            TOOBAD4ML::analysis::cModelBOFAction>().get()
 //    );
 
-	clang::tooling::CommonOptionsParser OptionsParser(argc, argv,  MyToolCategory);
+	clang::tooling::CommonOptionsParser OptionsParser(argc, argv,
+			MyToolCategory);
 
-		clang::tooling::ClangTool Tool(OptionsParser.getCompilations(),
-				OptionsParser.getSourcePathList());
+	clang::tooling::ClangTool Tool(OptionsParser.getCompilations(),
+			OptionsParser.getSourcePathList());
 
-		int result =
-				Tool.run(
-						clang::tooling::newFrontendActionFactory<
-								TOOBAD4ML::analysis::cModelBOFAction>().get());
+	int result = Tool.run(
+			clang::tooling::newFrontendActionFactory<
+					TOOBAD4ML::analysis::cModelBOFAction>().get());
 
 }

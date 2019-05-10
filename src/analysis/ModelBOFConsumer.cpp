@@ -41,9 +41,13 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
         description::cCodePropertyGraph cpg(*(iterFunction->first));
 
 		// use the CPG to extract the vulnerabilities
+        int count = 0;
 		for (std::vector<clang::Expr*>::iterator iterBOF =
 				iterFunction->second.begin();
 				iterBOF != iterFunction->second.end(); iterBOF++) {
+
+			count = count +1;
+			llvm::outs() << "SINK N " << count << " .\n";
 
 			//TODO: Documentation from here: Documenting BUFFEROVERFLOW class
 			// and its implementation is yet undone.

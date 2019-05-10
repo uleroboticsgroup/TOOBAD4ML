@@ -1,6 +1,5 @@
 #include "description/NumberOfElementsCopiedWithinBounds.h"
 #include "description/BufferOverflow.h"
-#include "ASTTraversal/FindFunctionVisitor.h"
 #include "description/CodePropertyGraph.h"
 // ----------------------------------------------------------------------------
 
@@ -54,17 +53,32 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 
 							if(name.compare("IntegerLiteral") == 0) {
 
-								llvm::outs() << "INTEGER LITERAL" << "\n";
-
 								clang::IntegerLiteral* intLiteral = llvm::dyn_cast<clang::IntegerLiteral>(s);
 
 								limit = intLiteral->getValue().getLimitedValue();
 
-								feature = (limit < destination ? "1" : "0");
+								feature = ((limit != 0 && limit < destination) ? "1" : "0");
+
+							} else if(name.compare("UnaryExprOrTypeTraitExpr") == 0) { // strncpy(str4, str3, sizeof(str4))
+
+								clang::UnaryExprOrTypeTraitExpr* u = llvm::dyn_cast<clang::UnaryExprOrTypeTraitExpr>(s);
+
+								if(clang::DeclRefExpr* declExpr = llvm::dyn_cast<clang::DeclRefExpr>(u->getArgumentExpr()->IgnoreParenCasts())) {
+
+									if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(declExpr->getType().getTypePtr())) {
+
+											limit = t->getSize().getLimitedValue();
+
+											feature = ((limit != 0 && limit < destination) ? "1" : "0");
+									}
+
+								}
+
 
 							} else { // when cannot be evaluated
 								feature = "2";
 							}
+
 						}
 					}
 

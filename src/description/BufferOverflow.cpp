@@ -40,7 +40,7 @@ public:
 
 		switch (aux->getStmtClass()) {
 
-		case clang::Stmt::StmtClass::CallExprClass: {
+			case clang::Stmt::StmtClass::CallExprClass: {
 
 			//if(m_buffer!=nullptr) {
 				ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
@@ -48,29 +48,29 @@ public:
 				if (m_visitor.IsFound()) {
 					m_input.push_back(llvm::cast<clang::CallExpr>(aux));
 				//}
+				}
+
 			}
 
-		}
-
 			break;
 
-		case clang::Stmt::StmtClass::BinaryOperatorClass: { /*
-		 if(inputClassificationtypes.find(llvm::cast<clang::CallExpr>(aux)->getDirectCallee()->getNameAsString()) != inputClassificationtypes.end()){
-		 ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
-		 m_visitor.TraverseStmt(const_cast<clang::Stmt*>(aux));
+			case clang::Stmt::StmtClass::BinaryOperatorClass: { /*
+			 if(inputClassificationtypes.find(llvm::cast<clang::CallExpr>(aux)->getDirectCallee()->getNameAsString()) != inputClassificationtypes.end()){
+			 ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
+			 m_visitor.TraverseStmt(const_cast<clang::Stmt*>(aux));
 
-		 if (m_visitor.isFound()) {
-		 //TODO Get right handed side of binaryoperator
-		 //m_input.push_back(llvm::cast<clang::CallExpr>(aux));
-		 }
-		 }*/
-		}
+			 if (m_visitor.isFound()) {
+			 //TODO Get right handed side of binaryoperator
+			 //m_input.push_back(llvm::cast<clang::CallExpr>(aux));
+			 }
+			 }*/
+			}
 
-			break;
-		default: {
+				break;
+			default: {
 
-		}
-			break;
+			}
+				break;
 		}
 
 	}
@@ -100,8 +100,6 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 		case clang::Stmt::StmtClass::CallExprClass: {
 
 			clang::CallExpr* call = llvm::dyn_cast_or_null<clang::CallExpr>(m_sink);
-
-			llvm::outs() << "AQUI\n";
 
 			// map {sink Type, buffer position}
 			std::map<llvm::StringRef, int> sinkTypes = {

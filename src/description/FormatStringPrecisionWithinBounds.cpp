@@ -18,12 +18,12 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 		int limit = 0;
 
-		std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g'};
-
 
 		if(function.compare("scanf") == 0) {
 
 			// [=%[*][width][modifiers]type=]
+
+			std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g'};
 
 			std::string number = "";
 
@@ -50,8 +50,35 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 		}
 
+		if(function.compare("sprintf") == 0) {
 
+			// %[flags][width][.precision][length]specifier
 
+			std::string number = "";
+
+			int contChars = 0;
+
+			char *formatChar = (char*)formatString.str().c_str();
+
+			char *split = strtok(formatChar, "%");
+
+			 while (split != NULL) {
+
+			        if(!isdigit(*split)) {
+			        	contChars++;
+			        }
+
+			        if(isdigit(*split)) {
+			        	number.append(split);
+			        	limit = limit + std::stoi(number);
+			        	number = "";
+			        }
+			        split = strtok (NULL, ".s");
+			 }
+
+			 limit = limit + contChars;
+
+		}
 
 	return limit;
 }
@@ -64,8 +91,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg,
 			bof);
 
-	std::vector<llvm::StringRef> sinkTypes = { "scanf", "sscanf", "sprintf",
-			"snprintf" };
+	std::vector<llvm::StringRef> sinkTypes = { "scanf", "sscanf", "sprintf", "snprintf" };
 
 	std::string feature = "-1";
 
@@ -95,47 +121,21 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 						if (name.compare("StringLiteral") == 0) {
 
-							clang::StringLiteral* strLiteral = llvm::dyn_cast<
-									clang::StringLiteral>(s);
+							clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
 
-							llvm::StringRef formatString =
-									strLiteral->getString();
+							llvm::StringRef formatString = 	strLiteral->getString();
 
-							unsigned ret;
-							unsigned size = destinationSize;
-							std::string ss;
+							int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "sprintf");
 
-							for (int i = 0; i < destinationSize; i++) {
-								ss.append("A");
-							}
+							if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
 
-							//	llvm::outs() << ss << "\n";
+								uint64_t destinationSize = t->getSize().getLimitedValue();
 
-							char *buffer = (char*) std::calloc(size + 1,
-									sizeof(char));
-
-							if (buffer == NULL) {
-								/* Error al intentar reservar memoria */
-							} else {
-
-								if (call->getNumArgs() == 3) {
-
-									ret = std::sprintf(buffer,
-											formatString.str().c_str(),
-											ss.c_str());
-
-									//llvm::outs() << ret << "\n";
-									//llvm::outs() << buffer << "\n";
-
-									if (ret < size) { // null terminator included
-										feature = "1";
-									} else {
-										feature = "0";
-									}
+								if (limit != 0 && limit < destinationSize) { // null terminator included
+									feature = "1";
+								} else {
+									feature = "0";
 								}
-
-								free(buffer);
-
 							}
 
 						}
@@ -190,7 +190,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 						uint64_t destinationSize = t->getSize().getLimitedValue();
 
-						if (limit < destinationSize) { // null terminator included
+						if (limit != 0 && limit < destinationSize) { // null terminator included
 							feature = "1";
 						} else {
 							feature = "0";
