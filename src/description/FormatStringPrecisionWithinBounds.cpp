@@ -14,10 +14,7 @@ cFormatStringPrecisionWithinBounds::cFormatStringPrecisionWithinBounds(
 		cDescriptorDecorator(decoratedComponent) {
 };
 
-int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef formatString, std::string function) {
-
-		int limit = 0;
-
+int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef formatString, std::string function, clang::Expr* sink) {
 
 		if(function.compare("scanf") == 0) {
 
@@ -26,6 +23,8 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 			std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g'};
 
 			std::string number = "";
+
+			int limit = 0;
 
 			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
@@ -48,6 +47,8 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 			limit = std::stoi(number);
 
+			return limit;
+
 		}
 
 		if(function.compare("sprintf") == 0) {
@@ -55,32 +56,125 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 			// %[flags][width][.precision][length]specifier
 
 			std::string number = "";
-
 			int contChars = 0;
+			int limit = 0;
+			int width = 0;
+			int precision = 0;
+			int countArg = 0;
 
-			char *formatChar = (char*)formatString.str().c_str();
+			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
-			char *split = strtok(formatChar, "%");
+				if((*it) != '%') {
+					contChars++;
+				} else {
+					it++;
+					while((*it) != 's' && (*it) != 'd' && it != formatString.end()) { // %...specifier
+						if(isdigit(*it)) {
+							number.push_back((*it));
+						}
+						else if((*it) == '.') {
+							if(number.length() != 0)
+							{
+								width = std::stoi(number);
+								number = "";
+							}
+						}
+						if(it != formatString.end())
+							it++;
+					}
 
-			 while (split != NULL) {
+					if(number.length() != 0)
+					{
+						precision = std::stoi(number);
+						number = "";
+					}
 
-			        if(!isdigit(*split)) {
-			        	contChars++;
-			        }
+					limit = limit + width + precision;
 
-			        if(isdigit(*split)) {
-			        	number.append(split);
-			        	limit = limit + std::stoi(number);
-			        	number = "";
-			        }
-			        split = strtok (NULL, ".s");
+					if((*it) == 's' || (*it) == 'd') {
+						countArg++;
+						width = 0;
+						precision = 0;
+					}
+
+				}
+
 			 }
 
-			 limit = limit + contChars;
+			bool err = false;
 
-		}
+			if (sink->getStmtClass()
+					== clang::Stmt::StmtClass::CallExprClass) {
 
-	return limit;
+				clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(sink);
+
+				for(int i = 0; i<countArg; i++) {
+					if(call->getNumArgs() >= (2 + countArg)){
+						if (clang::Expr* s = call->getArg(2 + i)->IgnoreCasts()) {
+							std::string name = s->getStmtClassName();
+							if (name.compare("DeclRefExpr") == 0) {
+								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(s)) {
+									if(clang::VarDecl* VD = llvm::dyn_cast_or_null<clang::VarDecl>(ref->getDecl())) {
+										if(VD->hasInit()){
+
+											if(clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(VD->getInit())) {
+												int num = intLiteral->getValue().getLimitedValue();
+												std::string n = std::to_string(num);
+												int len = n.length();
+												limit += len;
+											}
+											else if(clang::StringLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::StringLiteral>(VD->getInit())) {
+												clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
+												if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(s->getType().getTypePtr())) {
+													int destinationSize = t->getSize().getLimitedValue();
+													limit += destinationSize;
+												}
+											}
+											else {
+												err = true;
+												break;
+											}
+										}
+									}
+								}
+
+							} else if (name.compare("StringLiteral") == 0) {
+
+								clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
+
+								if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(s->getType().getTypePtr())) {
+
+									int destinationSize = t->getSize().getLimitedValue();
+									limit += destinationSize;
+								}
+								else {
+									err = true;
+									break;
+								}
+							} else  if (name.compare("IntegerLiteral") == 0) {
+								if(clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(s)) {
+									int num = intLiteral->getValue().getLimitedValue();
+									std::string n = std::to_string(num);
+									int len = n.length();
+									limit += len;
+								}
+								else {
+									err = true;
+									break;
+								}
+
+							}
+						}
+					}
+				}
+
+			}
+
+			return 	( err ? (-1) : (limit + contChars));
+
+			}
+
+	return 0;
 }
 
 // INHERITED METHODS
@@ -125,19 +219,22 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 							llvm::StringRef formatString = 	strLiteral->getString();
 
-							int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "sprintf");
+							int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "sprintf", bof.GetSink());
 
-							if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+							if(limit != -1) {
+								if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
 
-								uint64_t destinationSize = t->getSize().getLimitedValue();
+									uint64_t destinationSize = t->getSize().getLimitedValue();
 
-								if (limit != 0 && limit < destinationSize) { // null terminator included
-									feature = "1";
-								} else {
-									feature = "0";
+									if (limit != 0 && limit < destinationSize) { // null terminator included
+										feature = "1";
+									} else {
+										feature = "0";
+									}
 								}
+							} else {
+								feature = "-1";
 							}
-
 						}
 					}
 				}
@@ -184,16 +281,20 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 						llvm::StringRef formatString =
 								strLiteral->getString();
 
-						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf");
+						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf", bof.GetSink());
 
-						if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+						if(limit != -1) {
+							if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
 
-						uint64_t destinationSize = t->getSize().getLimitedValue();
+							uint64_t destinationSize = t->getSize().getLimitedValue();
 
-						if (limit != 0 && limit < destinationSize) { // null terminator included
-							feature = "1";
+							if (limit != 0 && limit < destinationSize) { // null terminator included
+								feature = "1";
+							} else {
+								feature = "0";
+							}
 						} else {
-							feature = "0";
+							feature = "-1";
 						}
 					}
 

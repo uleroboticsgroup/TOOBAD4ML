@@ -121,7 +121,7 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 				// if the sink is the above type
 				auto it = sinkTypes.find(nameFunction);
 				if(it == sinkTypes.end()) {
-					// ERROR not found synk type
+						llvm::outs() << "No se ha encontrado el sink\n";
 				} else {
 
 					int posBufferArg = it->second;

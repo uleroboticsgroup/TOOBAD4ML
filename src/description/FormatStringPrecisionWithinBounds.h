@@ -2,6 +2,7 @@
 #define TOOBAD4ML_DESCRIPTION_FORMATSTRINGPRECISIONWITHINBOUNDS_H_
 
 #include "description/DescriptorDecorator.h"
+#include <clang/AST/Expr.h>
 
 namespace TOOBAD4ML {
 
@@ -35,7 +36,7 @@ public:
 	 * @param
 	 * @return
 	 */
-	int FormatStringParser(llvm::StringRef, std::string);
+	int FormatStringParser(llvm::StringRef, std::string, clang::Expr*);
 
 }; /*cFormatStringPrecisionWithinBounds*/
 

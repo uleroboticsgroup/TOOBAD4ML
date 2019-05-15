@@ -44,10 +44,14 @@ int main() {
 
   // 4. Formatted string output
   char buffer[50]; 
-  int a = 10, b = 20, c; 
-  c = a + b; 
+  int a = 10, b = 20, c = 25; 
   sprintf(buffer, "Sum of %d and %d is %d", a, b, c); 
   printf("%s", buffer); 
+
+  char buffer12[50]; 
+  char a2[] = "300"; int b2 = 20, c2 = 320; 
+  sprintf(buffer12, "Sum of %2.3s and %d is %d", a2, b2, c2); 
+  printf("%s", buffer12); 
 
   char buffer2[11]; 
   char* cadena = "geeksforgeeks";  
@@ -73,7 +77,7 @@ int main() {
 
   // 7. Array element writes
   char name[5] = "AAAA";
-  name[5] = "A";
+  name[5] = 'A';
 
 /// ###BEGIN_VULNERABLE_LINES###
 
@@ -96,25 +100,30 @@ int main() {
 /// 42,3;42,23
 
 // sprintf
-/// 49,3;49,52
+/// 48,3;48,52
+
+// sprintf
+/// 53,3;53,60
 
 // snprintf
-/// 54,11;54,46
+/// 58,11;58,46
 
 // gets
-/// 59,3;59,14
+/// 63,3;63,14
 
 // fgets
-/// 62,3;62,24
+/// 66,3;66,24
 
 // scanf
-/// 65,3;65,21
+/// 69,3;69,21
 
 // sscanf
-/// 71,3;71,60
+/// 75,3;75,60
 
 // Array writes
-/// 76,3;76,13
+/// 80,3;80,13
+
+// total 14 sinks
 
 }
 

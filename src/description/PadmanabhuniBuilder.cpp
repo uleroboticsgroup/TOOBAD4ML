@@ -14,7 +14,7 @@
 #include "description/FormatStringPrecisionWithinBounds.h"
 #include "description/NumberOfElementsCopiedWithinBounds.h"
 #include "description/StringCopyWithinBounds.h"
-#include "description/DataDependentOnDestinationBufferSize.h";
+#include "description/DataDependentOnDestinationBufferSize.h"
 #include "description/DataDependentOnDestinationBufferSizeVariant.h"
 #include "description/IsCharacterCaseConversionSink.h"
 #include "description/ResetsInControlPredicates.h"
@@ -30,21 +30,23 @@ using namespace description;
 
 IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 
-    return new cResetsInControlPredicates(
+	// the comments characteristics are not implemented
+
+    return // new cResetsInControlPredicates(
     		new cIsCharacterCaseConversionSink(
-				new cDataDependentOnDestinationBufferSizeVariant(
-					new cDataDependentOnDestinationBufferSize(
+				// new cDataDependentOnDestinationBufferSizeVariant(
+					// new cDataDependentOnDestinationBufferSize(
 						new cStringCopyWithinBounds(
 							new cFormatStringPrecisionWithinBounds(
 								new cArrayWriteIndexWithinBounds(
 									new cNumberOfElementsCopiedWithinBounds(
-										new cDataBufferDeclaration(
-											new cBufferSizePredicateClassification(
-												new cInputValidationClassification(
+										// new cDataBufferDeclaration(
+											// new cBufferSizePredicateClassification(
+												// new cInputValidationClassification(
 													new cNetwork(
 														new cFile(
 															new cEnvironmentVariable(
 																new cCommandLine(
-																	new cSinkClassification(new cMockDescriptor))))))))))))))));
+																	new cSinkClassification(new cMockDescriptor))))))))));
 
 }
