@@ -27,27 +27,19 @@ public:
 
 		clang::Stmt* aux = const_cast<clang::Stmt*>(stmt);
 
-		//m_cfg.dump(clang::LangOptions(), true);
-
-//		llvm::outs() << "OPERATOR\n";
-//
-//		m_buffer->dumpColor();
+//		llvm::outs() << "dentro OPERATOR\n";
 //		aux->dumpColor();
-//
-//		if(m_buffer==nullptr) {
-//			llvm::outs() << "NULLL\n";
-//		}
 
 		switch (aux->getStmtClass()) {
 
 			case clang::Stmt::StmtClass::CallExprClass: {
 
-			//if(m_buffer!=nullptr) {
 				ASTTraversal::cFindVariableVisitor m_visitor(m_buffer);
 				m_visitor.TraverseStmt(aux);
 				if (m_visitor.IsFound()) {
-					m_input.push_back(llvm::cast<clang::CallExpr>(aux));
-				//}
+					if(clang::CallExpr* call = llvm::cast<clang::CallExpr>(aux)){
+						m_input.push_back(call);
+					}
 				}
 
 			}
@@ -128,25 +120,29 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 
 					if(clang::Expr* buff = call->getArg(posBufferArg)->IgnoreCasts()) {
 
-						std::string nameExpr = buff->getStmtClassName();
+						if(buff != nullptr) {
+							std::string nameExpr = buff->getStmtClassName();
 
-						if(nameExpr.compare("DeclRefExpr") == 0) {
+							if(nameExpr.compare("DeclRefExpr") == 0) {
 
-							if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
-								clang::QualType t = buff->getType();
+								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
+									clang::QualType t = buff->getType();
 
-								// if the DeclRefExpr is of type Array
-								if(t.getTypePtr()->isArrayType()) {
-									buff->dumpColor();
-									m_buffer = buff;
+									// if the DeclRefExpr is of type Array
+									if(t.getTypePtr()->isArrayType() || t.getTypePtr()->isConstantArrayType()) {
+										buff->dumpColor();
+										m_buffer = buff;
+									} else {
+										llvm::outs() << "El buffer no es de typo array\n";
+									}
+
 								}
+
+							} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
+								buff->dumpColor();
+								m_buffer = buff;
 							}
-
-						} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
-							buff->dumpColor();
-							m_buffer = buff;
 						}
-
 					}
 				}
 			}
@@ -165,20 +161,22 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 
 						if(clang::Expr* buff = arrayExpr->getLHS()->IgnoreCasts()) {
 
-							std::string nameExpr = buff->getStmtClassName();
+							if(buff != nullptr){
+								std::string nameExpr = buff->getStmtClassName();
 
-							if(nameExpr.compare("DeclRefExpr") == 0) {
+								if(nameExpr.compare("DeclRefExpr") == 0) {
 
-								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
-									clang::QualType t = buff->getType();
+									if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
+										clang::QualType t = buff->getType();
 
-									// if the DeclRefExpr is of type Array
-									if(t.getTypePtr()->isArrayType()) {
-										buff->dumpColor();
-										m_buffer = buff;
+										// if the DeclRefExpr is of type Array
+										if(t.getTypePtr()->isArrayType()) {
+											buff->dumpColor();
+											m_buffer = buff;
+										}
 									}
-								}
 
+								}
 							}
 						}
 					}
@@ -227,7 +225,7 @@ void cBufferOverflow::SetInput(cCodePropertyGraph& cpg) {
 
 	CFG.VisitBlockStmts(finder);
 
-//	m_input = finder.GetInput();
+	m_input = finder.GetInput();
 
 
 

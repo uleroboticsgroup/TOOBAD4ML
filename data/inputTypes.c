@@ -12,7 +12,7 @@ int main() {
 		gets(buffer);
 	}
 
-	FILE * pFile;
+/*	FILE * pFile;
 
    	pFile = fopen ("myfile.txt" , "r");
    	if (pFile == NULL) perror ("Error opening file");
@@ -31,7 +31,7 @@ int main() {
 
    	fclose (pFile);
 
-	printf("%c", letra);
+	printf("%c", letra);*/
 
 }
 

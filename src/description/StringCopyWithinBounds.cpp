@@ -30,7 +30,7 @@ std::string cStringCopyWithinBounds::ExtractFeature(
 	std::vector<llvm::StringRef> sinkTypes = {"strcpy"}; //sinks type 1
 
 	if (bof.GetSink()->getStmtClass()
-				== clang::Stmt::StmtClass::CallExprClass) {
+				== clang::Stmt::StmtClass::CallExprClass && bof.GetBuffer() != nullptr) {
 
 			if(clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink())) {
 

@@ -53,16 +53,19 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 			// and its implementation is yet undone.
 
             description::cBufferOverflow BOF(**iterBOF);
-			BOF.SetInput(cpg);
+            if(BOF.GetBuffer() != nullptr)
+				BOF.SetInput(cpg);
 
 			std::string features= explorer.Inspect(cpg, BOF);
 			m_dataset.push_back(features);
 		}
 	}
 
+	int cont = 1;
 	for (std::vector<std::string>::iterator it = m_dataset.begin(); it != m_dataset.end(); ++it) {
 
-		llvm::outs() << "Dataset: " << *it << "\n";
+		llvm::outs() << "Muestra " << cont << ": "  << *it << "\n";
+		cont++;
 	}
 
 }

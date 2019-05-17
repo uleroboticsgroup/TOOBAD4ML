@@ -27,7 +27,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 	unsigned destinationSize = 0;
 	unsigned indexArray = 0;
 
-	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass && bof.GetBuffer() != nullptr) {
 
 		if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink())) {
 
@@ -39,7 +39,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 
 						clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(arrayExpr->getRHS());
 
-						if(intLiteral!=nullptr && bof.GetBuffer() != nullptr) {
+						if(intLiteral!=nullptr) {
 
 							if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
 								destinationSize = t->getSize().getLimitedValue();
@@ -98,6 +98,8 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 		} else {
 			 feature = "-1";
 		}
+	} else {
+		 feature = "-1";
 	}
 
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);

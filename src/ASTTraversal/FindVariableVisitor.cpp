@@ -13,6 +13,9 @@ cFindVariableVisitor::cFindVariableVisitor(clang::Expr* declRefExpr) :
 
 bool cFindVariableVisitor::VisitDeclRefExpr(clang::Stmt* S) {
 
+//		llvm::outs() << "dentro VISITOR\n";
+//		S->dumpColor();
+
 		clang::ValueDecl* currentVar;
 		clang::ValueDecl* targetVar;
 

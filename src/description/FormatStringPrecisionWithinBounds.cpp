@@ -45,9 +45,10 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 				}
 			}
 
-			limit = std::stoi(number);
+			if(number.length() != 0)
+				limit = std::stoi(number);
 
-			return limit;
+			return limit == 0 ? -1 : limit  ;
 
 		}
 
@@ -61,6 +62,7 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 			int width = 0;
 			int precision = 0;
 			int countArg = 0;
+			int countSpecifierAlone = 0;
 
 			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
@@ -93,8 +95,11 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 					if((*it) == 's' || (*it) == 'd') {
 						countArg++;
-						width = 0;
-						precision = 0;
+						if(width+precision != 0) {
+							countSpecifierAlone++;
+							width = 0;
+							precision = 0;
+						}
 					}
 
 				}
@@ -108,7 +113,7 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 				clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(sink);
 
-				for(int i = 0; i<countArg; i++) {
+				for(int i = (countArg - countSpecifierAlone); i<countArg; i++) {
 					if(call->getNumArgs() >= (2 + countArg)){
 						if (clang::Expr* s = call->getArg(2 + i)->IgnoreCasts()) {
 							std::string name = s->getStmtClassName();
@@ -190,7 +195,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 	std::string feature = "-1";
 
 	if (bof.GetSink()->getStmtClass()
-			== clang::Stmt::StmtClass::CallExprClass) {
+			== clang::Stmt::StmtClass::CallExprClass && bof.GetBuffer() != nullptr) {
 
 		clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
 
