@@ -55,13 +55,16 @@ std::vector<BOFLocation> extractComments(clang::ASTContext& context) {
 		unparsedEndElement.first.getAsInteger(0, endLine);
 		unparsedEndElement.second.getAsInteger(0, endCol);
 
-		BOFLocation parsedLine(
-				context.getSourceManager().translateLineCol(mainFID, startLine,
-						startCol),
-				context.getSourceManager().translateLineCol(mainFID, endLine,
-						endCol));
+		// Line and column should start at 1
+		if(startLine > 0 && startCol > 0 && endLine > 0 && endCol > 0) {
+			BOFLocation parsedLine(
+					context.getSourceManager().translateLineCol(mainFID, startLine,
+							startCol),
+					context.getSourceManager().translateLineCol(mainFID, endLine,
+							endCol));
 
-		vulnerableLines.push_back(parsedLine);
+			vulnerableLines.push_back(parsedLine);
+		}
 
 	}
 
