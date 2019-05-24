@@ -8,27 +8,33 @@ namespace TOOBAD4ML {
 
 namespace description {
 
+
+/*!
+ * \class cArrayWriteIndexWithinBounds
+ *
+ * \brief
+ * Checks if the size of elements to be copied
+ * is not greater than the destination buffer size.
+ *
+ * \details
+ * This is only applicable for array writes sinks
+ * with constant index value and known buffer size.
+ * It can have one of the three values:
+ * (=1) True
+ * (=0) False
+ * (=-1) Not applicable (e.g., index value is not present)
+ */
 class cArrayWriteIndexWithinBounds: public cDescriptorDecorator {
 public:
 	// CONSTRUCTORS & DESTRUCTORS
 	// ------------------------------------------------------------------------
 
-	/*!
-	 *
-	 * @param
-	 */
 	cArrayWriteIndexWithinBounds(IDescriptor*);
 
 
 	// INHERITED METHODS
 	// ------------------------------------------------------------------------
 
-	/*!
-	 *
-	 * @param
-	 * @param
-	 * @return
-	 */
 	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 }; /*cArrayWriteIndexWithinBounds*/

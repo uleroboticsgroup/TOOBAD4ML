@@ -8,27 +8,36 @@ namespace TOOBAD4ML {
 
 namespace description {
 
+/*!
+ * \class cStringCopyWithinBounds
+ *
+ * \brief
+ * Checks if the size of elements to be copied
+ * is not greater than the destination buffer size.
+ *
+ * \details
+ * This is applicable for strcpy sinks with a string literal
+ * as source string and with known destination buffer size.
+ * It can have one of the three values:
+ * (=1) True, when string length of string literal
+ * is less than destination buffer size,
+ * (=0) False, if vice-versa.
+ * (=-1) Not applicable, when the source is not a string
+ * literal or sink is not strcpy call.
+ *
+ *
+ */
 class cStringCopyWithinBounds: public cDescriptorDecorator {
 public:
 	// CONSTRUCTORS & DESTRUCTORS
 	// ------------------------------------------------------------------------
 
-	/*!
-	 *
-	 * @param
-	 */
 	cStringCopyWithinBounds(IDescriptor*);
 
 
 	// INHERITED METHODS
 	// ------------------------------------------------------------------------
 
-	/*!
-	 *
-	 * @param
-	 * @param
-	 * @return
-	 */
 	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 
