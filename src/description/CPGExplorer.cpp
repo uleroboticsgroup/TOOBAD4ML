@@ -12,12 +12,12 @@ using namespace description;
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------
 
-cCPGExplorer::cCPGExplorer(IDescriptor* descriptor)
+cCPGExplorer::cCPGExplorer(IDescriptor& descriptor)
     : m_descriptor(descriptor) {
 }
 
 cCPGExplorer::~cCPGExplorer() {
-    delete m_descriptor;
+//    delete m_descriptor;
 }
 
 
@@ -26,13 +26,13 @@ cCPGExplorer::~cCPGExplorer() {
 
 llvm::StringRef
 cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
-	return m_descriptor->ExtractFeature(cpg, bof);
+	return m_descriptor.ExtractFeature(cpg, bof);
 }
 
 
 // ACCESSOR METHODS
 // ----------------------------------------------------------------------------
 
-void cCPGExplorer::SetDescriptor(IDescriptor* descriptor) {
+void cCPGExplorer::SetDescriptor(IDescriptor& descriptor) {
 	m_descriptor = descriptor;
 }

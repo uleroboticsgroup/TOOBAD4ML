@@ -48,7 +48,7 @@ public:
      * @param descriptor    A model for extracting specific features from the
      *                      CPG.
 	 */
-	cCPGExplorer(IDescriptor*);
+	cCPGExplorer(IDescriptor&);
 
     ~cCPGExplorer();
 
@@ -75,7 +75,7 @@ public:
 
 public:
 
-	void SetDescriptor(IDescriptor*);
+	void SetDescriptor(IDescriptor&);
 
 
     // ATTRIBUTES
@@ -85,7 +85,7 @@ private:
 
     //! Model comprised of several features which together describe a Buffer
     /// Overflow vulnerability
-	IDescriptor* m_descriptor;
+	IDescriptor& m_descriptor;
 
 }; /* class cCPGExplorer */
 

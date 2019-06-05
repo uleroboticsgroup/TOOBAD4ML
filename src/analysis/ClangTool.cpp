@@ -53,7 +53,7 @@ GetCompilationDatabase(const llvm::Twine& source) {
     );
 
     // or if the source (directory) has a compilation database
-    if (!compilationDB) {
+    if (!compilationDB && !errorMessage.empty()) {
         compilationDB =
             clang::tooling::CompilationDatabase::autoDetectFromDirectory(
                     source.str(), errorMessage

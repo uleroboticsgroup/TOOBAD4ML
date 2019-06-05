@@ -1,15 +1,18 @@
+# ------------------------------------------------------------------------------
+#
 #   CMakeLists.txt - CMake file for the "analysis" module. This file
 #                    provides the following target:
 #
 #                           * analysis
 #
+# ------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.1)
 
 project(analysis)
 
 
-# Target
+# TARGET
 # -----------------------------------------------------------------------------
 
 add_library(${PROJECT_NAME}

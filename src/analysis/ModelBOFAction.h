@@ -33,8 +33,8 @@ protected:
 	/*!
      * Create the AST consumer object for this action.
 	 *
-	 * @param CI
-	 * @param InFile
+	 * @param CI        Not used.
+	 * @param InFile    Not used.
 	 * @return a new AST consumer; null on failure.
 	 */
 	std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(

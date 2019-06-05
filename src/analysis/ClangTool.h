@@ -52,7 +52,6 @@ public:
      *
      * @param sources   A list of sources.
      */
-
     cClangTool(const std::vector<std::string>);
 
     ~cClangTool();
