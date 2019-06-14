@@ -59,6 +59,7 @@ public:
 	 */
 	bool VisitFunctionDecl(clang::FunctionDecl*);
 
+	friend class cExtractVulnerabilitiesVisitorTest;
 private:
 
 	//!
@@ -68,6 +69,11 @@ private:
 	BOFNodesPerFunctionMap m_vulnerabilities;
 
 }; /* class cExtractVulnerabilitiesVisitor */
+
+class cExtractVulnerabilitiesVisitorTest {
+public:
+	std::vector<BOFLocation> getVulnerableLines(cExtractVulnerabilitiesVisitor &visitor);
+};
 
 } /* namespace ASTTraversal */
 

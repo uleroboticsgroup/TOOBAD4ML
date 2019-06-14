@@ -1,15 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(analysis_test)
+project(io_test)
 
 
 # Target
 # -----------------------------------------------------------------------------
 
-
 add_executable(${PROJECT_NAME}
-    ModelBOFConsumerTest.cpp
-    ClangToolTest.cpp
+    InputManagerTest.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -19,10 +17,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        analysis
 	    io
-        gtest_main
-        gmock
+        LibGoogleTest
 )
 
 # TODO we temporary need this to link the test main with the test suites

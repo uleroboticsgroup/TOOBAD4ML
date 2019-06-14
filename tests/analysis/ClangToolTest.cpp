@@ -1,7 +1,11 @@
-#include <gtest/gtest.h>
-
+// ----------------------------------------------------------------------------
 #include "analysis/ClangTool.h"
-#include "analysis/ModelBOFAction.h"
+#include "io/InputManager.h"
+// ----------------------------------------------------------------------------
+#include <gtest/gtest.h>
+// ----------------------------------------------------------------------------
+// TODO Create a directory with tests files.
+
 
 
 namespace TOOBAD4ML {
@@ -9,7 +13,7 @@ namespace TOOBAD4ML {
 namespace analysis {
 
 
-// DEATH TESTS
+// FIXTURE CLASS
 // ----------------------------------------------------------------------------
 
 TEST(ClangToolDeathTest, CreateWithValidCmdLineInput) {
@@ -49,30 +53,81 @@ TEST(ClangToolDeathTest, CreateWithInvalidFixedInput) {}
 class ClangToolTest : public ::testing::Test {
 protected:
 
-    ClangToolTest() :
-        toolWithData("test.c"),
-        toolWithoutData("") {}
+    ClangToolTest()
+    : fileSource({PROGRAM_NAME, "test.c"}),
+      multipleFiles({PROGRAM_NAME, "test.c", "test1.c", "test2.c"}),
+      mixedSources({PROGRAM_NAME, "test.c", "."}),
+      dirSource({PROGRAM_NAME, "."}) {};
 
-    cClangTool toolWithData;
-    cClangTool toolWithoutData;
-
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
+    const char* PROGRAM_NAME = "TOOBAD4ML";
+    const char* fileSource[2];
+    const char* multipleFiles[4];
+    const char* dirSource[2];
+    const char* mixedSources[3];
 };
 
 // As this suite includes death tests, create an alias for the fixture
 // src: https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#death-test-naming
 using ClangToolDeathTest = ClangToolTest;
 
-
-TEST_F(ClangToolTest, RunValidAction) {
-
-    clang::tooling::ToolAction* action =
-            clang::tooling::newFrontendActionFactory<cModelBOFAction>().get();
-    ASSERT_TRUE(action != nullptr);
-
-    EXPECT_EQ(0, toolWithData.Run(action));
-
+/* 
+TEST_F(ClangToolTest, CreateFromCmdLineWithoutFileSource) {
+    // ISSUE: Cannot test no arguments
+    const char* empty[1] = {PROGRAM_NAME};
+    cClangTool clangTool(1, empty);
+    cClangToolTest cClangToolTest;
+    ASSERT_FALSE(cClangToolTest.checkIfClangToolExists(clangTool));
 }
 
+TEST_F(ClangToolTest, CreateFromCmdLineWithFileSource) {
+    cClangTool clangTool(2, fileSource);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateWithFileSource) {
+    cClangTool clangTool(IO::InputManager::GetSourceFromCommandLine(2, fileSource));
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleFileSource) {
+    cClangTool clangTool(4, multipleFiles);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateWithMultipleFileSource) {
+    cClangTool clangTool(IO::InputManager::GetSourceFromCommandLine(4, multipleFiles));
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateFromCmdLineWithDirSource) {
+    cClangTool clangTool(2, dirSource);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateWithDirSource) {
+    cClangTool clangTool(IO::InputManager::GetSourceFromCommandLine(2, dirSource));
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleMixedSources) {
+    cClangTool clangTool(3, mixedSources);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+
+TEST_F(ClangToolTest, CreateWithMultipleMixedSources) {
+    cClangTool clangTool(IO::InputManager::GetSourceFromCommandLine(3, mixedSources));
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
 
 TEST_F(ClangToolTest, RunValidActionWithoutData) {
 
@@ -90,6 +145,7 @@ TEST_F(ClangToolTest, RunInvalidAction) {
     EXPECT_EQ(0, toolWithData.Run(nullptr));
 
 }
+*/
 
 } /* analysis */
 

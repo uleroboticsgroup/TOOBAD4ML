@@ -1,7 +1,7 @@
 #ifndef STUBMODELBOFACTION_H
 #define STUBMODELBOFACTION_H
 
-#include <analysis/ModelBOFAction.h>
+#include <clang/Frontend/FrontendAction.h>
 
 #include "analysis/MockModelBOFConsumer.h"
 
@@ -13,20 +13,18 @@ namespace analysis {
  * Stub class to create a mock ModelBOFConsumer.
  */
 class cStubModelBOFAction :
-    public cModelBOFAction {
+    public clang::ASTFrontendAction {
+
 public:
+    explicit cStubModelBOFAction(std::unique_ptr<clang::ASTConsumer> mockedConsumer):
+        consumer(std::move(mockedConsumer)) {}
 
-	cStubModelBOFAction();
-
-    /*!
-     *
-     *
-     * @param
-     * @param
-     * @return
-     */
+protected:
     std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
-            clang::CompilerInstance&, llvm::StringRef);
+            clang::CompilerInstance&, llvm::StringRef) override;
+
+private:
+    std::unique_ptr<clang::ASTConsumer> consumer;
 
 	analysis::cMockModelBOFConsumer* getConsumer(){
 		return m_consumer;

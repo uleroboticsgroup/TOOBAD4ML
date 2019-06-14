@@ -1,9 +1,10 @@
+// ----------------------------------------------------------------------------
+#include "io/InputManager.h"
 #include "analysis/ClangTool.h"
-
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/CompilationDatabase.h>
 
-
+// ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
 
@@ -61,4 +62,9 @@ cClangTool::~cClangTool() {
 
 int cClangTool::Run(clang::tooling::ToolAction* action) {
     return m_tool->run(action);
+
+}
+
+bool cClangToolTest::checkIfClangToolExists(cClangTool &tool) {
+    return tool.m_tool != nullptr;
 }

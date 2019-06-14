@@ -14,30 +14,41 @@ namespace analysis {
  */
 class cModelBOFConsumer: public clang::ASTConsumer {
 public:
+	virtual ~cModelBOFConsumer() {}
 
 	/*!
 	 *
      * @param
 	 */
-	cModelBOFConsumer(clang::ASTContext*);
+	cModelBOFConsumer() {}
 
 	/*!
 	 *
 	 * @param
 	 */
-	void HandleTranslationUnit(clang::ASTContext&) override;
+	virtual void HandleTranslationUnit(clang::ASTContext&) override;
 
     /*!
      * TODO: what do we have to return here??
      */
-	bool Output();
+	virtual bool Output();
 
+	//--------- FOR TESTING-----------
+	friend class cModelBOFConsumerTest;
+	//--------------------------------
 private:
 
 	//!
 	std::vector<std::string> m_dataset;
 
 };
+
+//--------- FOR TESTING-----------
+class cModelBOFConsumerTest {
+public:
+	std::vector<std::string> getDataset(cModelBOFConsumer& consumer);
+};
+//--------------------------------
 
 } /* namespace analysis */
 

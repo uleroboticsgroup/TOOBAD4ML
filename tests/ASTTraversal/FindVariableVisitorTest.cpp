@@ -39,6 +39,7 @@ TEST_F(cFindVariableVisitorTest, DefaultConstructor) {
     EXPECT_FALSE(m_varFinderVisitor.IsFound());
 }
 
+/*
 // Tests whether a variable is present in the AST of a call expression.
 TEST_F(cFindVariableVisitorTest, FindVariableInCallExpr) {
     // 1. Get the variable we want to find
@@ -49,3 +50,4 @@ TEST_F(cFindVariableVisitorTest, FindVariableInCallExpr) {
     // 3. Assert if found
     ASSERT_TRUE(m_varFinderVisitor.IsFound());
 }
+*/

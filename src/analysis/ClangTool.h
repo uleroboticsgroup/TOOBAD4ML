@@ -47,6 +47,11 @@ public:
      */
     int Run(clang::tooling::ToolAction*);
 
+    friend class cClangToolTest;
+
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
+
 private:
 
     /// Tool to run actions.
@@ -54,7 +59,13 @@ private:
 
 }; /* cClangTool */
 
-} /* analysis */
+class cClangToolTest {
+public:    
+    bool checkIfClangToolExists(cClangTool &tool);
+
+};
+
+} // namespace analysis
 
 } /* TOOBAD4ML */
 

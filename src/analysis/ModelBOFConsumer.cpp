@@ -69,3 +69,11 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 	}
 
 }
+
+bool cModelBOFConsumer::Output() {
+	return true;
+}
+
+std::vector<std::string> cModelBOFConsumerTest::getDataset(cModelBOFConsumer& consumer) {
+	return consumer.m_dataset;
+}

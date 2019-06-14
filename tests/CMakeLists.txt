@@ -32,7 +32,9 @@ endforeach()
 add_executable(tests test_main.cpp)
 
 target_link_libraries(tests
+    PUBLIC
+        gtest_main
+        gmock
     PRIVATE
-        LibGoogleTest
         analysis_test
 )

@@ -1,6 +1,6 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "ASTTraversal/FindSelectedASTNodesVisitor.h"
-
+#include <iostream>
 using namespace TOOBAD4ML;
 using namespace ASTTraversal;
 
@@ -117,4 +117,8 @@ bool cExtractVulnerabilitiesVisitor::VisitFunctionDecl(
 	}
 
 	return m_vulnerableLines.empty() ? false : true;
+}
+
+std::vector<BOFLocation> cExtractVulnerabilitiesVisitorTest::getVulnerableLines(cExtractVulnerabilitiesVisitor &visitor) {
+	return visitor.m_vulnerableLines;
 }

@@ -1,4 +1,6 @@
-#include "analysis/StubModelBOFAction.h"
+#include "StubModelBOFAction.h"
+#include "analysis/MockModelBOFConsumer.h"
+#include <clang/Frontend/CompilerInstance.h>
 
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -13,12 +15,6 @@ cStubModelBOFAction::cStubModelBOFAction() : m_consumer(nullptr){}
  * @return
  */
 std::unique_ptr<clang::ASTConsumer> cStubModelBOFAction::CreateASTConsumer(
-            clang::CompilerInstance& CI, llvm::StringRef) {
-
-	 analysis::cMockModelBOFConsumer consumer(&CI.getASTContext());
-
-	 setConsumer(&consumer);
-
-
-	return std::unique_ptr<clang::ASTConsumer>(&consumer);
+        clang::CompilerInstance& CI, llvm::StringRef) {
+        return std::move(consumer);
 }
