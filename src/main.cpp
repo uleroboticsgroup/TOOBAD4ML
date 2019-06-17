@@ -1,5 +1,7 @@
+// ----------------------------------------------------------------------------
 #include "analysis/ClangTool.h"
 #include "analysis/ModelBOFAction.h"
+// ----------------------------------------------------------------------------
 
 #include <clang/Tooling/Tooling.h>
 #include <clang/Tooling/CommonOptionsParser.h>

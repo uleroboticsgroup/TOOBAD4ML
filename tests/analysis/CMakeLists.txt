@@ -8,6 +8,7 @@ project(analysis_test)
 
 
 add_executable(${PROJECT_NAME}
+    ModelBOFActionTest.cpp
     ModelBOFConsumerTest.cpp
     ClangToolTest.cpp
 )

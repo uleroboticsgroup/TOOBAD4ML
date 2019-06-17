@@ -2,6 +2,10 @@
 #include "clang/Tooling/Tooling.h"
 #include "analysis/ModelBOFConsumer.h"
 #include "clang/Frontend/ASTUnit.h"
+#include "description/PadmanabhuniBuilder.h"
+#include "clang/Tooling/CompilationDatabase.h"
+#include "clang/Tooling/Tooling.h"
+
 // ----------------------------------------------------------------------------
 
 namespace TOOBAD4ML {
@@ -9,23 +13,32 @@ namespace TOOBAD4ML {
 namespace analysis {
 
 TEST(BOFConsumer, HandleTranslationUnit) {
-    std::string code = "#include <stdio.h>\nvoid echo(){\nchar buffer[256];\nprintf(\"Type your input:\n\");\ngets(\"%s\", buffer);\ngets(\"%s\", buffer);\ngets(\"%s\", buffer);\nprintf(\"Input given: %s\n\", buffer);\n}\nint main(){\necho();\nreturn 0;\n}\n\n/// ###BEGIN_VULNERABLE_LINES###\n\n/// 5,1;5,18\n\n/// 6,1;6,18\n\n/// 6,1;6,18\n";
+    description::cPadmanabhuniBuilder pmd;
+    clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
-    std::unique_ptr<clang::ASTUnit> AST = std::move(clang::tooling::buildASTFromCode(code));
-    clang::ASTContext& context = AST.get()->getASTContext();
-    cModelBOFConsumer consumer(&context);
-    consumer.HandleTranslationUnit(&context);
+    std::vector<std::string> Sources;
+    Sources.push_back("../../../data/test.c");
+    clang::tooling::ClangTool Tool(Compilations, Sources);
+
+    std::vector<std::unique_ptr<clang::ASTUnit>> ASTs;
+    Tool.buildASTs(ASTs);
+
+    std::unique_ptr<clang::ASTUnit> AST = std::move(ASTs[0]);
+    cModelBOFConsumer consumer(*(pmd.CreateDescriptor()));
+    consumer.HandleTranslationUnit(AST.get()->getASTContext());
+
+    cModelBOFConsumerTest helper;
+    std::vector<std::string> dataset = helper.getDataset(consumer);
+    EXPECT_EQ(dataset.size(), 1);
+    EXPECT_EQ(dataset[0], "5;0;0;0;0;-1;-1;-1;-1;-1;");
 }
 
-/* 
+TEST(BOFConsumer, Constructor) {
+    description::cPadmanabhuniBuilder pmd;
+    std::unique_ptr<cModelBOFConsumer> consumer(new cModelBOFConsumer(*(pmd.CreateDescriptor())));
+    EXPECT_NE(consumer, nullptr);
+}
 
-TEST(BOFConsumer, constructor) {
-    clang::ASTContext *context = &(clang::tooling::buildASTFromCode("").get()->getASTContext());
-    std::unique_ptr<cModelBOFConsumer> consumer(new cModelBOFConsumer(context));
-    EXPECT_NE(consumer.get(), nullptr);
-};
-
-*/
 
 } /* TOOBAD4ML */
 

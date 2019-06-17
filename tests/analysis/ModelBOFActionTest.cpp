@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "analysis/ModelBOFAction.h"
-#include "analysis/ClangTool.h"
 #include "clang/Tooling/Tooling.h"
-#include "analysis/ModelBOFConsumer.h"
+#include "analysis/ModelBOFAction.h"
+#include "clang/Frontend/FrontendAction.h"
+#include <iostream>
 // ----------------------------------------------------------------------------
 // TODO Create a directory with tests files.
 
@@ -13,9 +13,10 @@ namespace TOOBAD4ML {
 namespace analysis {
 
 
-TEST(BOFAction, test1) {
-    cModelBOFAction modelBOFAction();
-    EXPECT_TRUE(clang::tooling::runToolOnCode(new cModelBOFAction(llvm::make_unique<cModelBOFConsumer>()), "")))
+TEST(BOFAction, BOFAction) {
+    std::unique_ptr<clang::tooling::FrontendActionFactory> frontendFactory = clang::tooling::newFrontendActionFactory<TOOBAD4ML::analysis::cModelBOFAction>();
+    std::unique_ptr<clang::FrontendAction> Action(frontendFactory.get()->create());
+    ASSERT_TRUE(Action != nullptr);
 };
 
 } /* TOOBAD4ML */

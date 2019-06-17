@@ -2,6 +2,7 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/Tooling.h"
+#include "description/PadmanabhuniBuilder.h"
 
 namespace TOOBAD4ML {
 
@@ -11,12 +12,25 @@ class ExtractVulnerabilitiesVistorTest:
     public ::testing::Test {
 
 protected:
-    ExtractVulnerabilitiesVistorTest(): 
-        ASTEmpty(clang::tooling::buildASTFromCode("#include <stdio.h>\nvoid echo(){\nchar buffer[256];\nprintf(\"Type your input:\n\");\nscanf(\"%s\", buffer);\nprintf(\"Input given: %s\n\", buffer);\n}\nint main(){\necho();\nreturn 0;\n}\n\n/// ###BEGIN_VULNERABLE_LINES###\n")),
 
-        ASTWithVulnerability(clang::tooling::buildASTFromCode("#include <stdio.h>\nvoid echo(){\nchar buffer[256];\nprintf(\"Type your input:\n\");\ngets(\"%s\", buffer);\nprintf(\"Input given: %s\n\", buffer);\n}\nint main(){\necho();\nreturn 0;\n}\n\n/// ###BEGIN_VULNERABLE_LINES###\n\n/// 5,1;5,18\n ")),
+    void SetUp() override {
+        description::cPadmanabhuniBuilder pmd;
+        clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
-        ASTWithVulnerabilities(clang::tooling::buildASTFromCode("#include <stdio.h>\nvoid echo(){\nchar buffer[256];\nprintf(\"Type your input:\n\");\ngets(\"%s\", buffer);\ngets(\"%s\", buffer);\ngets(\"%s\", buffer);\nprintf(\"Input given: %s\n\", buffer);\n}\nint main(){\necho();\nreturn 0;\n}\n\n/// ###BEGIN_VULNERABLE_LINES###\n\n/// 5,1;5,18\n\n/// 6,1;6,18\n\n/// 6,1;6,18\n")) {};
+        std::vector<std::string> Sources;
+        Sources.push_back("../../../data/testEmpty.c");
+        Sources.push_back("../../../data/test.c");
+        Sources.push_back("../../../data/testSeveral.c");
+
+        clang::tooling::ClangTool Tool(Compilations, Sources);
+
+        std::vector<std::unique_ptr<clang::ASTUnit>> ASTs;
+        Tool.buildASTs(ASTs);
+        
+        ASTEmpty = std::move(ASTs[0]);
+        ASTWithVulnerability = std::move(ASTs[1]);
+        ASTWithVulnerabilities = std::move(ASTs[2]);
+    }
 
 
     std::unique_ptr<clang::ASTUnit> ASTEmpty;
@@ -36,17 +50,17 @@ TEST_F(ExtractVulnerabilitiesVistorTest, NoVulnerableLines) {
 }
 
 TEST_F(ExtractVulnerabilitiesVistorTest, VulnerableLines) {
-cExtractVulnerabilitiesVisitor visitor(ASTWithVulnerability.get()->getASTContext());
+    cExtractVulnerabilitiesVisitor visitor(ASTWithVulnerability.get()->getASTContext());
     cExtractVulnerabilitiesVisitorTest helper;
     std::vector<BOFLocation> vulnLines = helper.getVulnerableLines(visitor);
     EXPECT_EQ(vulnLines.size(), 1);
-    // TODO: End column is 4 (?)
-    // Only in the first one :: Other lines output right
-    for (BOFLocation vulnLine: vulnLines) {
-        std::cout << "*********************" << std::endl;
-        std::cout << vulnLine.first.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager()) << std::endl;
-        std::cout << vulnLine.second.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager()) << std::endl;
-    }
+
+    std::string begin = vulnLines[0].first.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
+    std::string end = vulnLines[0].second.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
+
+    EXPECT_EQ("5:1", begin.substr(begin.length() - 3, 3));
+    EXPECT_EQ("5:18", end.substr(end.length() - 4, 4));
+
 }
 
 TEST_F(ExtractVulnerabilitiesVistorTest, SeveralVulnerableLines) {
@@ -54,11 +68,16 @@ cExtractVulnerabilitiesVisitor visitor(ASTWithVulnerabilities.get()->getASTConte
     cExtractVulnerabilitiesVisitorTest helper;
     std::vector<BOFLocation> vulnLines = helper.getVulnerableLines(visitor);
     EXPECT_EQ(vulnLines.size(), 2);
-    // TODO: End column is 4 (?)
+
+    std::vector<std::string> expected = {"6:1", "6:18","5:1", "5:18"};
+    int i = 0;
     for (BOFLocation vulnLine: vulnLines) {
-        std::cout << "*********************" << std::endl;
-        std::cout << vulnLine.first.printToString(ASTWithVulnerabilities.get()->getASTContext().getSourceManager()) << std::endl;
-        std::cout << vulnLine.second.printToString(ASTWithVulnerabilities.get()->getASTContext().getSourceManager()) << std::endl;
+        std::string begin = vulnLine.first.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
+        std::string end = vulnLine.second.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
+
+        EXPECT_EQ(expected[i], begin.substr(begin.length() - 3, 3));
+        EXPECT_EQ(expected[i+1], end.substr(end.length() - 4, 4));
+        i += 2;
     }
 }
 

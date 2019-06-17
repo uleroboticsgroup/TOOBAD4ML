@@ -8,6 +8,7 @@ project(ASTTraversal_test)
 add_executable(${PROJECT_NAME}
    # FindVariableVisitorTest.cpp
     ExtractVulnerabilitesVisitorTest.cpp
+    FindSelectedASTNodesVisitorTest.cpp
 )
 #        VisitorTest.cpp
 #    ../analysis/StubModelBOFAction.cpp

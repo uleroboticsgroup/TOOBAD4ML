@@ -48,7 +48,7 @@ public:
      * @param descriptor    A model for extracting specific features from the
      *                      CPG.
 	 */
-	cCPGExplorer(IDescriptor*);
+	cCPGExplorer(IDescriptor&);
 
     ~cCPGExplorer();
 
@@ -67,7 +67,7 @@ public:
 	 * @return A string of numbers separated by semicolons (where each number
      *         is a feature), that represents a Buffer Overflow vulnerability.
 	 */
-    std::string Inspect(cCodePropertyGraph&, cBufferOverflow&);
+    llvm::StringRef Inspect(cCodePropertyGraph&, cBufferOverflow&);
 
 
     // ACCESSOR METHODS
@@ -75,7 +75,7 @@ public:
 
 public:
 
-	void SetDescriptor(IDescriptor*);
+	void SetDescriptor(IDescriptor&);
 
 
     // ATTRIBUTES
@@ -85,7 +85,7 @@ private:
 
     //! Model comprised of several features which together describe a Buffer
     /// Overflow vulnerability
-	IDescriptor* m_descriptor;
+	IDescriptor& m_descriptor;
 
 }; /* class cCPGExplorer */
 
