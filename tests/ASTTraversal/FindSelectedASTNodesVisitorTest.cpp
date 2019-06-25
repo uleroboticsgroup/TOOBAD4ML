@@ -36,7 +36,7 @@ protected:
 
         BOFLocation parsedLine(
             AST.get()->getASTContext().getSourceManager().translateLineCol(mainFID, 5, 1),
-            AST.get()->getASTContext().getSourceManager().translateLineCol(mainFID, 5, 18));
+            AST.get()->getASTContext().getSourceManager().translateLineCol(mainFID, 5, 12));
 
         vulnerableLines.push_back(parsedLine);
 
@@ -45,11 +45,11 @@ protected:
 
         BOFLocation parsedLine1(
             ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 5, 1),
-            ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 5, 18));
+            ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 5, 12));
 
         BOFLocation parsedLine2(
             ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 6, 1),
-            ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 6, 18));
+            ASTSeveral.get()->getASTContext().getSourceManager().translateLineCol(mainFIDSeveral, 6, 12));
             
         vulnerableLinesSeveral.push_back(parsedLine1);
         vulnerableLinesSeveral.push_back(parsedLine2);

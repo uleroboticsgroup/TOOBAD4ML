@@ -59,7 +59,7 @@ TEST_F(ExtractVulnerabilitiesVistorTest, VulnerableLines) {
     std::string end = vulnLines[0].second.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
 
     EXPECT_EQ("5:1", begin.substr(begin.length() - 3, 3));
-    EXPECT_EQ("5:18", end.substr(end.length() - 4, 4));
+    EXPECT_EQ("5:12", end.substr(end.length() - 4, 4));
 
 }
 
@@ -69,7 +69,7 @@ cExtractVulnerabilitiesVisitor visitor(ASTWithVulnerabilities.get()->getASTConte
     std::vector<BOFLocation> vulnLines = helper.getVulnerableLines(visitor);
     EXPECT_EQ(vulnLines.size(), 2);
 
-    std::vector<std::string> expected = {"6:1", "6:18","5:1", "5:18"};
+    std::vector<std::string> expected = {"6:1", "6:12","5:1", "5:12"};
     int i = 0;
     for (BOFLocation vulnLine: vulnLines) {
         std::string begin = vulnLine.first.printToString(ASTWithVulnerability.get()->getASTContext().getSourceManager());
