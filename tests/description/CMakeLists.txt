@@ -6,9 +6,15 @@ project(description_test)
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}
-    CodePropertyGraphTest.cpp
+    IsCharacterCaseConversionSinkTest.cpp
     CommandLineTest.cpp
+    CodePropertyGraphTest.cpp
     SinkClassificationTest.cpp
+    NumberOfElementsCopiedWithinBoundsTest.cpp
+    ArrayWriteIndexWithinBoundsTest.cpp
+    FormatStringPrecisionWithinBoundsTest.cpp
+    StringCopyWithinBoundsTest.cpp
+    CPGExplorerTest.cpp
 )
 target_include_directories(${PROJECT_NAME}
     PUBLIC
