@@ -31,10 +31,11 @@ std::string cIsCharacterCaseConversionSink::ExtractFeature(
 					if (std::find(sinkTypes.begin(), sinkTypes.end(),
 							call->getDirectCallee()->getName()) != sinkTypes.end()) {
 						feature = "1";
-					} else {
-						feature = "0";
 					}
 				}
+			}
+			else {
+				feature = "0";
 			}
 		}
 	}
