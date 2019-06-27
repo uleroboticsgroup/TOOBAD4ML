@@ -19,6 +19,9 @@ cFindVariableVisitorTest::cFindVariableVisitorTest() {
     clang::tooling::CommonOptionsParser OptionsParser(0, NULL, "Test");
     clang::tooling::ClangTool Tool(
             OptionsParser.getCompilations(), testSources);
+
+    Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
+
     int result = Tool.run(
         clang::tooling::newFrontendActionFactory<analysis::cStubModelBOFAction>().get()
     );

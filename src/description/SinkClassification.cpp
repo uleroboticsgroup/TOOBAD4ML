@@ -4,7 +4,6 @@
 using namespace TOOBAD4ML;
 using namespace description;
 
-
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------
 
@@ -41,7 +40,6 @@ std::string cSinkClassification::ExtractFeature(
 					== clang::Stmt::StmtClass::CallExprClass) {
 
 				if(clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink())){
-
 						if(sinkTypes.find(call->getDirectCallee()->getName()) == sinkTypes.end()) {
 							llvm::outs() << "No function found in sink types." << "\n";
 							feature = "0";
@@ -53,7 +51,7 @@ std::string cSinkClassification::ExtractFeature(
 
 	}
 
-	llvm::outs() << "SinkClassification: " <<  feature << "\n";
+	//llvm::outs() << "SinkClassification: " <<  feature << "\n";
 	//return decoratedFeature.append("SinkClassification: ");
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

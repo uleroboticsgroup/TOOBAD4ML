@@ -49,7 +49,7 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
 			std::string descriptor = m_CPGExplorer.Inspect(cpg, BOF);
-		    std::cout << descriptor << "\n";
+		    //std::cout << descriptor << "\n";
 
 			m_dataset.push_back(descriptor);
 		}

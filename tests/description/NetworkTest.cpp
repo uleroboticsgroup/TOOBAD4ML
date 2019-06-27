@@ -22,9 +22,10 @@ protected:
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
         std::vector<std::string> Sources;
-        Sources.push_back("../../../data/filetest.c");
+        Sources.push_back("data/filetest.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
+        Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
 
         std::vector<std::unique_ptr<clang::ASTUnit>> ASTs;
         Tool.buildASTs(ASTs);

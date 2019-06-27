@@ -9,6 +9,7 @@
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
+//#include "route.h"
 
 namespace TOOBAD4ML{
 
@@ -26,9 +27,11 @@ protected:
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
         std::vector<std::string> Sources;
-        Sources.push_back("../../../data/sinkTypes.c");
+        //Sources.push_back(std::string(my_argv[1]) + "/sinkTypes.c");
+        Sources.push_back("data/sinkTypes.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
+        Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
 
         std::vector<std::unique_ptr<clang::ASTUnit>> ASTs;
         Tool.buildASTs(ASTs);
@@ -53,12 +56,10 @@ protected:
         }
     }
 
-
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow*> bofs;
     cPadmanabhuniBuilder* builder;
-
 };
 
 TEST_F(CPGExplorerTest, Constructor) {

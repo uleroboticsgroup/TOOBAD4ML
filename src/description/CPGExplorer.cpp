@@ -34,5 +34,5 @@ cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 // ----------------------------------------------------------------------------
 
 void cCPGExplorer::SetDescriptor(IDescriptor& descriptor) {
-	m_descriptor = descriptor;
+	m_descriptor = std::ref(descriptor);
 }

@@ -130,7 +130,7 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 
 									// if the DeclRefExpr is of type Array
 									if(t.getTypePtr()->isArrayType() || t.getTypePtr()->isConstantArrayType()) {
-										buff->dumpColor();
+										//buff->dumpColor();
 										m_buffer = buff;
 									} else {
 										llvm::outs() << "El buffer no es de typo array\n";
@@ -139,7 +139,7 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 								}
 
 							} else if(nameExpr.compare("MemberExpr") == 0) { //TODO Buffer for structs, unions
-								buff->dumpColor();
+								// buff->dumpColor();
 								m_buffer = buff;
 							}
 						}
@@ -171,7 +171,7 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 
 										// if the DeclRefExpr is of type Array
 										if(t.getTypePtr()->isArrayType()) {
-											buff->dumpColor();
+											//buff->dumpColor();
 											m_buffer = buff;
 										}
 									}

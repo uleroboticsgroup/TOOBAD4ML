@@ -34,8 +34,8 @@ bool cFindSelectedASTNodesVisitor::isVulnerable(clang::Expr* expr) {
 			m_selectedNodes.push_back(expr);
 			it = m_vulnerableLines.erase(it);
 
-			llvm::outs() << "Node is:" << expr->getStmtClassName() << "\n";
-			expr->dumpColor();
+			//llvm::outs() << "Node is:" << expr->getStmtClassName() << "\n";
+			//expr->dumpColor();
 
 		} else {
 			it++;

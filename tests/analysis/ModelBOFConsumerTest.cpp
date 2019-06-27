@@ -4,7 +4,6 @@
 #include "clang/Frontend/ASTUnit.h"
 #include "description/PadmanabhuniBuilder.h"
 #include "clang/Tooling/CompilationDatabase.h"
-#include "clang/Tooling/Tooling.h"
 
 // ----------------------------------------------------------------------------
 
@@ -17,8 +16,9 @@ TEST(BOFConsumer, HandleTranslationUnit) {
     clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
     std::vector<std::string> Sources;
-    Sources.push_back("../../../data/test.c");
+    Sources.push_back("data/test.c");
     clang::tooling::ClangTool Tool(Compilations, Sources);
+    Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
 
     std::vector<std::unique_ptr<clang::ASTUnit>> ASTs;
     Tool.buildASTs(ASTs);
