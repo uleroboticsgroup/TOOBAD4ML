@@ -36,6 +36,4 @@ target_link_libraries(tests
     PUBLIC
         gtest_main
         gmock
-    PRIVATE
-        analysis_test
 )
