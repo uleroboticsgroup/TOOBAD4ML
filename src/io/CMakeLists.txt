@@ -16,6 +16,7 @@ add_library(${PROJECT_NAME}
     STATIC
         FileManager.cpp
         FunctionTypeTranslator.cpp
+        CSVOutputFormatStrategy.cpp
 	InputManager.cpp
 )
 

@@ -1,0 +1,12 @@
+#include "CSVOutputFormatStrategy.h"
+
+using namespace TOOBAD4ML;
+using namespace IO;
+
+bool cCSVOutputFormatStrategy::Write(llvm::raw_ostream& stream, Descriptor descriptor) {
+    for (std::string item: descriptor) {
+        stream << item << "\n";
+    }
+
+    return true;
+}
