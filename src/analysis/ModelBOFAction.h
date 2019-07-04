@@ -3,6 +3,7 @@
 #define  TOOBAD4ML_ANALYSIS_MODELBOFACTION_H
 // ----------------------------------------------------------------------------
 #include <clang/Frontend/FrontendAction.h>
+#include "ModelBOFConsumer.h"
 // ----------------------------------------------------------------------------
 
 
@@ -27,7 +28,8 @@ class cModelBOFAction: public clang::ASTFrontendAction {
 
     // clang::FrontendAction INHERITED METHODS
     // ------------------------------------------------------------------------
-
+public:
+	cModelBOFConsumer* getModelBOFConsumer();
 protected:
 
 	/*!
@@ -39,6 +41,9 @@ protected:
 	 */
 	std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
 			clang::CompilerInstance&, llvm::StringRef) override;
+	
+private:
+	cModelBOFConsumer* m_modelBOFConsumer;
 
 }; /* class cModelBOFAction */
 

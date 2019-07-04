@@ -5,18 +5,18 @@
 #include <memory>
 #include <clang/Tooling/Tooling.h>
 #include <llvm/Support/CommandLine.h>
-
+#include "CmdLineArguments.h"
 
 namespace TOOBAD4ML {
 
 namespace IO {
 
-class InputManager {
+class cInputManager {
 
 public:
-    InputManager();
+    cInputManager();
 
-    static std::vector<std::string> GetSourceFromCommandLine(int argc, const char** argv);
+    static sCmdLineArguments& GetSourceFromCommandLine(int argc, const char** argv);
 
     static std::unique_ptr<clang::tooling::CompilationDatabase>
     GetCompilationDatabase(const llvm::Twine& source);

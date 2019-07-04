@@ -3,6 +3,7 @@
 #define  TOOBAD4ML_ANALYSIS_MODELBOFCONSUMER_H
 // -----------------------------------------------------------------------------
 #include <clang/AST/ASTConsumer.h>
+#include "io/IOutputFormatStrategy.h"
 // -----------------------------------------------------------------------------
 #include <string>
 #include <vector>
@@ -83,10 +84,7 @@ public:
 
 public:
 
-    /*!
-     * TODO: what do we have to return here??
-     */
-	virtual bool Output();
+    bool Output(TOOBAD4ML::IO::IOutputFormatStrategy&, const llvm::Twine&);
 
 	//--------- FOR TESTING-----------
 	friend class cModelBOFConsumerTest;

@@ -1,7 +1,8 @@
 #include <llvm/Support/CommandLine.h>
 #include <clang/Tooling/Tooling.h>
 #include "io/InputManager.h"
-
+#include "io/CmdLineArguments.h"
+#include <iostream>
 using namespace TOOBAD4ML;
 using namespace IO;
 
@@ -14,16 +15,31 @@ using namespace IO;
 *               sources and/or options.
 * @returns Source path.
 */
-std::vector<std::string> InputManager::GetSourceFromCommandLine(int argc, const char** argv) {
+sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char** argv) {
     // define the arguments to be extracted
     llvm::cl::list<std::string> sources(
             llvm::cl::Positional,
             llvm::cl::desc("<source0> [...<sourceN>]"),
             llvm::cl::OneOrMore
     );
+    llvm::cl::opt<std::string> OutputFilename("o",  llvm::cl::desc("Specify output filename"),  llvm::cl::value_desc("filename"));
+
+    llvm::cl::opt<std::string> ExtensionFilename("e",  llvm::cl::desc("Specify output extension: CSV. If nothing is specified, the output would be printed to standard output."),  llvm::cl::value_desc("type"));
+
     llvm::cl::ParseCommandLineOptions(argc, argv);
 
-    return sources;
+    std::map<eFlagsType, std::string> flags;
+    if (OutputFilename.getValue() != "") {
+        std::cout << "Output file: " << OutputFilename.getValue() << "\n";
+        flags.insert(std::make_pair(eFlagsType::OUTPUT_FILENAME, OutputFilename.getValue()));
+    }
+
+    if (ExtensionFilename.getValue() != "") {
+        std::cout << "Output extension: " << ExtensionFilename.getValue() << "\n";
+        flags.insert(std::make_pair(eFlagsType::OUTPUT_EXTENSION, ExtensionFilename.getValue()));
+    }
+    sCmdLineArguments *cmdLine = new sCmdLineArguments(sources, flags);
+    return *cmdLine;
 }
 
 /*
@@ -33,7 +49,7 @@ std::vector<std::string> InputManager::GetSourceFromCommandLine(int argc, const 
 * @returns A reference to the corresponding compilation database.
 */
 std::unique_ptr<clang::tooling::CompilationDatabase>
-InputManager::GetCompilationDatabase(const llvm::Twine& source) {
+cInputManager::GetCompilationDatabase(const llvm::Twine& source) {
     std::string errorMessage;
 
     // check if the source (file) has a compilation database

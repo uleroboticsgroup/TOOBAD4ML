@@ -3,12 +3,15 @@
 #define TOOBAD4ML_ANALYSIS_CLANGTOOL_H
 // ----------------------------------------------------------------------------
 #include <clang/Tooling/Tooling.h>
+#include "io/CmdLineArguments.h"
 // ----------------------------------------------------------------------------
 
 
 namespace TOOBAD4ML {
 
 namespace analysis {
+    class cModelBOFAction;
+
 
 /*!
  * \class cClangTool
@@ -52,7 +55,7 @@ public:
      *
      * @param sources   A list of sources.
      */
-    cClangTool(const std::vector<std::string>);
+    cClangTool(IO::sCmdLineArguments&);
 
     ~cClangTool();
 
@@ -83,6 +86,8 @@ private:
 
     //! Tool to run actions.
     std::unique_ptr<clang::tooling::ClangTool> m_tool;
+
+    IO::sCmdLineArguments& m_args;
 
 }; /* class cClangTool */
 

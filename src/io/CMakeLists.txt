@@ -17,7 +17,10 @@ add_library(${PROJECT_NAME}
         FileManager.cpp
         FunctionTypeTranslator.cpp
         CSVOutputFormatStrategy.cpp
-	InputManager.cpp
+        STDOutputFormatStrategy.cpp
+        CmdLineArguments.cpp
+        FormatStrategyFactory.cpp
+	    InputManager.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

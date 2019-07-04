@@ -5,6 +5,7 @@
 #include "description/PadmanabhuniBuilder.h"
 //----------------------------------------------------------------------------
 #include <clang/Frontend/CompilerInstance.h>
+#include <iostream>
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -21,6 +22,11 @@ std::unique_ptr<clang::ASTConsumer> cModelBOFAction::CreateASTConsumer(
 	
 	CI.getDiagnostics().setClient(new clang::IgnoringDiagConsumer());
 
-	return std::unique_ptr<clang::ASTConsumer>(
-            new cModelBOFConsumer(*(pmd.CreateDescriptor())));
+	cModelBOFConsumer* BOFconsumer = new cModelBOFConsumer(*(pmd.CreateDescriptor()));
+	m_modelBOFConsumer = BOFconsumer;
+	return std::unique_ptr<clang::ASTConsumer>(BOFconsumer);
 }
+
+cModelBOFConsumer* cModelBOFAction::getModelBOFConsumer() {
+	return m_modelBOFConsumer;
+};

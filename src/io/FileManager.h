@@ -18,7 +18,7 @@ public:
 
 	KeywordList Read(std::string);
 	
-	bool Write(std::vector<std::string>, IOutputFormatStrategy&, const llvm::Twine&, bool);
+	bool Write(std::vector<std::string>, IOutputFormatStrategy*, const llvm::Twine&, bool);
 
 	void SetWorkingDirectory(llvm::StringRef);
 

@@ -9,6 +9,9 @@
 #include "description/CodePropertyGraph.h"
 #include "description/BufferOverflow.h"
 #include <iostream>
+#include "io/FileManager.h"
+#include "io/CSVOutputFormatStrategy.h"
+#include "io/STDOutputFormatStrategy.h"
 
 // -----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -49,20 +52,33 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
 			std::string descriptor = m_CPGExplorer.Inspect(cpg, BOF);
-		    //std::cout << descriptor << "\n";
 
 			m_dataset.push_back(descriptor);
 		}
 	}
+    std::cout << "ANALYZED" << "\n";
 }
-
 
 // CLASS METHODS
 // -------------------------------------------------------------------------
 
-bool cModelBOFConsumer::Output() {
-    // TODO. code this
-    return true;
+bool cModelBOFConsumer::Output(TOOBAD4ML::IO::IOutputFormatStrategy& strategy, const llvm::Twine& filename = "") {
+    IO::cFileManager *fm = IO::cFileManager::GetInstance();
+    std::cout << "ALL GOOD" << "\n";
+    std::cout << filename.str() << "\n";
+    IO::cFileManager fileManager = *fm;
+    std::cout << "ALL GOOD" << "\n";
+
+    bool success = fileManager.Write(m_dataset, &strategy, filename, false); 
+
+    if (!success) {
+        std::cout << "An error occurred while writing the results." <<  "\n";
+    }
+    else{
+        std::cout << "Results have been written." << "\n";   
+    }
+
+    return success;
 }
 
 // ACCESSOR METHODS
