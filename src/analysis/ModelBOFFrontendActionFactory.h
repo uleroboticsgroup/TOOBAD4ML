@@ -18,7 +18,7 @@ public:
     cModelBOFAction& GetModelBOFAction();
 
 private:
-    cModelBOFAction& m_modelBOFAction;
+    std::unique_ptr<cModelBOFAction> m_modelBOFAction;
 };
 
 }

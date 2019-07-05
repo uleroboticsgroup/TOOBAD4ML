@@ -1,7 +1,6 @@
 #ifndef IO_FORMATSTRAT_H
 #define IO_FORMATSTRAT_H
 
-#include <iostream>
 #include <llvm/Support/raw_ostream.h>
 
 namespace TOOBAD4ML {

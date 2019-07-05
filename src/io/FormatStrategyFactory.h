@@ -12,8 +12,7 @@ class IOutputFormatStrategy;
 
 enum eOutputFormatType {
     CSV, 
-    STD, // Standard output
-    UNK // Unknown
+    STD // Standard output
 };
 
 class cFormatStrategyFactory {

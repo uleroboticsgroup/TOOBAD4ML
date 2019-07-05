@@ -4,10 +4,17 @@
 // ----------------------------------------------------------------------------
 #include <clang/Frontend/FrontendAction.h>
 #include "ModelBOFConsumer.h"
+#include "llvm/ADT/Twine.h"
+#include "io/CmdLineArguments.h"
+#include <iostream>
 // ----------------------------------------------------------------------------
 
 
 namespace TOOBAD4ML {
+
+namespace IO {
+	class IOutputFormatStrategy;
+}
 
 namespace analysis {
 
@@ -30,8 +37,10 @@ class cModelBOFAction: public clang::ASTFrontendAction {
     // ------------------------------------------------------------------------
 public:
 	cModelBOFConsumer* getModelBOFConsumer();
+	void setCmdLineArguments(IO::sCmdLineArguments&);
 protected:
 
+	void EndSourceFileAction() override;
 	/*!
      * Create the AST consumer object for this action.
 	 *
@@ -43,8 +52,8 @@ protected:
 			clang::CompilerInstance&, llvm::StringRef) override;
 	
 private:
+	std::unique_ptr<IO::sCmdLineArguments> m_cmdLineArguments;
 	cModelBOFConsumer* m_modelBOFConsumer;
-
 }; /* class cModelBOFAction */
 
 } // namespace analysis

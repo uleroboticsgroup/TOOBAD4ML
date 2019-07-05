@@ -6,6 +6,7 @@
 //----------------------------------------------------------------------------
 #include <clang/Frontend/CompilerInstance.h>
 #include <iostream>
+#include "io/CmdLineArguments.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -16,12 +17,12 @@ using namespace analysis;
 // ----------------------------------------------------------------------------
 
 std::unique_ptr<clang::ASTConsumer> cModelBOFAction::CreateASTConsumer(
-		clang::CompilerInstance& CI, llvm::StringRef) {
+		clang::CompilerInstance& CI, llvm::StringRef file) {
     // create a descriptive model by default
+	std::cout << "Processing file " <<  file.str();
 	description::cPadmanabhuniBuilder pmd;
 	
 	CI.getDiagnostics().setClient(new clang::IgnoringDiagConsumer());
-
 	cModelBOFConsumer* BOFconsumer = new cModelBOFConsumer(*(pmd.CreateDescriptor()));
 	m_modelBOFConsumer = BOFconsumer;
 	return std::unique_ptr<clang::ASTConsumer>(BOFconsumer);
@@ -29,4 +30,12 @@ std::unique_ptr<clang::ASTConsumer> cModelBOFAction::CreateASTConsumer(
 
 cModelBOFConsumer* cModelBOFAction::getModelBOFConsumer() {
 	return m_modelBOFConsumer;
+};
+
+void cModelBOFAction::setCmdLineArguments(IO::sCmdLineArguments& cmdLineArgs) {
+	m_cmdLineArguments = std::unique_ptr<IO::sCmdLineArguments>(&cmdLineArgs);
+};
+
+void cModelBOFAction::EndSourceFileAction() {
+	m_modelBOFConsumer->Output(*(m_cmdLineArguments.get()));
 };

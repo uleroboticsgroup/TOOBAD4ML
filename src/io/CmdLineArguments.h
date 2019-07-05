@@ -4,11 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include "llvm/ADT/Twine.h"
 
 namespace TOOBAD4ML {
 
 namespace IO {
 
+class IOutputFormatStrategy;
 
 enum eFlagsType {
     OUTPUT_FILENAME,
@@ -25,6 +27,9 @@ struct sCmdLineArguments {
 
     std::map<eFlagsType, std::string> getFlags();
     void setFlags(std::map<eFlagsType, std::string>);
+
+    llvm::Twine& getFilename();
+    IOutputFormatStrategy* getStrategy();
 
     sCmdLineArguments(std::vector<std::string> sources, std::map<eFlagsType, std::string> flags):
         m_sources(sources),

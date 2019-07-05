@@ -10,8 +10,7 @@
 #include "description/BufferOverflow.h"
 #include <iostream>
 #include "io/FileManager.h"
-#include "io/CSVOutputFormatStrategy.h"
-#include "io/STDOutputFormatStrategy.h"
+#include "io/CmdLineArguments.h"
 
 // -----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -45,6 +44,7 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
         description::cCodePropertyGraph cpg(*(functionIter.first));
 
         for (auto const& vulnLOCIter : functionIter.second) {
+            std::cout << ".";
             // encapsulate the data related to the current vulnerable LOC
             description::cBufferOverflow BOF(*vulnLOCIter);
 			BOF.SetInput(cpg);
@@ -56,26 +56,21 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 			m_dataset.push_back(descriptor);
 		}
 	}
-    std::cout << "ANALYZED" << "\n";
+
+    std::cout << " Completed" << "\n";
 }
 
 // CLASS METHODS
 // -------------------------------------------------------------------------
 
-bool cModelBOFConsumer::Output(TOOBAD4ML::IO::IOutputFormatStrategy& strategy, const llvm::Twine& filename = "") {
+bool cModelBOFConsumer::Output(IO::sCmdLineArguments& arguments) {
     IO::cFileManager *fm = IO::cFileManager::GetInstance();
-    std::cout << "ALL GOOD" << "\n";
-    std::cout << filename.str() << "\n";
     IO::cFileManager fileManager = *fm;
-    std::cout << "ALL GOOD" << "\n";
 
-    bool success = fileManager.Write(m_dataset, &strategy, filename, false); 
+    bool success = fileManager.Write(m_dataset, arguments.getStrategy(), arguments.getFilename(), false); 
 
     if (!success) {
         std::cout << "An error occurred while writing the results." <<  "\n";
-    }
-    else{
-        std::cout << "Results have been written." << "\n";   
     }
 
     return success;

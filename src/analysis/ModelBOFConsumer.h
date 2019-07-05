@@ -3,7 +3,7 @@
 #define  TOOBAD4ML_ANALYSIS_MODELBOFCONSUMER_H
 // -----------------------------------------------------------------------------
 #include <clang/AST/ASTConsumer.h>
-#include "io/IOutputFormatStrategy.h"
+#include <llvm/ADT/Twine.h>
 // -----------------------------------------------------------------------------
 #include <string>
 #include <vector>
@@ -23,7 +23,10 @@ namespace description {
 
 }
 
-
+namespace IO {
+    class IOutputFormatStrategy;
+    class sCmdLineArguments;
+}
 // CLASS DEFINITION
 // -----------------------------------------------------------------------------
 
@@ -84,7 +87,7 @@ public:
 
 public:
 
-    bool Output(TOOBAD4ML::IO::IOutputFormatStrategy&, const llvm::Twine&);
+    bool Output(IO::sCmdLineArguments&);
 
 	//--------- FOR TESTING-----------
 	friend class cModelBOFConsumerTest;

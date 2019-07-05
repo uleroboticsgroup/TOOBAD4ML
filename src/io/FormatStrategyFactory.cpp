@@ -17,10 +17,7 @@ eOutputFormatType cFormatStrategyFactory::getOutputFormatType(std::string type) 
     if (type == "CSV") {
         return eOutputFormatType::CSV;
     }
-    else if (type == "STD") {
-        return eOutputFormatType::STD;
-    }
     else {
-        return eOutputFormatType::UNK;
+        return eOutputFormatType::STD;
     }
 }
