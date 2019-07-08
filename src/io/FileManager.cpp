@@ -7,7 +7,7 @@
 using namespace TOOBAD4ML;
 using namespace IO;
 
-bool cFileManager::Write(std::vector<std::string> descriptor, IOutputFormatStrategy* strategy, const llvm::Twine& file, bool append) {
+bool cFileManager::Write(std::vector<std::string> descriptor, IOutputFormatStrategy* strategy, const llvm::Twine& file, bool append) {    
     if (file.str() == "") {
         return strategy->Write(llvm::outs(), descriptor);
     }

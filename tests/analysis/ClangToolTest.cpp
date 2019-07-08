@@ -42,26 +42,30 @@ TEST_F(ClangToolTest, CreateFromCmdLineWithoutFileSource) {
 */
 
 TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleFileSource) {
+    IO::cInputManager* im = new IO::cInputManager();
     const char* multipleFiles[3] = {PROGRAM_NAME, "data/testEmpty.c", "data/testSeveral.c"};
-    cClangTool* clangTool = new cClangTool(3, multipleFiles);
+
+    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(3, multipleFiles));
     cClangToolTest cClangToolTest;
     ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
     delete clangTool;
 }
 
 TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleMixedSources) {
+    IO::cInputManager* im = new IO::cInputManager();
     const char* mixedSources[3] = {PROGRAM_NAME, "data/test.c", "data/*.c"};
 
-    cClangTool* clangTool = new cClangTool(3, mixedSources);
+    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(3, mixedSources));
     cClangToolTest cClangToolTest;
     ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
     delete clangTool;
 }
 
 TEST_F(ClangToolTest, CreateFromCmdLineWithDirSource) {
+    IO::cInputManager* im = new IO::cInputManager();
     const char* dirSource[2] = {PROGRAM_NAME, "data/*.c"};
 
-    cClangTool* clangTool = new cClangTool(2, dirSource);
+    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(2, dirSource));
     cClangToolTest cClangToolTest;
     ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
     delete clangTool;

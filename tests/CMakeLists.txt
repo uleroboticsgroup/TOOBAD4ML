@@ -20,6 +20,7 @@ set(TOOBAD4ML_TEST_SUITES
     analysis
     ASTTraversal
     description
+    io
 )
 
 foreach(TEST_SUITE IN LISTS TOOBAD4ML_TEST_SUITES)

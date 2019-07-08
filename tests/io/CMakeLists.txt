@@ -7,7 +7,12 @@ project(io_test)
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}
+    CSVOutputFormatStrategyTest.cpp
+    STDOutputFormatStrategyTest.cpp
+    FormatStrategyFactoryTest.cpp
+    FileManagerTest.cpp
     InputManagerTest.cpp
+    CmdLineArgumentsTest.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

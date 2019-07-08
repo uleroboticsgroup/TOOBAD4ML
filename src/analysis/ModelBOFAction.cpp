@@ -19,7 +19,7 @@ using namespace analysis;
 std::unique_ptr<clang::ASTConsumer> cModelBOFAction::CreateASTConsumer(
 		clang::CompilerInstance& CI, llvm::StringRef file) {
     // create a descriptive model by default
-	std::cout << "Processing file " <<  file.str();
+	std::cout << "\nProcessing file " <<  file.str();
 	description::cPadmanabhuniBuilder pmd;
 	
 	CI.getDiagnostics().setClient(new clang::IgnoringDiagConsumer());
@@ -32,8 +32,8 @@ cModelBOFConsumer* cModelBOFAction::getModelBOFConsumer() {
 	return m_modelBOFConsumer;
 };
 
-void cModelBOFAction::setCmdLineArguments(IO::sCmdLineArguments& cmdLineArgs) {
-	m_cmdLineArguments = std::unique_ptr<IO::sCmdLineArguments>(&cmdLineArgs);
+void cModelBOFAction::setCmdLineArguments(IO::sCmdLineArguments& cmdLineArgs) { 
+	m_cmdLineArguments = std::unique_ptr<IO::sCmdLineArguments>(new IO::sCmdLineArguments(cmdLineArgs.getSources(), cmdLineArgs.getFlags()));
 };
 
 void cModelBOFAction::EndSourceFileAction() {

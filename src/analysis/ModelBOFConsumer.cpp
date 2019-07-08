@@ -63,11 +63,11 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 // CLASS METHODS
 // -------------------------------------------------------------------------
 
-bool cModelBOFConsumer::Output(IO::sCmdLineArguments& arguments) {
+bool cModelBOFConsumer::Output(IO::sCmdLineArguments& args) {
     IO::cFileManager *fm = IO::cFileManager::GetInstance();
     IO::cFileManager fileManager = *fm;
 
-    bool success = fileManager.Write(m_dataset, arguments.getStrategy(), arguments.getFilename(), false); 
+    bool success = fileManager.Write(m_dataset, args.getStrategy(), args.getFilename(), false); 
 
     if (!success) {
         std::cout << "An error occurred while writing the results." <<  "\n";

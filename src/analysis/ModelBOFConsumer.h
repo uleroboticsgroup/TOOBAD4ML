@@ -98,7 +98,6 @@ public:
     
     void SetModel(description::IDescriptor&);
 
-
     // ATTRIBUTES
     // -------------------------------------------------------------------------
 
@@ -106,7 +105,6 @@ private:
 
     //! Processed lines of code containing the representation of a BOF.
 	std::vector<std::string> m_dataset;
-
     //! Code Property Graph analyzer for obtaining a representation of a BOF.
     description::cCPGExplorer& m_CPGExplorer;
 

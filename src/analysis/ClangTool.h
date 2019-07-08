@@ -48,7 +48,7 @@ public:
      * @param argv   List of command-line arguments, including: program's name,
      *               list of sources and/or program's options.
      */
-    cClangTool(int, const char**);
+    //cClangTool(int, const char**);
 
     /*!
      * Creates a utility to run frontend actions over a source.

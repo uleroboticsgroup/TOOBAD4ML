@@ -20,9 +20,6 @@ public:
     IOutputFormatStrategy& CreateCSVOutputFormatStrategy();
     IOutputFormatStrategy& CreateSTDOutputFormatStrategy();
     eOutputFormatType getOutputFormatType(std::string);
-
-private:
-    std::map<std::string, eOutputFormatType> m_enumTranslator;
 };
 
 }

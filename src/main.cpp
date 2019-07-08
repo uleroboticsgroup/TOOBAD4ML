@@ -1,9 +1,10 @@
 // ----------------------------------------------------------------------------
 #include "analysis/ClangTool.h"
 #include "analysis/ModelBOFAction.h"
-#include "analysis/ModelBOFConsumer.h"
+#include "io/CmdLineArguments.h"
 #include "analysis/ModelBOFFrontendActionFactory.h"
-#include "description/PadmanabhuniBuilder.h"
+#include "io/InputManager.h"
+#include <iostream>
 
 // ----------------------------------------------------------------------------
 
@@ -12,15 +13,29 @@
 
 static llvm::cl::OptionCategory MyToolCategory("MY GOD");
 
+using namespace TOOBAD4ML;
+
 int main(int argc, const char **argv) {
 
-    TOOBAD4ML::analysis::cClangTool tool(argc, argv);
-    
-    TOOBAD4ML::analysis::cModelBOFAction* action = new TOOBAD4ML::analysis::cModelBOFAction();
-    TOOBAD4ML::analysis::cModelBOFFrontendActionFactory* factory = new TOOBAD4ML::analysis::cModelBOFFrontendActionFactory(*action);
+    IO::cInputManager* inputManager = new IO::cInputManager();
+    IO::sCmdLineArguments arguments = inputManager->GetSourceFromCommandLine(argc, argv);
+    std::vector<std::string> currentSources;
 
-    return tool.Run(factory);
+    for (std::string source: arguments.getSources()) {
+        currentSources.push_back(source);
+        IO::sCmdLineArguments* currentArguments = new IO::sCmdLineArguments(currentSources, arguments.getFlags());
 
+        TOOBAD4ML::analysis::cClangTool tool(*currentArguments);
+        
+        TOOBAD4ML::analysis::cModelBOFAction* action = new TOOBAD4ML::analysis::cModelBOFAction();
+        TOOBAD4ML::analysis::cModelBOFFrontendActionFactory* factory = new TOOBAD4ML::analysis::cModelBOFFrontendActionFactory(*action);
+        tool.Run(factory);
+
+        currentSources.pop_back();
+    }
+   
+
+    return 0;
 
 
 /*
