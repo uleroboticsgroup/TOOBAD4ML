@@ -1,6 +1,7 @@
 #include "FileManager.h"
 #include "IOutputFormatStrategy.h"
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/raw_os_ostream.h>
 #include <clang/Basic/FileManager.h>
 #include <iostream>
 
@@ -9,7 +10,8 @@ using namespace IO;
 
 bool cFileManager::Write(std::vector<std::string> descriptor, IOutputFormatStrategy* strategy, const llvm::Twine& file, bool append) {    
     if (file.str() == "") {
-        return strategy->Write(llvm::outs(), descriptor);
+        llvm::raw_os_ostream stdout(std::cout);
+        return strategy->Write(stdout, descriptor);
     }
 
     std::error_code ec;

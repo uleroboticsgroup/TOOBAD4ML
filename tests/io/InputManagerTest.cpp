@@ -12,56 +12,32 @@ class InputManagerTest:
 
 protected:
     InputManagerTest()
-    : fileSource({PROGRAM_NAME, "test.c"}),
-      multipleFiles({PROGRAM_NAME, "test.c", "test1.c", "test2.c"}),
-      dirSource({PROGRAM_NAME, "."}),
-      mixedSources({PROGRAM_NAME, "test.c", "."}) {
-          inputManager = new cInputManager();
-      }
+    : fileSources({PROGRAM_NAME, "data/test.c", "data/testEmpty.c", "data/test_load_folder/*.c"}){
+        inputManager = new cInputManager();
+    }
 
     // ATTRIBUTES
     // ------------------------------------------------------------------------
     const char* PROGRAM_NAME = "TOOBAD4ML";
-    const char* fileSource[2];
-    const char* multipleFiles[4];
-    const char* dirSource[2];
-    const char* mixedSources[3];
+    const char* fileSources[4];
     cInputManager* inputManager;
-
 };
 
 // ------------------------------------------------------------------------------------
 // GetSourceFromCommandLine
 // ------------------------------------------------------------------------------------
 
-TEST_F(InputManagerTest, GetSourceFromCommandLineSingleFile) {
+TEST_F(InputManagerTest, GetSourceFromCommandLineFile) {
     int i = 1;
-    for (std::string file: inputManager->GetSourceFromCommandLine(2, fileSource).getSources()) {
-        ASSERT_EQ(file, fileSource[i++]);
+    std::vector<std::string> sources = inputManager->GetSourceFromCommandLine(4, fileSources).getSources();
+
+    EXPECT_EQ(3, sources.size());
+
+    for(int i = 0; i < sources.size(); i++) {
+        EXPECT_EQ(fileSources[i+1], sources[i]);
     }
 }
 
-TEST_F(InputManagerTest, GetSourceFromCommandLineMultipleFiles) {
-    int i = 1;
-    for (std::string file: inputManager->GetSourceFromCommandLine(4, multipleFiles).getSources()) {
-        ASSERT_EQ(file, multipleFiles[i++]);
-    }
-}
-
-TEST_F(InputManagerTest, GetSourceFromCommandLineMixedSources) {
-    int i = 1;
-    for (std::string file: inputManager->GetSourceFromCommandLine(3, mixedSources).getSources()) {
-        ASSERT_EQ(file, mixedSources[i++]);
-    }
-}
-
-
-TEST_F(InputManagerTest, GetSourceFromCommandLineDirectory) {
-    int i = 1;
-    for (std::string file: inputManager->GetSourceFromCommandLine(2, dirSource).getSources()) {
-        ASSERT_EQ(file, dirSource[i++]);
-    }
-}
 
 // ------------------------------------------------------------------------------------
 // GetCompilationDatabase

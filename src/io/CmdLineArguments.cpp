@@ -41,3 +41,11 @@ IOutputFormatStrategy* sCmdLineArguments::getStrategy() {
 
     return strategy;
 }
+
+bool sCmdLineArguments::getAppend() {
+    return m_append;
+}
+
+void sCmdLineArguments::setAppend(bool shouldAppend) {
+    m_append = shouldAppend;
+}

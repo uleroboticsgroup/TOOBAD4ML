@@ -34,6 +34,7 @@ cModelBOFConsumer* cModelBOFAction::getModelBOFConsumer() {
 
 void cModelBOFAction::setCmdLineArguments(IO::sCmdLineArguments& cmdLineArgs) { 
 	m_cmdLineArguments = std::unique_ptr<IO::sCmdLineArguments>(new IO::sCmdLineArguments(cmdLineArgs.getSources(), cmdLineArgs.getFlags()));
+	m_cmdLineArguments.get()->setAppend(cmdLineArgs.getAppend());
 };
 
 void cModelBOFAction::EndSourceFileAction() {

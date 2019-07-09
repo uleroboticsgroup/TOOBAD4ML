@@ -54,14 +54,50 @@ TEST_F(FileManagerTest, WriteFile) {
     std::remove("test.out");
 }
 
+TEST_F(FileManagerTest, WriteFileAppend) {
+    std::ifstream myfile;
+    std::vector<std::string> descriptor;
+    descriptor.push_back("test1");
+    descriptor.push_back("test2");
+    llvm::Twine file("test.out");
+    EXPECT_EQ(true, fileManager->Write(descriptor, CSVStrategy, file, false));
+
+    myfile.open("test.out");    
+    std::string line;
+    
+    std::getline(myfile, line);
+    EXPECT_EQ("test1", line);
+    
+    std::getline(myfile, line);
+    EXPECT_EQ("test2", line); 
+    myfile.close();
+
+    EXPECT_EQ(true, fileManager->Write(descriptor, CSVStrategy, file, true));
+
+    myfile.open("test.out");    
+    
+    for(int i = 0; i < 2; i++) {
+        std::getline(myfile, line);
+        EXPECT_EQ("test1", line);
+        
+        std::getline(myfile, line);
+        EXPECT_EQ("test2", line); 
+    }
+
+    myfile.close();
+
+    std::remove("test.out");
+}
+
 TEST_F(FileManagerTest, WriteSTD) {
     std::stringstream buffer;
-    std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
+    std::streambuf *coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(buffer.rdbuf());
 
     std::vector<std::string> descriptor;
     descriptor.push_back("test1");
     llvm::Twine file("");
     EXPECT_EQ(true, fileManager->Write(descriptor, STDStrategy, file, false));
-    std::string text = buffer.str();
-    EXPECT_EQ(text, "test1");
+    std::cout.rdbuf(coutbuf);
+    EXPECT_EQ(buffer.str(), "Results:\ntest1\n");
 }

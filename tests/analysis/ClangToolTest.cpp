@@ -2,6 +2,9 @@
 #include <gtest/gtest.h>
 #include "analysis/ClangTool.h"
 #include "io/InputManager.h"
+#include "io/CmdLineArguments.h"
+#include "analysis/ModelBOFAction.h"
+#include "analysis/ModelBOFFrontendActionFactory.h"
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // TODO Create a directory with tests files.
@@ -23,8 +26,7 @@ protected:
     ClangToolTest() {}
 
     // ATTRIBUTES
-    // ------------------------------------------------------------------------
-    const char* PROGRAM_NAME = "TOOBAD4ML";
+    // ----------------------------------------------------------------------
 };
 
 // As this suite includes death tests, create an alias for the fixture
@@ -41,81 +43,55 @@ TEST_F(ClangToolTest, CreateFromCmdLineWithoutFileSource) {
 }
 */
 
-TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleFileSource) {
-    IO::cInputManager* im = new IO::cInputManager();
-    const char* multipleFiles[3] = {PROGRAM_NAME, "data/testEmpty.c", "data/testSeveral.c"};
+TEST_F(ClangToolTest, CreateFromCmdLineWithFileSource) {
+    std::vector<std::string> files;
+    
+    files.push_back("data/testEmpty.c");
+    std::map<IO::eFlagsType, std::string> flags;
 
-    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(3, multipleFiles));
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
     cClangToolTest cClangToolTest;
     ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
 }
 
-TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleMixedSources) {
-    IO::cInputManager* im = new IO::cInputManager();
-    const char* mixedSources[3] = {PROGRAM_NAME, "data/test.c", "data/*.c"};
+TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleSources) {
+    std::vector<std::string> files;
+    
+    files.push_back("data/testEmpty.c");
+    files.push_back("data/testSeveral.c");
+    std::map<IO::eFlagsType, std::string> flags;
 
-    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(3, mixedSources));
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
     cClangToolTest cClangToolTest;
     ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
 }
 
-TEST_F(ClangToolTest, CreateFromCmdLineWithDirSource) {
-    IO::cInputManager* im = new IO::cInputManager();
-    const char* dirSource[2] = {PROGRAM_NAME, "data/*.c"};
+TEST_F(ClangToolTest, Run) {
+    std::vector<std::string> files;
+    
+    files.push_back("data/test.c");
+    std::map<IO::eFlagsType, std::string> flags;
 
-    cClangTool* clangTool = new cClangTool(im->GetSourceFromCommandLine(2, dirSource));
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
+    flags.insert(std::make_pair(IO::eFlagsType::OUTPUT_EXTENSION, "STD"));
+    flags.insert(std::make_pair(IO::eFlagsType::OUTPUT_FILENAME, ""));
+
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
+    cModelBOFAction* action = new cModelBOFAction();
+    cModelBOFFrontendActionFactory* factory = new cModelBOFFrontendActionFactory(*action);
+
+    std::stringstream buffer;
+    std::streambuf *coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(buffer.rdbuf());
+    EXPECT_EQ(0, clangTool->Run(factory));
+    std::cout.rdbuf(coutbuf);
+    
+    std::size_t pos = buffer.str().find("Completed");      
+
+    EXPECT_EQ(buffer.str().substr(pos), "Completed\nResults:\n5;1;0;0;0;-1;-1;-1;-1;-1;\n");
 }
-
-/*
-TEST_F(ClangToolTest, CreateWithSingleFileSource) {
-    const char* fileSource[2] = {PROGRAM_NAME, "data/test.c"};
-
-    cClangTool* clangTool = new cClangTool(IO::InputManager::GetSourceFromCommandLine(2, fileSource));
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
-}
-
-TEST_F(ClangToolTest, CreateFromCmdLineWithSingleFileSource) {
-    const char* fileSource[2] = {PROGRAM_NAME, "data/test.c"};
-
-    cClangTool* clangTool = new cClangTool(2, fileSource);
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
-}
-TEST_F(ClangToolTest, CreateWithMultipleFileSource) {
-    const char* multipleFiles[3] = {PROGRAM_NAME, "data/testEmpty.c", "data/testSeveral.c"};
-
-    cClangTool* clangTool = new cClangTool(IO::InputManager::GetSourceFromCommandLine(3, multipleFiles));
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
-}
-
-TEST_F(ClangToolTest, CreateWithMultipleMixedSources) {
-    const char* mixedSources[3] = {PROGRAM_NAME, "data/test.c", "data/*.c"};
-
-    cClangTool* clangTool = new cClangTool(IO::InputManager::GetSourceFromCommandLine(3, mixedSources));
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
-}
-
-TEST_F(ClangToolTest, CreateWithDirSource) {
-    const char* dirSource[2] = {PROGRAM_NAME, "data/*.c"};
-
-    cClangTool* clangTool = new cClangTool(IO::InputManager::GetSourceFromCommandLine(2, dirSource));
-    cClangToolTest cClangToolTest;
-    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
-    delete clangTool;
-}
-*/
 
 } /* analysis */
 

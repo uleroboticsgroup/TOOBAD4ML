@@ -33,6 +33,7 @@ protected:
 TEST_F(CmdLineArgumentsTest, Constructor) {
     EXPECT_EQ(sources, arguments->getSources());
     EXPECT_EQ(flags, arguments->getFlags());
+    EXPECT_EQ(false, arguments->getAppend());
 }
 
 TEST_F(CmdLineArgumentsTest, SetSources) {
@@ -41,6 +42,11 @@ TEST_F(CmdLineArgumentsTest, SetSources) {
     arguments->setSources(sources2);
 
     EXPECT_EQ(sources2, arguments->getSources());
+}
+
+TEST_F(CmdLineArgumentsTest, SetAppend) {
+    arguments->setAppend(true);
+    EXPECT_EQ(true, arguments->getAppend());
 }
 
 TEST_F(CmdLineArgumentsTest, SetFlags) {

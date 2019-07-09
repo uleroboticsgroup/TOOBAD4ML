@@ -20,10 +20,17 @@ int main(int argc, const char **argv) {
     IO::cInputManager* inputManager = new IO::cInputManager();
     IO::sCmdLineArguments arguments = inputManager->GetSourceFromCommandLine(argc, argv);
     std::vector<std::string> currentSources;
+    bool firstWrite = true;
 
     for (std::string source: arguments.getSources()) {
         currentSources.push_back(source);
         IO::sCmdLineArguments* currentArguments = new IO::sCmdLineArguments(currentSources, arguments.getFlags());
+
+        if (!firstWrite) {
+            currentArguments->setAppend(true);
+        }else {
+            firstWrite = false;
+        }
 
         TOOBAD4ML::analysis::cClangTool tool(*currentArguments);
         
@@ -32,6 +39,7 @@ int main(int argc, const char **argv) {
         tool.Run(factory);
 
         currentSources.pop_back();
+
     }
    
 

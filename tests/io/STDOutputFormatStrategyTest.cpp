@@ -20,13 +20,12 @@ protected:
 };
 
 TEST_F(STDOutputFormatStrategyTest, Write) {
-    std::stringstream buffer;
-    std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
+    std::string output; 
+    llvm::raw_string_ostream stream(output);
 
     std::vector<std::string> descriptor;
-    descriptor.push_back("test1");
-    llvm::Twine file("");
-    strategy->Write(llvm::outs(), descriptor);
-    std::string text = buffer.str();
-    EXPECT_EQ(text, "test1");
+    descriptor.push_back("line test 1");
+    descriptor.push_back("line test 2");
+    strategy->Write(stream, descriptor);
+    EXPECT_EQ("Results:\nline test 1\nline test 2\n", stream.str());
 }
