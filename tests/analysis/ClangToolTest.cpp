@@ -1,10 +1,14 @@
 // ----------------------------------------------------------------------------
-#include "analysis/ClangTool.h"
-// ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
+#include "analysis/ClangTool.h"
+#include "io/InputManager.h"
+#include "io/CmdLineArguments.h"
+#include "analysis/ModelBOFAction.h"
+#include "analysis/ModelBOFFrontendActionFactory.h"
 // ----------------------------------------------------------------------------
-
+// ----------------------------------------------------------------------------
 // TODO Create a directory with tests files.
+
 
 
 namespace TOOBAD4ML {
@@ -19,57 +23,74 @@ class ClangToolTest
 
 protected:
 
-    ClangToolTest()
-    : fileSource({PROGRAM_NAME, "test.c"}),
-      dirSource({PROGRAM_NAME, "."}),
-      mixedSource({PROGRAM_NAME, "test.c", "."}) {}
+    ClangToolTest() {}
 
     // ATTRIBUTES
-    // ------------------------------------------------------------------------
-    const std::string PROGRAM_NAME = "TOOBAD4ML";
-    std::vector<char*> fileSource;
-    std::vector<char*> dirSource;
-    std::vector<char*> mixedSources;
-
+    // ----------------------------------------------------------------------
 };
 
-// CONSTRUCTORS TESTS
-// ----------------------------------------------------------------------------
+// As this suite includes death tests, create an alias for the fixture
+// src: https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#death-test-naming
+//using ClangToolDeathTest = ClangToolTest;
+
+/*
+// ISSUE: Cannot test no arguments
+TEST_F(ClangToolTest, CreateFromCmdLineWithoutFileSource) {
+    const char* empty[1] = {PROGRAM_NAME};
+    cClangTool clangTool(1, empty);
+    cClangToolTest cClangToolTest;
+    ASSERT_FALSE(cClangToolTest.checkIfClangToolExists(clangTool));
+}
+*/
 
 TEST_F(ClangToolTest, CreateFromCmdLineWithFileSource) {
-    // TODO
+    std::vector<std::string> files;
+    
+    files.push_back("data/testEmpty.c");
+    std::map<IO::eFlagsType, std::string> flags;
+
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
 }
 
-TEST_F(ClangToolTest, CreateWithFileSource) {
-    // TODO
+TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleSources) {
+    std::vector<std::string> files;
+    
+    files.push_back("data/testEmpty.c");
+    files.push_back("data/testSeveral.c");
+    std::map<IO::eFlagsType, std::string> flags;
+
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
+    cClangToolTest cClangToolTest;
+    ASSERT_TRUE(cClangToolTest.checkIfClangToolExists(*clangTool));
 }
 
-TEST_F(ClangToolTest, CreateFromCmdLineWithDirSource) {
-    // TODO
-}
+TEST_F(ClangToolTest, Run) {
+    std::vector<std::string> files;
+    
+    files.push_back("data/test.c");
+    std::map<IO::eFlagsType, std::string> flags;
 
-TEST_F(ClangToolTest, CreateWithDirSource) {
-    // TODO
-}
+    flags.insert(std::make_pair(IO::eFlagsType::OUTPUT_EXTENSION, "STD"));
+    flags.insert(std::make_pair(IO::eFlagsType::OUTPUT_FILENAME, ""));
 
-TEST_F(ClangToolTest, CreateFromCmdLineWithMultipleMixedSources) {
-    // TODO
-}
+    IO::sCmdLineArguments cmdArgs(files, flags);
+    cClangTool* clangTool = new cClangTool(cmdArgs);
+    cModelBOFAction* action = new cModelBOFAction();
+    cModelBOFFrontendActionFactory* factory = new cModelBOFFrontendActionFactory(*action);
 
-TEST_F(ClangToolTest, CreateWithMultipleMixedSources) {
-    //TODO
-}
+    std::stringstream buffer;
+    std::streambuf *coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(buffer.rdbuf());
+    EXPECT_EQ(0, clangTool->Run(factory));
+    std::cout.rdbuf(coutbuf);
+    
+    std::size_t pos = buffer.str().find("Completed");      
 
-
-// METHODS TESTS
-// ----------------------------------------------------------------------------
-
-TEST_F(ClangToolTest, RunValidAction) {
-    // TODO
-}
-
-TEST_F(ClangToolTest, RunInvalidAction) {
-    // TODO
+    EXPECT_EQ(buffer.str().substr(pos), "Completed\nResults:\n5;1;0;0;0;-1;-1;-1;-1;-1;\n");
 }
 
 } /* analysis */

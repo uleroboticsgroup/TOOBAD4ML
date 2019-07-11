@@ -21,10 +21,21 @@ add_library(${PROJECT_NAME}
         MockDescriptor.cpp
         DescriptorDecorator.cpp
         SinkClassification.cpp
-        InputClassification.cpp
+        CommandLine.cpp
+        EnvironmentVariable.cpp
+        File.cpp
+        Network.cpp
         InputValidationClassification.cpp
         BufferSizePredicateClassification.cpp
-        SinkCharacteristicsClassification.cpp
+        DataBufferDeclaration.cpp
+        ArrayWriteIndexWithinBounds.cpp
+        FormatStringPrecisionWithinBounds.cpp
+        NumberOfElementsCopiedWithinBounds.cpp
+        StringCopyWithinBounds.cpp
+        DataDependentOnDestinationBufferSize.cpp
+        DataDependentOnDestinationBufferSizeVariant.cpp
+        IsCharacterCaseConversionSink.cpp
+        ResetsInControlPredicates.cpp
         PadmanabhuniBuilder.cpp
 )
 

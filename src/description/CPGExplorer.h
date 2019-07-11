@@ -67,7 +67,7 @@ public:
 	 * @return A string of numbers separated by semicolons (where each number
      *         is a feature), that represents a Buffer Overflow vulnerability.
 	 */
-	llvm::StringRef Inspect(cCodePropertyGraph&, cBufferOverflow&);
+    std::string Inspect(cCodePropertyGraph&, cBufferOverflow&);
 
 
     // ACCESSOR METHODS

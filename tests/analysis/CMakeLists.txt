@@ -6,7 +6,11 @@ project(analysis_test)
 # Target
 # -----------------------------------------------------------------------------
 
+
 add_executable(${PROJECT_NAME}
+    ModelBOFActionTest.cpp
+    ModelBOFConsumerTest.cpp
+    ModelBOFFrontendActionFactoryTest.cpp
     ClangToolTest.cpp
 )
 
@@ -18,6 +22,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         analysis
+	    io
         LibGoogleTest
 )
 

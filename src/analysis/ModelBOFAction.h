@@ -3,13 +3,21 @@
 #define  TOOBAD4ML_ANALYSIS_MODELBOFACTION_H
 // ----------------------------------------------------------------------------
 #include <clang/Frontend/FrontendAction.h>
+#include <llvm/ADT/Twine.h>
+#include <memory>
+// ----------------------------------------------------------------------------
+#include "io/CmdLineArguments.h"
 // ----------------------------------------------------------------------------
 
 
 namespace TOOBAD4ML {
 
-namespace analysis {
+namespace IO {
+	class IOutputFormatStrategy;
+}
 
+namespace analysis {
+	class cModelBOFConsumer;
 /*!
  * \class cModelBOFAction
  *
@@ -25,11 +33,19 @@ namespace analysis {
  */
 class cModelBOFAction: public clang::ASTFrontendAction {
 
-    // clang::FrontendAction INHERITED METHODS
+    // clang::FrontendAction CLASS METHODS
     // ------------------------------------------------------------------------
+public:
 
+	cModelBOFConsumer* getModelBOFConsumer();
+
+	void setCmdLineArguments(IO::sCmdLineArguments&);
+
+	// clang::FrontendAction INHERITED METHODS
+    // ------------------------------------------------------------------------
 protected:
 
+	void EndSourceFileAction() override;
 	/*!
      * Create the AST consumer object for this action.
 	 *
@@ -40,6 +56,14 @@ protected:
 	std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
 			clang::CompilerInstance&, llvm::StringRef) override;
 
+
+   	// ATTRIBUTES
+	// ------------------------------------------------------------------------
+
+private:
+	std::unique_ptr<IO::sCmdLineArguments> m_cmdLineArguments;
+	cModelBOFConsumer* m_modelBOFConsumer;
+	
 }; /* class cModelBOFAction */
 
 } // namespace analysis

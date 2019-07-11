@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME}
         ClangTool.cpp
         ModelBOFAction.cpp
         ModelBOFConsumer.cpp
+        ModelBOFFrontendActionFactory.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -32,4 +33,5 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         ASTTraversal
         description
+        io
 )

@@ -9,9 +9,9 @@ using namespace description;
 // IDESCRIPTOR INHERITED METHODS
 // ------------------------------------------------------------------------
 
-llvm::StringRef cMockDescriptor::ExtractFeature(
+std::string cMockDescriptor::ExtractFeature(
         cCodePropertyGraph& cpg, cBufferOverflow& bof){
 
-        return llvm::StringRef();
+        return std::string();
 
 }

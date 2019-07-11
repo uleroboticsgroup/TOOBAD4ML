@@ -19,13 +19,13 @@ cInputValidationClassification::cInputValidationClassification(
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cInputValidationClassification::ExtractFeature(
+std::string cInputValidationClassification::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof)
 {
 	std::string decoratedFeature =
         cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	return decoratedFeature + "inputValidation..";
+	return decoratedFeature.append("inputValidation..");
 }
 
 

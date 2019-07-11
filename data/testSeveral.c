@@ -1,0 +1,18 @@
+#include <stdio.h>
+void echo(){
+char buffer[256];
+printf("Type your input:");
+gets(buffer);
+gets(buffer);
+printf("Input given: %s", buffer);
+}
+int main(){
+echo();
+return 0;
+}
+
+/// ###BEGIN_VULNERABLE_LINES###
+
+/// 5,1;5,12
+
+/// 6,1;6,12

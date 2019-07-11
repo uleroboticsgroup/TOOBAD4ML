@@ -3,12 +3,16 @@
 // -----------------------------------------------------------------------------
 #include "description/Descriptor.h"
 #include "description/CPGExplorer.h"
+#include "description/CodePropertyGraph.h"
+#include "description/BufferOverflow.h"
 // -----------------------------------------------------------------------------
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 // -----------------------------------------------------------------------------
-#include "description/CPGExplorer.h"
-#include "description/CodePropertyGraph.h"
-#include "description/BufferOverflow.h"
+#include "io/FileManager.h"
+#include "io/CmdLineArguments.h"
+// -----------------------------------------------------------------------------
+#include <iostream>
+
 // -----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -35,11 +39,13 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
     // in order to start the analysis
     ASTTraversal::BOFNodesPerFunctionMap vulnerabilities =
         visitor.GetVulnerabilities();
+
     for (auto const& functionIter : vulnerabilities) {
         // we need one CPG per function in order to perform the analysis
         description::cCodePropertyGraph cpg(*(functionIter.first));
 
         for (auto const& vulnLOCIter : functionIter.second) {
+            std::cout << ".";
             // encapsulate the data related to the current vulnerable LOC
             description::cBufferOverflow BOF(*vulnLOCIter);
 			BOF.SetInput(cpg);
@@ -50,15 +56,24 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 			m_dataset.push_back(descriptor);
 		}
 	}
-}
 
+    std::cout << " Completed" << "\n";
+}
 
 // CLASS METHODS
 // -------------------------------------------------------------------------
 
-bool cModelBOFConsumer::Output() {
-    // TODO. code this
-    return true;
+bool cModelBOFConsumer::Output(IO::sCmdLineArguments& args) {
+    IO::cFileManager *fm = IO::cFileManager::GetInstance();
+    IO::cFileManager fileManager = *fm;
+
+    bool success = fileManager.Write(m_dataset, args.getStrategy(), args.getFilename(), args.getAppend()); 
+
+    if (!success) {
+        std::cout << "An error occurred while writing the results." <<  "\n";
+    }
+
+    return success;
 }
 
 // ACCESSOR METHODS
@@ -66,4 +81,8 @@ bool cModelBOFConsumer::Output() {
 
 void cModelBOFConsumer::SetModel(description::IDescriptor& model) {
     m_CPGExplorer.SetDescriptor(model);
+}
+
+std::vector<std::string> cModelBOFConsumerTest::getDataset(cModelBOFConsumer& consumer) {
+	return consumer.m_dataset;
 }

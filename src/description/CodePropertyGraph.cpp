@@ -4,7 +4,6 @@ using namespace TOOBAD4ML;
 using namespace description;
 // ----------------------------------------------------------------------------
 
-
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------
 
@@ -13,7 +12,6 @@ cCodePropertyGraph::cCodePropertyGraph(clang::FunctionDecl& functionDecl)
 
     // prevent building the CFG of undefined functions
     assert(m_AST.doesThisDeclarationHaveABody() == true);
-
     m_CFG = clang::CFG::buildCFG(&m_AST, m_AST.getBody(),
 				&m_AST.getASTContext(), clang::CFG::BuildOptions());
 }

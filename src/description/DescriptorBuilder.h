@@ -46,6 +46,8 @@ public:
 	 */
 	virtual IDescriptor* CreateDescriptor() = 0;
 
+	virtual ~IDescriptorBuilder() {};
+
 }; /* IDescriptorBuilder */
 
 } //namespace description

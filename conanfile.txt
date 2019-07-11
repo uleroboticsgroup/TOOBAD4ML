@@ -6,4 +6,5 @@ clang/6.0.0@Manu343726/testing
 cmake_find_package
 
 [options]
-gtest:shared=True
+gtest:shared=False
+

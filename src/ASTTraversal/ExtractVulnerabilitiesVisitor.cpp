@@ -1,6 +1,6 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "ASTTraversal/FindSelectedASTNodesVisitor.h"
-
+#include <iostream>
 using namespace TOOBAD4ML;
 using namespace ASTTraversal;
 
@@ -20,6 +20,15 @@ std::vector<BOFLocation> extractComments(clang::ASTContext& context) {
 	const llvm::StringRef ELEMENT_SEPARATOR = ";";
 	const llvm::StringRef LINECOL_SEPARATOR = ",";
 	clang::FileID mainFID = context.getSourceManager().getMainFileID();
+
+	bool find = false;
+	for (llvm::ArrayRef<clang::RawComment*>::iterator it = comments.begin(); it != comments.end(); it++ ) {
+		if(strcmp((*it)->getBriefText(context), COMMENT_DELIMITER) == 0) {
+			find = true;
+		}
+	}
+
+	if(!find) {llvm::outs() << "Comment "<< COMMENT_DELIMITER << " not found in code file.\n" ; exit(1);};
 
 	// Reverse iteration through the comments until COMMENT_DELIMETER
 	for (llvm::ArrayRef<clang::RawComment*>::iterator it = (comments.end() - 1);
@@ -46,17 +55,21 @@ std::vector<BOFLocation> extractComments(clang::ASTContext& context) {
 		unparsedEndElement.first.getAsInteger(0, endLine);
 		unparsedEndElement.second.getAsInteger(0, endCol);
 
-		BOFLocation parsedLine(
-				context.getSourceManager().translateLineCol(mainFID, startLine,
-						startCol),
-				context.getSourceManager().translateLineCol(mainFID, endLine,
-						endCol));
+		// Line and column should start at 1
+		if(startLine > 0 && startCol > 0 && endLine > 0 && endCol > 0) {
+			BOFLocation parsedLine(
+					context.getSourceManager().translateLineCol(mainFID, startLine,
+							startCol),
+					context.getSourceManager().translateLineCol(mainFID, endLine,
+							endCol));
 
-		vulnerableLines.push_back(parsedLine);
+			vulnerableLines.push_back(parsedLine);
+		}
 
 	}
 
 	return vulnerableLines;
+
 
 }
 
@@ -104,4 +117,8 @@ bool cExtractVulnerabilitiesVisitor::VisitFunctionDecl(
 	}
 
 	return m_vulnerableLines.empty() ? false : true;
+}
+
+std::vector<BOFLocation> cExtractVulnerabilitiesVisitorTest::getVulnerableLines(cExtractVulnerabilitiesVisitor &visitor) {
+	return visitor.m_vulnerableLines;
 }

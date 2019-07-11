@@ -3,6 +3,7 @@
 #define  TOOBAD4ML_ANALYSIS_MODELBOFCONSUMER_H
 // -----------------------------------------------------------------------------
 #include <clang/AST/ASTConsumer.h>
+#include <llvm/ADT/Twine.h>
 // -----------------------------------------------------------------------------
 #include <string>
 #include <vector>
@@ -22,7 +23,10 @@ namespace description {
 
 }
 
-
+namespace IO {
+    class IOutputFormatStrategy;
+    class sCmdLineArguments;
+}
 // CLASS DEFINITION
 // -----------------------------------------------------------------------------
 
@@ -54,6 +58,7 @@ class cModelBOFConsumer: public clang::ASTConsumer {
     // -------------------------------------------------------------------------
 
 public:
+	virtual ~cModelBOFConsumer() {}
 
 	/*!
      * Creates the AST consumer object to model BOF vulnerabilities.
@@ -74,27 +79,21 @@ public:
 	 *
 	 * @param context   AST of a given source file.
 	 */
-	void HandleTranslationUnit(clang::ASTContext&) override;
+	virtual void HandleTranslationUnit(clang::ASTContext&) override;
 
 
     // CLASS METHODS
     // -------------------------------------------------------------------------
+    bool Output(IO::sCmdLineArguments&);
 
-public:
-
-    /*!
-     * TODO: what do we have to return here??
-     */
-	bool Output();
-
+	//--------- FOR TESTING-----------
+	friend class cModelBOFConsumerTest;
+	//--------------------------------
 
     // ACCESSOR METHODS
     // -------------------------------------------------------------------------
-
-public:
-
+    
     void SetModel(description::IDescriptor&);
-
 
     // ATTRIBUTES
     // -------------------------------------------------------------------------
@@ -103,13 +102,19 @@ private:
 
     //! Processed lines of code containing the representation of a BOF.
 	std::vector<std::string> m_dataset;
-
     //! Code Property Graph analyzer for obtaining a representation of a BOF.
     description::cCPGExplorer& m_CPGExplorer;
 
 }; /* class cModelBOFConsumer */
 
-} // namespace analysis
+//--------- FOR TESTING-----------
+class cModelBOFConsumerTest {
+public:
+	std::vector<std::string> getDataset(cModelBOFConsumer& consumer);
+};
+//--------------------------------
+
+} /* namespace analysis */
 
 } // namespace TOOBAD4ML
 

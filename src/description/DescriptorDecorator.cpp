@@ -21,7 +21,7 @@ cDescriptorDecorator::~cDescriptorDecorator() {
 // IDESCRIPTOR INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cDescriptorDecorator::ExtractFeature(
+std::string cDescriptorDecorator::ExtractFeature(
         cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 
 	return m_decoratedComponent->ExtractFeature(cpg, bof);

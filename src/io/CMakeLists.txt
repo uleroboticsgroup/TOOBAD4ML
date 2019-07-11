@@ -16,6 +16,11 @@ add_library(${PROJECT_NAME}
     STATIC
         FileManager.cpp
         FunctionTypeTranslator.cpp
+        CSVOutputFormatStrategy.cpp
+        STDOutputFormatStrategy.cpp
+        CmdLineArguments.cpp
+        FormatStrategyFactory.cpp
+	    InputManager.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

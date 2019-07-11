@@ -34,7 +34,7 @@ public:
 	 * @param
 	 * @return
 	 */
-	llvm::StringRef ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
+	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 };
 /* cInputValidationClassification */

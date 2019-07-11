@@ -1,10 +1,8 @@
 #include "description/SinkClassification.h"
 #include "description/BufferOverflow.h"
-
-
+#include "iostream"
 using namespace TOOBAD4ML;
 using namespace description;
-
 
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------
@@ -17,13 +15,13 @@ cSinkClassification::cSinkClassification(IDescriptor* decoratedComponent) :
 // INHERITED METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef cSinkClassification::ExtractFeature(
+std::string cSinkClassification::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	std::string decoratedFeature =
 			cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	std::map<llvm::StringRef, llvm::StringRef> sinkTypes = {
+	std::map<std::string, std::string> sinkTypes = {
 			{ "strcpy", "1" }, { "strncpy", "1" },
 			{ "strcat", "2" }, { "strncat", "2" },
 			{ "memcpy", "3" }, { "memmove", "3" },
@@ -31,31 +29,29 @@ llvm::StringRef cSinkClassification::ExtractFeature(
 			{ "gets", "5" }, { "fgets", "5" },
 			{ "scanf", "6" },{ "sscanf", "6" }, };
 
-	std::string feature;
+	std::string feature = "-1";
 
 	//TODO Get rid of magic literals string to actual constants
 	if (bof.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {
 		feature = "7";
 	} else {
-		// CallExpr
-		for(clang::Stmt::child_iterator it = bof.GetSink()->child_begin(); it != bof.GetSink()->child_end(); it++) {
-			// ImplicitCastExpr
-			for(clang::Stmt::child_iterator it2 = it->child_begin(); it2 != it->child_end(); it2++) {
-				//DeclRefExpr
-				if(clang::DeclRefExpr* declRef =  llvm::dyn_cast<clang::DeclRefExpr>(*it2)){
-					// Function or Var
-					if(clang::ValueDecl* var = declRef->getDecl()) { // -> Function or Var
-						// Function
-						if(var->getKind() == clang::Decl::Function) { // -> Function
-							feature = sinkTypes.find(var->getName())->second;
-							break;
+
+		if (bof.GetSink()->getStmtClass()
+					== clang::Stmt::StmtClass::CallExprClass) {
+
+				if(clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink())){
+						if(sinkTypes.find(call->getDirectCallee()->getName()) == sinkTypes.end()) {
+							llvm::outs() << "No function found in sink types." << "\n";
+							feature = "0";
+						} else {
+							feature = sinkTypes.find(call->getDirectCallee()->getName())->second;
 						}
-					}
 				}
-			}
 		}
+
 	}
 
-	llvm::outs() << "SinkClassification: " <<  feature << "\n";
-	return decoratedFeature + feature.append(";");
+	//llvm::outs() << "SinkClassification: " <<  feature << "\n";
+	//return decoratedFeature.append("SinkClassification: ");
+	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

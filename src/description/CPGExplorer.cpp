@@ -3,6 +3,7 @@
 #include "description/Descriptor.h"
 #include "description/CodePropertyGraph.h"
 #include "description/BufferOverflow.h"
+#include "iostream"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -24,7 +25,7 @@ cCPGExplorer::~cCPGExplorer() {
 // CLASS METHODS
 // ----------------------------------------------------------------------------
 
-llvm::StringRef
+std::string
 cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 	return m_descriptor.ExtractFeature(cpg, bof);
 }
@@ -34,5 +35,5 @@ cCPGExplorer::Inspect(cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 // ----------------------------------------------------------------------------
 
 void cCPGExplorer::SetDescriptor(IDescriptor& descriptor) {
-	m_descriptor = descriptor;
+	m_descriptor = std::ref(descriptor);
 }
