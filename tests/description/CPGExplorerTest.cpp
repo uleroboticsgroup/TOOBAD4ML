@@ -19,11 +19,8 @@ class CPGExplorerTest:
     public ::testing::Test {
 
 protected:
-
-    CPGExplorerTest(): 
-        builder(new cPadmanabhuniBuilder()) {}
-
     void SetUp() override {
+        builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
         std::vector<std::string> Sources;
@@ -62,22 +59,24 @@ protected:
     cPadmanabhuniBuilder* builder;
 };
 
+TEST_F(CPGExplorerTest, Inspect) {
+    cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
+    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]);
+    EXPECT_EQ(result, "1;0;0;0;0;-1;-1;-1;1;-1;");
+}
+
 TEST_F(CPGExplorerTest, Constructor) {
     cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     EXPECT_TRUE(explorer != nullptr);
 }
 
-TEST_F(CPGExplorerTest, Inspect) {
-    cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
-    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]).str();
-    EXPECT_EQ(result, "1;0;0;0;0;-1;-1;-1;1;-1;");
-}
+
 
 TEST_F(CPGExplorerTest, SetDescriptor) {
     cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     cMockDescriptor* mock = new cMockDescriptor();
     explorer->SetDescriptor(*mock);
-    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]).str();
+    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]);
     EXPECT_EQ(result, "");
 }
 

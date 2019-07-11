@@ -1,7 +1,6 @@
 #include "description/CommandLine.h"
 #include "description/BufferOverflow.h"
-
-
+#include "iostream"
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -24,8 +23,8 @@ std::string cCommandLine::ExtractFeature(
 	int counter = 0;
 	std::vector<clang::CallExpr*> input = bof.GetInput();
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
-	std::vector<llvm::StringRef> inputClassificationtypes {"scanf", "gets"}; // Command line
-
+	std::vector<std::string> inputClassificationtypes {"scanf", "gets"}; // Command line
+	
 	for (std::vector<clang::CallExpr*>::iterator it = input.begin();
 			it != input.end(); it++) {
 		if (std::find(inputClassificationtypes.begin(), inputClassificationtypes.end(),
@@ -34,5 +33,6 @@ std::string cCommandLine::ExtractFeature(
 			counter++;
 		}
 	}
+
 	return decoratedFeature.append(std::to_string(counter).append(cDescriptorDecorator::FEATURE_SEPARATOR));
 }

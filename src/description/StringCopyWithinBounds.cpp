@@ -27,7 +27,7 @@ std::string cStringCopyWithinBounds::ExtractFeature(
 	unsigned destination = 0;
 	unsigned source = 0;
 
-	std::vector<llvm::StringRef> sinkTypes = {"strcpy"}; //sinks type 1
+	std::vector<std::string> sinkTypes = {"strcpy"}; //sinks type 1
 
 	if (bof.GetSink()->getStmtClass()
 				== clang::Stmt::StmtClass::CallExprClass && bof.GetBuffer() != nullptr) {

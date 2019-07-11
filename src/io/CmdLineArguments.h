@@ -17,12 +17,29 @@ enum eFlagsType {
     OUTPUT_EXTENSION
 };
 
+/*!
+ * \struct sCmdLineArguments
+ *
+ * \brief
+ * A container to hold the data from the program's arguments (sources and flags)
+*/
 
 struct sCmdLineArguments {
-    std::vector<std::string> m_sources;
-    std::map<eFlagsType, std::string> m_flags;
-    bool m_append;
 
+    // CONSTRUCTORS & DESTRUCTORS
+    // ------------------------------------------------------------------------
+public:
+    sCmdLineArguments(std::vector<std::string>, std::map<eFlagsType, std::string>);
+
+    // CLASS METHODS
+    // ------------------------------------------------------------------------
+public:
+    llvm::Twine& getFilename();
+    IOutputFormatStrategy* getStrategy();
+
+    // ACCESSOR METHODS
+    // ------------------------------------------------------------------------
+public:
     std::vector<std::string> getSources();
     void setSources(std::vector<std::string>);
 
@@ -31,18 +48,19 @@ struct sCmdLineArguments {
 
     bool getAppend();
     void setAppend(bool);
-    
-    llvm::Twine& getFilename();
-    IOutputFormatStrategy* getStrategy();
 
-    sCmdLineArguments(std::vector<std::string> sources, std::map<eFlagsType, std::string> flags):
-        m_sources(sources),
-        m_flags(flags),
-        m_append(false) {}
+
+
+    // ATTRIBUTES
+    // ------------------------------------------------------------------------
+public:
+    std::vector<std::string> m_sources;
+    std::map<eFlagsType, std::string> m_flags;
+    bool m_append;
 };
 
-}
+} /* IO */
 
-}
+} /* TOOBAD4ML */
 
 #endif /* IO_CMDLINEARGS_H_ */

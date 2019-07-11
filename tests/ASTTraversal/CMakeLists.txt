@@ -23,8 +23,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     	analysis
         ASTTraversal
-        gtest_main
-        gmock
+        LibGoogleTest
 )
 
 # TODO we temporary need this to link the test main with the test suites

@@ -17,11 +17,8 @@ class cStringCopyWithinBoundsTest:
     public ::testing::Test {
 
 protected:
-
-    cStringCopyWithinBoundsTest():
-        scw(new cMockDescriptor) {}
-
     void SetUp() override {
+        scw = new cStringCopyWithinBounds(new cMockDescriptor());
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
 
         std::vector<std::string> Sources;
@@ -58,24 +55,22 @@ protected:
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow*> bofs;
-    cStringCopyWithinBounds scw;
+    cStringCopyWithinBounds* scw;
 };
-
-//Type 1
-TEST_F(cStringCopyWithinBoundsTest, WithinBounds) {
-    ASSERT_EQ(scw.ExtractFeature(*cpgs[0], *bofs[0]), "1;");
-
-}
 
 //Type 0
 TEST_F(cStringCopyWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(scw.ExtractFeature(*cpgs[1], *bofs[1]), "0;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[1], *bofs[1]), "0;");
 }
 
+//Type 1
+TEST_F(cStringCopyWithinBoundsTest, WithinBounds) {
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], *bofs[0]), "1;");
 
+}
 //Type -1
 TEST_F(cStringCopyWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(scw.ExtractFeature(*cpgs[2], *bofs[2]), "-1;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[2], *bofs[2]), "-1;");
 
 }
 

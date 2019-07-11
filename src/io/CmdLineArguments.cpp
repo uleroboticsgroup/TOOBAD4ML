@@ -5,6 +5,10 @@
 using namespace TOOBAD4ML;
 using namespace IO;
 
+sCmdLineArguments::sCmdLineArguments(std::vector<std::string> sources, std::map<eFlagsType, std::string> flags):
+    m_sources(sources),
+    m_flags(flags),
+    m_append(false) {}
 
 std::vector<std::string> sCmdLineArguments::getSources() {
     return m_sources;

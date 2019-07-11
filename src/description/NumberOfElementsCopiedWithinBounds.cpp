@@ -22,7 +22,7 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	std::vector<llvm::StringRef> sinkTypes = {"strncpy"};
+	std::vector<std::string> sinkTypes = {"strncpy"};
 
 	std::string feature = "-1";
 	unsigned limit = 0;

@@ -24,8 +24,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     	description
-        gtest_main
-        gmock
+        LibGoogleTest
 )
 
 # TODO we temporary need this to link the test main with the test suites

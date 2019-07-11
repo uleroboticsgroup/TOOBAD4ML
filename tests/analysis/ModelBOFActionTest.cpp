@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "clang/Tooling/Tooling.h"
 #include "analysis/ModelBOFAction.h"
+#include "analysis/ModelBOFConsumer.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "ModelBOFActionTestHelper.h"
 #include <iostream>

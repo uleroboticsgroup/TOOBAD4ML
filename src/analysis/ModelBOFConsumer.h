@@ -84,9 +84,6 @@ public:
 
     // CLASS METHODS
     // -------------------------------------------------------------------------
-
-public:
-
     bool Output(IO::sCmdLineArguments&);
 
 	//--------- FOR TESTING-----------

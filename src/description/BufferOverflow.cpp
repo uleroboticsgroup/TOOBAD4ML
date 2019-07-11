@@ -94,7 +94,7 @@ cBufferOverflow::cBufferOverflow(clang::Expr& sink) :
 			clang::CallExpr* call = llvm::dyn_cast_or_null<clang::CallExpr>(m_sink);
 
 			// map {sink Type, buffer position}
-			std::map<llvm::StringRef, int> sinkTypes = {
+			std::map<std::string, int> sinkTypes = {
 					{ "strcpy", 0 }, { "strncpy", 0 },
 					{ "strcat", 0 }, { "strncat", 0 },
 					{ "memcpy", 0 }, { "memmove", 0 },

@@ -69,7 +69,6 @@ add_subdirectory(src)
 # test suite
 if (TOOBAD4ML_ENABLE_TESTING)
     enable_testing()
-    add_subdirectory(googletest)
     add_subdirectory(tests)
 endif()
 

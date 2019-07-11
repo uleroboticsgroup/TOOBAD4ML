@@ -44,7 +44,7 @@ public:
 	 * @param sink
 	 * @return limit to be copied
 	 */
-	int FormatStringParser(llvm::StringRef, std::string, clang::Expr*);
+	int FormatStringParser(std::string, std::string, clang::Expr*);
 
 }; /*cFormatStringPrecisionWithinBounds*/
 

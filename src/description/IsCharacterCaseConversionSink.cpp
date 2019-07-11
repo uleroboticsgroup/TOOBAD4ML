@@ -1,6 +1,6 @@
 #include "IsCharacterCaseConversionSink.h"
 #include "description/BufferOverflow.h"
-
+#include "iostream"
 using namespace TOOBAD4ML;
 using namespace description;
 
@@ -20,9 +20,10 @@ std::string cIsCharacterCaseConversionSink::ExtractFeature(
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg,
 				bof);
 
-	std::vector<llvm::StringRef> sinkTypes = {"toupper", "tolower"};
-
 	std::string feature = "-1";
+
+	std::vector<std::string> sinkTypes = {"toupper", "tolower"};
+
 
 	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
 		if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink())) {

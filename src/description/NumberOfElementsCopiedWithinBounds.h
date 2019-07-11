@@ -40,7 +40,7 @@ public:
 	std::string ExtractFeature(cCodePropertyGraph&, cBufferOverflow&);
 
 
-	int StringLiteralParser(llvm::StringRef);
+	int StringLiteralParser(std::string);
 
 
 

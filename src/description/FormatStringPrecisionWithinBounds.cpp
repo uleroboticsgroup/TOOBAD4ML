@@ -14,7 +14,7 @@ cFormatStringPrecisionWithinBounds::cFormatStringPrecisionWithinBounds(
 		cDescriptorDecorator(decoratedComponent) {
 };
 
-int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef formatString, std::string function, clang::Expr* sink) {
+int  cFormatStringPrecisionWithinBounds::FormatStringParser(std::string formatString, std::string function, clang::Expr* sink) {
 
 		if(function.compare("scanf") == 0) {
 
@@ -26,7 +26,7 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 
 			int limit = 0;
 
-			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
+			for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
 				if((*it)=='%') {
 					it++;
@@ -64,7 +64,7 @@ int  cFormatStringPrecisionWithinBounds::FormatStringParser(llvm::StringRef form
 			int countArg = 0;
 			int countSpecifierAlone = 0;
 
-			for(llvm::StringRef::iterator it = formatString.begin(); it != formatString.end(); it++) {
+			for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
 
 				if((*it) != '%') {
 					contChars++;
@@ -190,7 +190,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg,
 			bof);
 
-	std::vector<llvm::StringRef> sinkTypes = { "scanf", "sscanf", "sprintf", "snprintf" };
+	std::vector<std::string> sinkTypes = { "scanf", "sscanf", "sprintf", "snprintf" };
 
 	std::string feature = "-1";
 
@@ -222,7 +222,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 							clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
 
-							llvm::StringRef formatString = 	strLiteral->getString();
+							std::string formatString = 	strLiteral->getString();
 
 							int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "sprintf", bof.GetSink());
 
@@ -283,7 +283,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 						clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
 
-						llvm::StringRef formatString =
+						std::string formatString =
 								strLiteral->getString();
 
 						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf", bof.GetSink());

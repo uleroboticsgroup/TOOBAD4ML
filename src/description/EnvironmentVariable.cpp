@@ -25,7 +25,7 @@ std::string cEnvironmentVariable::ExtractFeature(
 	int counter = 0;
 	std::vector<clang::CallExpr*> input = bof.GetInput();
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
-	std::vector<llvm::StringRef> inputClassificationtypes {"getwd", "getcwd"}; // Command line
+	std::vector<std::string> inputClassificationtypes {"getwd", "getcwd"}; // Command line
 
 	for (std::vector<clang::CallExpr*>::iterator it = input.begin();
 			it != input.end(); it++) {

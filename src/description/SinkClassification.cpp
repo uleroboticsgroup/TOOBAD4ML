@@ -1,6 +1,6 @@
 #include "description/SinkClassification.h"
 #include "description/BufferOverflow.h"
-
+#include "iostream"
 using namespace TOOBAD4ML;
 using namespace description;
 
@@ -21,7 +21,7 @@ std::string cSinkClassification::ExtractFeature(
 	std::string decoratedFeature =
 			cDescriptorDecorator::ExtractFeature(cpg, bof);
 
-	std::map<llvm::StringRef, llvm::StringRef> sinkTypes = {
+	std::map<std::string, std::string> sinkTypes = {
 			{ "strcpy", "1" }, { "strncpy", "1" },
 			{ "strcat", "2" }, { "strncat", "2" },
 			{ "memcpy", "3" }, { "memmove", "3" },
@@ -29,7 +29,7 @@ std::string cSinkClassification::ExtractFeature(
 			{ "gets", "5" }, { "fgets", "5" },
 			{ "scanf", "6" },{ "sscanf", "6" }, };
 
-	std::string feature;
+	std::string feature = "-1";
 
 	//TODO Get rid of magic literals string to actual constants
 	if (bof.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {

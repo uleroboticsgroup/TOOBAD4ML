@@ -3,14 +3,15 @@
 // -----------------------------------------------------------------------------
 #include "description/Descriptor.h"
 #include "description/CPGExplorer.h"
+#include "description/CodePropertyGraph.h"
+#include "description/BufferOverflow.h"
 // -----------------------------------------------------------------------------
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 // -----------------------------------------------------------------------------
-#include "description/CodePropertyGraph.h"
-#include "description/BufferOverflow.h"
-#include <iostream>
 #include "io/FileManager.h"
 #include "io/CmdLineArguments.h"
+// -----------------------------------------------------------------------------
+#include <iostream>
 
 // -----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -52,7 +53,6 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
 			std::string descriptor = m_CPGExplorer.Inspect(cpg, BOF);
-
 			m_dataset.push_back(descriptor);
 		}
 	}
