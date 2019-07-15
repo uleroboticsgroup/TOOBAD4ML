@@ -19,14 +19,14 @@ public:
 	 *
 	 * @param
 	 */
-	cFindVariableVisitor(clang::Expr*);
+	cFindVariableVisitor(clang::DeclRefExpr*);
 
 	/*!
 	 *
 	 * @param
 	 * @return
 	 */
-	bool VisitDeclRefExpr(clang::Stmt*);
+	bool VisitDeclRefExpr(clang::DeclRefExpr*);
 
 	/*!
 	 *
@@ -35,9 +35,8 @@ public:
 	bool IsFound();
 
 private:
-
     //!
-	clang::Expr* m_buffer;
+	clang::VarDecl* m_targetVariable;
 
     //!
 	bool m_found;

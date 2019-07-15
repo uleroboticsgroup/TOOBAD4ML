@@ -48,8 +48,7 @@ public:
 	 * @param sink  AST node of the statement where the BOF originally
      *              occurred.
 	 */
-	cBufferOverflow(clang::Expr&);
-
+    cBufferOverflow(clang::Expr*, clang::DeclRefExpr*, std::vector<clang::CallExpr*>);
     ~cBufferOverflow();
 
 
@@ -58,9 +57,6 @@ public:
 
 public:
 
-	clang::Stmt::StmtClass GetSinkType();
-
-
     // ACCESSOR METHODS
     // ------------------------------------------------------------------------
 
@@ -68,19 +64,9 @@ public:
 
 	clang::Expr* GetSink();
 
-	clang::Expr* GetBuffer();
+	clang::DeclRefExpr* GetBuffer();
 
 	std::vector<clang::CallExpr*> GetInput();
-
-	/*!
-     * Stores all AST nodes corresponding to input function calls by traversing
-     * a Control Flow Graph (CFG) where the BOF is present.
-     * TODO: change CPG for CFG??
-     *
-     * @param cfg   CFG in which to search for input node patterns.
-	 */
-	void SetInput(cCodePropertyGraph&);
-
 
     // ATTRIBUTES
     // ------------------------------------------------------------------------
@@ -92,7 +78,7 @@ private:
 
 	//! AST node of the variable representing a memory region (i.e. array), in
     /// which the vulnerability occurred.
-	clang::Expr* m_buffer;
+	clang::DeclRefExpr* m_buffer;
 
 	//! List of AST nodes containing statements involved in reading input data,
     /// that affects {\ref m_buffer}.

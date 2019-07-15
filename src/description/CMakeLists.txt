@@ -16,6 +16,7 @@ project(description)
 add_library(${PROJECT_NAME}
     SHARED
         BufferOverflow.cpp
+        BufferOverflowBuilder.cpp
         CodePropertyGraph.cpp
         CPGExplorer.cpp
         MockDescriptor.cpp

@@ -4,12 +4,16 @@
 // ----------------------------------------------------------------------------
 #include <clang/AST/Decl.h>
 #include <clang/Analysis/CFG.h>
+#include <clang/AST/Expr.h>
+
 // ----------------------------------------------------------------------------
 
 
 namespace TOOBAD4ML {
 
 namespace description {
+
+typedef std::vector<clang::CFGStmt> SinkPathGraph;
 
 /*!
  * \class cCodePropertyGraph
@@ -42,7 +46,13 @@ public:
 
     ~cCodePropertyGraph();
 
+    // CLASS METHODS
+    // ------------------------------------------------------------------------
 
+public:
+
+   SinkPathGraph GetSPG(clang::Expr&);
+    
     // ACCESSOR METHODS
     // ------------------------------------------------------------------------
 

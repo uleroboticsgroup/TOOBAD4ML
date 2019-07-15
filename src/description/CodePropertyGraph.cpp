@@ -1,4 +1,6 @@
 #include "description/CodePropertyGraph.h"
+#include "clang/Basic/LangOptions.h"
+#include <iostream>
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -14,11 +16,60 @@ cCodePropertyGraph::cCodePropertyGraph(clang::FunctionDecl& functionDecl)
     assert(m_AST.doesThisDeclarationHaveABody() == true);
     m_CFG = clang::CFG::buildCFG(&m_AST, m_AST.getBody(),
 				&m_AST.getASTContext(), clang::CFG::BuildOptions());
+
+    //m_CFG.get()->dump(*(new clang::LangOptions()), true);
 }
 
 cCodePropertyGraph::~cCodePropertyGraph() {
     m_CFG.reset();
     // clang will take care of freeing the AST reference
+}
+
+// CLASS METHODS
+// ----------------------------------------------------------------------------
+
+SinkPathGraph cCodePropertyGraph::GetSPG(clang::Expr& sink) {
+    SinkPathGraph SPG;
+    clang::CFGBlock* sinkBlock;
+    std::vector<clang::CFGBlock*> affectedBlocks;
+
+    for(clang::CFG::iterator it = m_CFG->begin(); it != m_CFG->end() - 1; ++it) {
+        if (affectedBlocks.size() > 0) {
+            // Does this block affect our sink?
+            for(auto succ_iterator = (*it)->succ_begin(); succ_iterator != (*it)->succ_end(); ++succ_iterator) {
+                if ((*succ_iterator).isReachable()) {
+                    if(std::find(affectedBlocks.begin(), affectedBlocks.end(), (*succ_iterator).getReachableBlock()) != affectedBlocks.end()) {
+                        affectedBlocks.push_back(*it);
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            // Is this block the one which contains our sink?
+            for (clang::CFGBlock::iterator elementIt = (*it)->begin(); elementIt != (*it)->end(); ++elementIt) {
+                if((*elementIt).getKind() == clang::CFGElement::Kind::Statement) {
+                    clang::CFGStmt currentStmt = (*elementIt).castAs<clang::CFGStmt>(); 
+                    if (currentStmt.getStmt() == &sink) {
+                        sinkBlock = *it;
+                        affectedBlocks.push_back(*it);
+                        break;
+                    }
+                }
+            }
+        }        
+    }
+
+    // Get all the instructions from the blocks which affect the sink
+    for (clang::CFGBlock* block: affectedBlocks) {
+        for (clang::CFGBlock::iterator instruction = block->begin(); instruction != block->end(); ++instruction) {
+            if((*instruction).getKind() == clang::CFGElement::Kind::Statement) {
+                SPG.push_back((*instruction).castAs<clang::CFGStmt>());
+            }
+        }
+    }
+
+    return SPG;
 }
 
 

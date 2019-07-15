@@ -32,7 +32,7 @@ std::string cSinkClassification::ExtractFeature(
 	std::string feature = "-1";
 
 	//TODO Get rid of magic literals string to actual constants
-	if (bof.GetSinkType() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
 		feature = "7";
 	} else {
 

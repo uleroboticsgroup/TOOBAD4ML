@@ -5,6 +5,7 @@
 #include "description/CPGExplorer.h"
 #include "description/CodePropertyGraph.h"
 #include "description/BufferOverflow.h"
+#include "description/BufferOverflowBuilder.h"
 // -----------------------------------------------------------------------------
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 // -----------------------------------------------------------------------------
@@ -47,8 +48,8 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
         for (auto const& vulnLOCIter : functionIter.second) {
             std::cout << ".";
             // encapsulate the data related to the current vulnerable LOC
-            description::cBufferOverflow BOF(*vulnLOCIter);
-			BOF.SetInput(cpg);
+            description::cBufferOverflowBuilder BOFBuilder;
+            description::cBufferOverflow BOF = BOFBuilder.CreateBufferOverflow(*vulnLOCIter, cpg);
 
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
