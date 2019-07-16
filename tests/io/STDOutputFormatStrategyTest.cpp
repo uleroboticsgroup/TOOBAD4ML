@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "iostream"
+
 #include "io/STDOutputFormatStrategy.h"
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/ADT/APFloat.h>

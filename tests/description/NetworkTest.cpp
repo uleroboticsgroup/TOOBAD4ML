@@ -7,7 +7,7 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
-
+#include "description/BufferOverflowBuilder.h"
 
 namespace TOOBAD4ML{
 
@@ -20,6 +20,7 @@ protected:
 
     void SetUp() override {
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
+        cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
         Sources.push_back("data/filetest.c");
@@ -43,8 +44,8 @@ protected:
             cpg = new cCodePropertyGraph(*(vuln.first));
             
             for (auto const& vulnLOCIter : vuln.second) {
-                bof = new cBufferOverflow(*vulnLOCIter);
-			    bof->SetInput(*cpg);
+                bof = &(BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg));
+
                 break;
             }
             break;
@@ -56,9 +57,6 @@ protected:
     // ATTRIBUTES
     cCodePropertyGraph *cpg;
     cBufferOverflow *bof;
-
-    cCodePropertyGraph *cpgSeveral;
-    cBufferOverflow *bofSeveral;
 };
 
 // PENDIENTE DE REALIZAR -- APLICACIÓN PENDIENTE DE TERMINAR

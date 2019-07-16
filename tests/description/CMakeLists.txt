@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}
     IsCharacterCaseConversionSinkTest.cpp
     CommandLineTest.cpp
     CodePropertyGraphTest.cpp
+    BufferOverflowBuilderTest.cpp
     SinkClassificationTest.cpp
     NumberOfElementsCopiedWithinBoundsTest.cpp
     ArrayWriteIndexWithinBoundsTest.cpp

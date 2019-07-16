@@ -2,28 +2,31 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/CompilationDatabase.h"
+#include "description/CPGExplorer.h"
 #include "description/CodePropertyGraph.h"
-#include "description/File.h"
-#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
+#include "description/PadmanabhuniBuilder.h"
+#include "description/SinkClassification.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
-#include "description/BufferOverflowBuilder.h"
+#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
+//#include "route.h"
 
 namespace TOOBAD4ML{
 
 namespace description{
 
-class FileTest: 
+class CPGExplorerTest: 
     public ::testing::Test {
 
 protected:
-
     void SetUp() override {
+        builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        Sources.push_back("data/filetest.c");
+        //Sources.push_back(std::string(my_argv[1]) + "/sinkTypes.c");
+        Sources.push_back("data/sinkTypes.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -41,28 +44,20 @@ protected:
         
         
         for (auto const& vuln: vulnerabilities) {
-            cpg = new cCodePropertyGraph(*(vuln.first));
-            
+            cCodePropertyGraph *cpg = new cCodePropertyGraph(*(vuln.first));
+            cpgs.push_back(cpg);
             for (auto const& vulnLOCIter : vuln.second) {
-                bof = &(BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg));
-
-                break;
+                cBufferOverflow bof = BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg);
+                bofs.push_back(bof);
             }
-            break;
         }
-
     }
 
-
     // ATTRIBUTES
-    cCodePropertyGraph *cpg;
-    cBufferOverflow *bof;
-
-    cCodePropertyGraph *cpgSeveral;
-    cBufferOverflow *bofSeveral;
+    std::vector<cCodePropertyGraph*> cpgs;
+    std::vector<cBufferOverflow> bofs;
+    cPadmanabhuniBuilder* builder;
 };
-
-// PENDIENTE DE REALIZAR -- APLICACIÓN PENDIENTE DE TERMINAR
 
 }
 

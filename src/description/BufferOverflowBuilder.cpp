@@ -54,14 +54,15 @@ std::vector<clang::CallExpr*> cBufferOverflowBuilder::getInputs(clang::DeclRefEx
 }
 
 clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink) {
+		clang::DeclRefExpr* buffer = nullptr;
     	switch (sink.getStmtClass()) {
 
 		case clang::Stmt::StmtClass::CallExprClass: {
+			clang::CallExpr* sinkCallExpr = llvm::dyn_cast_or_null<clang::CallExpr>(&sink);
 
-			clang::CallExpr* call = llvm::dyn_cast_or_null<clang::CallExpr>(&sink);
-
-			// map {sink Type, buffer position}
-			std::map<std::string, int> sinkTypes = {
+			if (sinkCallExpr) {
+				// map {sink Type, buffer position}
+				std::map<std::string, int> sinkTypes = {
 					{ "strcpy", 0 }, { "strncpy", 0 },
 					{ "strcat", 0 }, { "strncat", 0 },
 					{ "memcpy", 0 }, { "memmove", 0 },
@@ -69,47 +70,26 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink) {
 					{ "gets", 0 }, { "fgets", 0 },
 					{ "scanf", 1 },{ "sscanf", 0 }, };
 
-			// get function name of sink
-			std::string nameFunction;
-			if(call==nullptr) {
-				// error
-			} else {
+				std::string functionName = sinkCallExpr->getDirectCallee()->getNameAsString();
 
-				nameFunction = call->getDirectCallee()->getNameAsString();
-
-				// if the sink is the above type
-				auto it = sinkTypes.find(nameFunction);
-				if(it == sinkTypes.end()) {
-						llvm::outs() << "No se ha encontrado el sink\n";
-				} else {
-
-					int posBufferArg = it->second;
-
-					if(clang::Expr* buff = call->getArg(posBufferArg)->IgnoreCasts()) {
-
-						if(buff != nullptr) {
-							std::string nameExpr = buff->getStmtClassName();
-
-							if(nameExpr.compare("DeclRefExpr") == 0) {
-
-								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
-									clang::QualType t = buff->getType();
-
-									// if the DeclRefExpr is of type Array
-									if(t.getTypePtr()->isArrayType() || t.getTypePtr()->isConstantArrayType()) {
-										//buff->dumpColor();
-										return ref;
-									} else {
-										llvm::outs() << "El buffer no es de typo array\n";
-									}
-
+				// Get the buffer's AST node by searching its position inside the arguments list of the sink node.
+				std::map<std::string, int>::iterator argSignatureIt = sinkTypes.find(functionName);
+				if(argSignatureIt != sinkTypes.end()) {
+					clang::Expr* bufferExpr = sinkCallExpr->getArg(argSignatureIt->second)->IgnoreCasts();
+					if(bufferExpr) {
+						// Check the type of the buffer
+						switch (bufferExpr->getStmtClass()) {
+							case clang::Stmt::StmtClass::DeclRefExprClass: {
+								if (bufferExpr->getType().getTypePtr()->isArrayType()) {
+									buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
 								}
-
-							} else if(nameExpr.compare("MemberExpr") == 0) { 
-                                //TODO Buffer for structs, unions
-								// buff->dumpColor();
-								//return ref;
 							}
+							break;
+							default: {
+								//TODO Buffer for structs, unions (MemberExprClass)
+							}
+							break;
+
 						}
 					}
 				}
@@ -120,39 +100,23 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink) {
 		break;
 
 		case clang::Stmt::StmtClass::BinaryOperatorClass: {
-
-			if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(&sink)) {
-
-				if(binaryOperator->getLHS()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass) {
-
-					if(clang::ArraySubscriptExpr* arrayExpr =  llvm::dyn_cast<clang::ArraySubscriptExpr>(binaryOperator->getLHS())) {
-
-						if(clang::Expr* buff = arrayExpr->getLHS()->IgnoreCasts()) {
-
-							if(buff != nullptr){
-								std::string nameExpr = buff->getStmtClassName();
-
-								if(nameExpr.compare("DeclRefExpr") == 0) {
-
-									if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(buff)) {
-										clang::QualType t = buff->getType();
-
-										// if the DeclRefExpr is of type Array
-										if(t.getTypePtr()->isArrayType()) {
-											//buff->dumpColor();
-											return ref;
-										}
-									}
-
-								}
-							}
-						}
+			clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(&sink);
+			if(sinkBinaryOperator) {
+				clang::Expr* bufferExpr = sinkBinaryOperator->getLHS();
+				switch(bufferExpr->getStmtClass()) {
+					case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
+						// The buffer is the base of the the sink node's left handed side expression.
+						buffer = llvm::dyn_cast<clang::DeclRefExpr>(llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts()); 
 					}
-
+					break;
+					default: {
+						// TODO *(p + n) = 0; -- UnaryOperatorClass ??
+					}
+					break;
 				}
 			}
-
 		}
-
 	}
+
+	return buffer;
 }

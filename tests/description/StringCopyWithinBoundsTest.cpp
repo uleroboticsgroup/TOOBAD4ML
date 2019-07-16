@@ -7,7 +7,7 @@
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
-
+#include "description/BufferOverflowBuilder.h"
 
 namespace TOOBAD4ML{
 
@@ -20,6 +20,7 @@ protected:
     void SetUp() override {
         scw = new cStringCopyWithinBounds(new cMockDescriptor());
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
+        cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
         Sources.push_back("data/strcpy.c");
@@ -43,8 +44,8 @@ protected:
             cCodePropertyGraph *cpg = new cCodePropertyGraph(*(vuln.first));
             cpgs.push_back(cpg);
             for (auto const& vulnLOCIter : vuln.second) {
-                cBufferOverflow *bof = new cBufferOverflow(*vulnLOCIter);
-			    bof->SetInput(*cpg);
+                cBufferOverflow bof = BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg);
+
                 bofs.push_back(bof);
             }
         }
@@ -54,23 +55,23 @@ protected:
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
-    std::vector<cBufferOverflow*> bofs;
+    std::vector<cBufferOverflow> bofs;
     cStringCopyWithinBounds* scw;
 };
 
 //Type 0
 TEST_F(cStringCopyWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[1], *bofs[1]), "0;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[1], bofs[1]), "0;");
 }
 
 //Type 1
 TEST_F(cStringCopyWithinBoundsTest, WithinBounds) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], *bofs[0]), "1;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[0]), "1;");
 
 }
 //Type -1
 TEST_F(cStringCopyWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[2], *bofs[2]), "-1;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[2], bofs[2]), "-1;");
 
 }
 

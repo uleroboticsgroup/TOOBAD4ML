@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "io/FormatStrategyFactory.h"
-#include "iostream"
+
 #include "io/CSVOutputFormatStrategy.h"
 #include "io/IOutputFormatStrategy.h"
 #include "io/STDOutputFormatStrategy.h"

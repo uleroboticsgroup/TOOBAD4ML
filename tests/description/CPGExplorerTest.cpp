@@ -8,6 +8,7 @@
 #include "description/SinkClassification.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
+#include "description/BufferOverflowBuilder.h"
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 //#include "route.h"
 
@@ -22,10 +23,10 @@ protected:
     void SetUp() override {
         builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
+        cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        //Sources.push_back(std::string(my_argv[1]) + "/sinkTypes.c");
-        Sources.push_back("data/sinkTypes.c");
+        Sources.push_back("data/test.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -46,8 +47,7 @@ protected:
             cCodePropertyGraph *cpg = new cCodePropertyGraph(*(vuln.first));
             cpgs.push_back(cpg);
             for (auto const& vulnLOCIter : vuln.second) {
-                cBufferOverflow *bof = new cBufferOverflow(*vulnLOCIter);
-			    bof->SetInput(*cpg);
+                cBufferOverflow bof = BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg);
                 bofs.push_back(bof);
             }
         }
@@ -55,14 +55,14 @@ protected:
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
-    std::vector<cBufferOverflow*> bofs;
+    std::vector<cBufferOverflow> bofs;
     cPadmanabhuniBuilder* builder;
 };
 
 TEST_F(CPGExplorerTest, Inspect) {
     cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
-    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]);
-    EXPECT_EQ(result, "1;0;0;0;0;-1;-1;-1;1;-1;");
+    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
+    EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;");
 }
 
 TEST_F(CPGExplorerTest, Constructor) {
@@ -76,7 +76,7 @@ TEST_F(CPGExplorerTest, SetDescriptor) {
     cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     cMockDescriptor* mock = new cMockDescriptor();
     explorer->SetDescriptor(*mock);
-    std::string result = explorer->Inspect(*cpgs[0], *bofs[0]);
+    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
     EXPECT_EQ(result, "");
 }
 

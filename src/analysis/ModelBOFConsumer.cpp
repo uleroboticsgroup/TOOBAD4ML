@@ -50,7 +50,6 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             // encapsulate the data related to the current vulnerable LOC
             description::cBufferOverflowBuilder BOFBuilder;
             description::cBufferOverflow BOF = BOFBuilder.CreateBufferOverflow(*vulnLOCIter, cpg);
-
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
 			std::string descriptor = m_CPGExplorer.Inspect(cpg, BOF);

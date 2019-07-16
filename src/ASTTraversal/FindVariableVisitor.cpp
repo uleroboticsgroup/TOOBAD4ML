@@ -3,7 +3,12 @@ using namespace TOOBAD4ML;
 using namespace ASTTraversal;
 
 clang::VarDecl* getTargetVarDecl(clang::DeclRefExpr* targetDeclRefExpr) {
-	return (targetDeclRefExpr) ? llvm::dyn_cast<clang::VarDecl>(targetDeclRefExpr->getDecl()): nullptr;
+	if (targetDeclRefExpr) {
+		return (targetDeclRefExpr) ? llvm::dyn_cast_or_null<clang::VarDecl>(targetDeclRefExpr->getDecl()) : nullptr;
+	}
+	else {
+		return nullptr;
+	}
 }
 /**
  * m_variable is the buffer that might be overrun
@@ -14,7 +19,7 @@ cFindVariableVisitor::cFindVariableVisitor(clang::DeclRefExpr* declRefExpr) :
 
 
 bool cFindVariableVisitor::VisitDeclRefExpr(clang::DeclRefExpr* currentDeclRefExpr) {
-	clang::VarDecl* currentVarDecl = llvm::dyn_cast<clang::VarDecl>(currentDeclRefExpr->getDecl());
+	clang::VarDecl* currentVarDecl = llvm::dyn_cast_or_null<clang::VarDecl>(currentDeclRefExpr->getDecl());
 	if(currentVarDecl == m_targetVariable) {
 		m_found = true;
 	}
