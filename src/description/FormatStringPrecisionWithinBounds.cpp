@@ -1,6 +1,7 @@
 #include "description/FormatStringPrecisionWithinBounds.h"
 #include "description/BufferOverflow.h"
-
+#include <string>
+#include <iostream>
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -14,170 +15,199 @@ cFormatStringPrecisionWithinBounds::cFormatStringPrecisionWithinBounds(
 		cDescriptorDecorator(decoratedComponent) {
 };
 
-int  cFormatStringPrecisionWithinBounds::FormatStringParser(std::string formatString, std::string function, clang::Expr* sink) {
+int cFormatStringPrecisionWithinBounds::getSprintfWriteSize(std::string formatString, clang::Expr* sink) {
+	// %[flags][width][.precision][length]specifier
+	std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g', 'X', 'F', 'E', 'G', 'a', 'A', 'p'};
+	std::string currentValue = "0"; // Width or precission
+	int size = 0;
+	int width = 0;
+	int nArguments = 0;
+	bool isFormatMode = false;
+	bool hashtag = false;
+	bool flagSet = false;
+	char prevChar = '\0';
 
-		if(function.compare("scanf") == 0) {
-
-			// [=%[*][width][modifiers]type=]
-
-			std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g'};
-
-			std::string number = "";
-
-			int limit = 0;
-
-			for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
-
-				if((*it)=='%') {
-					it++;
-				}
-
-				if((*it)=='*'){
-					it++;
-				}
-
-				if(isdigit((*it))) {
-					number.push_back((*it));
-				}
-
-				if(std::find(modifiers.begin(), modifiers.end(), (*it)) != modifiers.end()) {
-					break;
-				}
-			}
-
-			if(number.length() != 0)
-				limit = std::stoi(number);
-
-			return limit == 0 ? -1 : limit  ;
-
+	// Obtain the format expression information
+	for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
+		char currentChar = *it;
+		// Check if we begin the format expression
+		if (currentChar != '%' && prevChar == '%') {
+			// %% second 
+			isFormatMode = true;
 		}
 
-		if(function.compare("sprintf") == 0) {
-
-			// %[flags][width][.precision][length]specifier
-
-			std::string number = "";
-			int contChars = 0;
-			int limit = 0;
-			int width = 0;
-			int precision = 0;
-			int countArg = 0;
-			int countSpecifierAlone = 0;
-
-			for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
-
-				if((*it) != '%') {
-					contChars++;
-				} else {
-					it++;
-					while((*it) != 's' && (*it) != 'd' && it != formatString.end()) { // %...specifier
-						if(isdigit(*it)) {
-							number.push_back((*it));
-						}
-						else if((*it) == '.') {
-							if(number.length() != 0)
-							{
-								width = std::stoi(number);
-								number = "";
-							}
-						}
-						if(it != formatString.end())
-							it++;
+		if (isFormatMode) {
+			switch (currentChar) {
+				case ' ':
+				case '+': 
+					if (!flagSet) {
+						// Because only one can appear
+						size++;
+						flagSet = true;
 					}
+					break;
 
-					if(number.length() != 0)
-					{
-						precision = std::stoi(number);
-						number = "";
-					}
+				case '#': 
+					hashtag = true;
+					flagSet = true;
+					break;
 
-					limit = limit + width + precision;
-
-					if((*it) == 's' || (*it) == 'd') {
-						countArg++;
-						if(width+precision != 0) {
-							countSpecifierAlone++;
-							width = 0;
-							precision = 0;
-						}
-					}
-
+				case '.': {
+					// Precission field begins
+					width = std::stoi(currentValue);
+					currentValue = "0";
 				}
+					break;
+				
+				case '*': {
+					// We need the arguments
+				}
+				break;
+			}
 
-			 }
+			if (isdigit(currentChar)) {
+				currentValue += currentChar;
+			}
 
-			bool err = false;
+			// End of format expression?
+			if (std::find(modifiers.begin(), modifiers.end(), currentChar) != modifiers.end()) {
+				if (hashtag) {
+					switch (currentChar) {
+					case '0':
+						size += 1;
+						break;
 
-			if (sink->getStmtClass()
-					== clang::Stmt::StmtClass::CallExprClass) {
-
-				clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(sink);
-
-				for(int i = (countArg - countSpecifierAlone); i<countArg; i++) {
-					if(call->getNumArgs() >= (2 + countArg)){
-						if (clang::Expr* s = call->getArg(2 + i)->IgnoreCasts()) {
-							std::string name = s->getStmtClassName();
-							if (name.compare("DeclRefExpr") == 0) {
-								if(clang::DeclRefExpr *ref = llvm::dyn_cast<clang::DeclRefExpr>(s)) {
-									if(clang::VarDecl* VD = llvm::dyn_cast_or_null<clang::VarDecl>(ref->getDecl())) {
-										if(VD->hasInit()){
-
-											if(clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(VD->getInit())) {
-												int num = intLiteral->getValue().getLimitedValue();
-												std::string n = std::to_string(num);
-												int len = n.length();
-												limit += len;
-											}
-											else if(clang::StringLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::StringLiteral>(VD->getInit())) {
-												clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
-												if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(s->getType().getTypePtr())) {
-													int destinationSize = t->getSize().getLimitedValue();
-													limit += destinationSize;
-												}
-											}
-											else {
-												err = true;
-												break;
-											}
-										}
-									}
-								}
-
-							} else if (name.compare("StringLiteral") == 0) {
-
-								clang::StringLiteral* strLiteral = llvm::dyn_cast<clang::StringLiteral>(s);
-
-								if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(s->getType().getTypePtr())) {
-
-									int destinationSize = t->getSize().getLimitedValue();
-									limit += destinationSize;
-								}
-								else {
-									err = true;
-									break;
-								}
-							} else  if (name.compare("IntegerLiteral") == 0) {
-								if(clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(s)) {
-									int num = intLiteral->getValue().getLimitedValue();
-									std::string n = std::to_string(num);
-									int len = n.length();
-									limit += len;
-								}
-								else {
-									err = true;
-									break;
-								}
-
-							}
-						}
+					case 'x':
+					case 'X':
+						size += 2;
+						break;
 					}
 				}
 
-			}
+				if (std::stoi(currentValue) > width) {
+					width = std::stoi(currentValue);
+				}
 
-			return 	( err ? (-1) : (limit + contChars));
+				size += width;
+				nArguments++;
+				hashtag = false;
+				flagSet = false;
+				isFormatMode = false;
+			}
+		}
+		else {
+			size++; // Regular character
+		}
+
+		prevChar = currentChar;
+	}
+	
+	// Calculate how much does the arguments to be passed to the expression occupy
+	if (sink->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
+		clang::CallExpr* sinkCallExpr = llvm::dyn_cast<clang::CallExpr>(sink);
+
+		if (sinkCallExpr->getNumArgs() != (2 + nArguments)) {
+			return -1;
+		}
+
+		for (int i = 2; i < (2 + nArguments); i++) {
+
+			clang::Expr* argExpr = sinkCallExpr->getArg(i)->IgnoreCasts();
+			
+
+			switch (argExpr->getStmtClass()) {
+
+				case clang::Stmt::StmtClass::DeclRefExprClass: {
+					clang::DeclRefExpr* argDeclRefExpr = llvm::dyn_cast<clang::DeclRefExpr>(argExpr);
+
+					// What else should we expect to find ??
+					clang::VarDecl* VD = llvm::dyn_cast_or_null<clang::VarDecl>(argDeclRefExpr->getDecl());
+
+					if(VD->hasInit()){
+						
+						switch(VD->getInit()->getStmtClass()) {
+							case clang::Stmt::StmtClass::StringLiteralClass: {
+								clang::StringLiteral* argStrLiteral = llvm::dyn_cast<clang::StringLiteral>(VD->getInit());
+
+								size += argStrLiteral->getLength();
+							}
+							break;
+
+							case clang::Stmt::StmtClass::IntegerLiteralClass: {
+								clang::IntegerLiteral* argIntLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(VD->getInit());
+
+								int argValue = argIntLiteral->getValue().getLimitedValue();
+								size += std::to_string(argValue).length();
+							}
+							break;
+
+
+						}
+					}
+				}
+				break;
+
+				case clang::Stmt::StmtClass::StringLiteralClass: {
+					clang::StringLiteral* argStringLiteral = llvm::dyn_cast<clang::StringLiteral>(argExpr);
+
+					size += argStringLiteral->getLength();
+				}
+				break;
+
+				case clang::Stmt::StmtClass::IntegerLiteralClass: {
+					clang::IntegerLiteral* argIntegerLiteral = llvm::dyn_cast_or_null<clang::IntegerLiteral>(argExpr);
+
+					int argValue = argIntegerLiteral->getValue().getLimitedValue();
+					size += std::to_string(argValue).length();
+				}
+				break;
 
 			}
+		}
+	}
+
+	return size == 0 ? -1 : size;
+}
+
+int cFormatStringPrecisionWithinBounds::getScanfSize(std::string formatString) {
+	// %[*][width][length]specifier 
+
+	std::vector<char> modifiers = {'c', 's', 'd', 'i', 'n', 'o', 'u', 'x', 'e', 'f', 'g', 'p', '['};
+	std::string size = "0";
+	char currentChar = '\0'; 
+	int limit = 0;
+
+	for(std::string::iterator it = formatString.begin(); it != formatString.end(); it++) {
+		currentChar = *it;
+
+		if (currentChar == '*') {
+			// Nothing is going to be written in the buffer
+			return INT_MAX;
+		}
+
+		if (isdigit(currentChar)) {
+			size.push_back(currentChar);
+		}
+
+		if(std::find(modifiers.begin(), modifiers.end(), currentChar) != modifiers.end()) {
+			// Anything from here is ignored.
+			break;
+		}
+	}
+
+	limit = std::stoi(size);
+	return limit == 0 ? -1 : limit;
+	
+}
+
+int cFormatStringPrecisionWithinBounds::FormatStringParser(std::string formatString, std::string functionName, clang::Expr* sink) {
+
+	if(functionName == "scanf") {
+		return getScanfSize(formatString);
+	}
+	else if(functionName == "sprintf") {
+		return getSprintfWriteSize(formatString, sink);
+	}
 
 	return 0;
 }
@@ -194,13 +224,11 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 	std::string feature = "-1";
 
-	if (bof.GetSink()->getStmtClass()
-			== clang::Stmt::StmtClass::CallExprClass && bof.GetBuffer() != nullptr) {
-
+	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass && 
+		bof.GetBuffer() != nullptr) {
+		
+		// SAME PROBLEM OF ALWAYS - We need the size of the buffer.
 		clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
-
-		if (std::find(sinkTypes.begin(), sinkTypes.end(),
-				call->getDirectCallee()->getName()) != sinkTypes.end()) {
 
 			// for the case of sprintf checks size of format string to be copied into buffer
 			if (call->getDirectCallee()->getName() == "sprintf") {
@@ -317,8 +345,6 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 
 			}
-
-		}
 
 	} else {
 

@@ -1,6 +1,5 @@
 #include "description/CommandLine.h"
 #include "description/BufferOverflow.h"
-#include "iostream"
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -20,16 +19,14 @@ cCommandLine::cCommandLine(
 std::string cCommandLine::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
-	int counter = 0;
-	std::vector<clang::CallExpr*> input = bof.GetInput();
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
-	std::vector<std::string> inputClassificationtypes {"scanf", "gets"}; // Command line
-	
-	for (std::vector<clang::CallExpr*>::iterator it = input.begin();
-			it != input.end(); it++) {
-		if (std::find(inputClassificationtypes.begin(), inputClassificationtypes.end(),
-				(*it)->getDirectCallee()->getNameAsString()) != inputClassificationtypes.end())
-		{
+	std::vector<std::string> commandLineFunctions {"scanf", "gets"};
+	int counter = 0;
+
+	for (clang::CallExpr* inputCallExpr: bof.GetInput()) {
+		std::vector<std::string>::iterator inputIt = std::find(commandLineFunctions.begin(), commandLineFunctions.end(), inputCallExpr->getDirectCallee()->getNameAsString());
+
+		if (inputIt != commandLineFunctions.end()) {
 			counter++;
 		}
 	}

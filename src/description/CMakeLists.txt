@@ -18,6 +18,7 @@ add_library(${PROJECT_NAME}
         BufferOverflow.cpp
         BufferOverflowBuilder.cpp
         CodePropertyGraph.cpp
+        ExprUtils.cpp
         CPGExplorer.cpp
         MockDescriptor.cpp
         DescriptorDecorator.cpp

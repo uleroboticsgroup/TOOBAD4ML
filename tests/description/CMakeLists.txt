@@ -6,8 +6,10 @@ project(description_test)
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}
+    ExprUtilsTest.cpp
     IsCharacterCaseConversionSinkTest.cpp
     CommandLineTest.cpp
+    BufferOverflowTest.cpp
     CodePropertyGraphTest.cpp
     BufferOverflowBuilderTest.cpp
     SinkClassificationTest.cpp

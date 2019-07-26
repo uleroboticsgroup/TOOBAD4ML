@@ -35,6 +35,12 @@ class cCodePropertyGraph;
  * Property Graph using the sink statement; that is, the statement where the
  * vulnerability originated.
  */
+
+enum BufferType {
+    SRC,
+    DST
+};
+
 class cBufferOverflow {
 
     // CONSTRUCTORS & DESTRUCTORS
@@ -77,8 +83,12 @@ private:
 	clang::Expr* m_sink;
 
 	//! AST node of the variable representing a memory region (i.e. array), in
-    /// which the vulnerability occurred.
-	clang::DeclRefExpr* m_buffer;
+    /// which the vulnerable instruction reads.
+	clang::DeclRefExpr* m_srcBuffer;
+
+    //! AST node of the variable representing a memory region (i.e. array), in
+    /// which the vulnerable instruction writes.
+	clang::DeclRefExpr* m_dstBuffer;
 
 	//! List of AST nodes containing statements involved in reading input data,
     /// that affects {\ref m_buffer}.

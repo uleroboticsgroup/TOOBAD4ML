@@ -21,24 +21,25 @@ std::string cIsCharacterCaseConversionSink::ExtractFeature(
 				bof);
 
 	std::string feature = "-1";
-
 	std::vector<std::string> sinkTypes = {"toupper", "tolower"};
 
-
 	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-		if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink())) {
-			if(binaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
-				if(clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(binaryOperator->getRHS()->IgnoreCasts())){
-					if (std::find(sinkTypes.begin(), sinkTypes.end(),
-							call->getDirectCallee()->getName()) != sinkTypes.end()) {
-						feature = "1";
-					}
+		clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink());
+			if(sinkBinaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
+
+				clang::CallExpr* rightCallExpr = llvm::dyn_cast<clang::CallExpr>(sinkBinaryOperator->getRHS()->IgnoreCasts());
+
+				if (std::find(sinkTypes.begin(), sinkTypes.end(),
+						rightCallExpr->getDirectCallee()->getName()) != sinkTypes.end()) {
+					feature = "1";
 				}
+				
 			}
 			else {
+				// ?????????? why 0 here
 				feature = "0";
 			}
-		}
+		
 	}
 
 	return decoratedFeature.append(feature).append(

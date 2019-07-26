@@ -1,7 +1,6 @@
 #include "description/ArrayWriteIndexWithinBounds.h"
 #include "description/BufferOverflow.h"
 
-
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -27,27 +26,41 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 	unsigned destinationSize = 0;
 	unsigned indexArray = 0;
 
-	if(bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass && bof.GetBuffer() != nullptr) {
+	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass && 
+		bof.GetBuffer() != nullptr) {
+		
+		clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink());
 
-		if(clang::BinaryOperator* binaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink())) {
+		// destinationSize -> calculate with refactored function.
 
-			switch (binaryOperator->getLHS()->getStmtClass()) {
+		if (sinkBinaryOperator->getLHS()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass) {
+			clang::ArraySubscriptExpr* sinkArraySubscriptExpr =  llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(sinkBinaryOperator->getLHS());
+		
 
-				case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
+			switch (sinkArraySubscriptExpr->getRHS()->getStmtClass()) {
 
-					if(clang::ArraySubscriptExpr* arrayExpr =  llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(binaryOperator->getLHS())) {
+				case clang::Stmt::StmtClass::IntegerLiteralClass: {
+					indexArray = llvm::dyn_cast_or_null<clang::IntegerLiteral>(sinkArraySubscriptExpr->getRHS())->getValue().getLimitedValue();
+				}
 
-						clang::IntegerLiteral* intLiteral  = llvm::dyn_cast_or_null<clang::IntegerLiteral>(arrayExpr->getRHS());
+				break;
 
-						if(intLiteral!=nullptr) {
+				// What else?
+			}
+			
+			if(indexArray < destinationSize){
+				feature = "1"; // good
+			} else {
+				feature = "0"; // bad
+			}
+		}
+	}
+	
+	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
+}
+// Do we really need to check this? You break the string but you write in a valid place of memory.
 
-							if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
-								destinationSize = t->getSize().getLimitedValue();
-							}
-
-							indexArray = intLiteral->getValue().getLimitedValue();
-
-//							//in case of char array is must check de last char is null term
+//in case of char array is must check de last char is null term
 //							if(clang::DeclRefExpr* Ref = llvm::dyn_cast_or_null<clang::DeclRefExpr>(bof.GetBuffer()) ) {
 //								if(clang::VarDecl* VD = llvm::dyn_cast_or_null<clang::VarDecl>(Ref->getDecl())) {
 //
@@ -78,29 +91,3 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 
 //							// in anther case
 //							else {
-
-								if(indexArray < destinationSize){
-									feature = "1"; // good
-								} else {
-									feature = "0"; // bad
-								}
-
-
-	//						}
-						}
-					}
-
-				} break;
-
-				default: feature = "-1";
-			}
-
-		} else {
-			 feature = "-1";
-		}
-	} else {
-		 feature = "-1";
-	}
-
-	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
-}

@@ -13,7 +13,7 @@ using namespace description;
 
 cBufferOverflow::cBufferOverflow(clang::Expr* sink, clang::DeclRefExpr* buffer, std::vector<clang::CallExpr*> inputs) :
 		m_sink(sink), 
-		m_buffer(buffer),
+		m_dstBuffer(buffer),
 		m_input(inputs) {}
 
 cBufferOverflow::~cBufferOverflow() {
@@ -28,7 +28,7 @@ clang::Expr* cBufferOverflow::GetSink() {
 }
 
 clang::DeclRefExpr* cBufferOverflow::GetBuffer() {
-	return m_buffer;
+	return m_dstBuffer;
 }
 
 std::vector<clang::CallExpr*> cBufferOverflow::GetInput() {

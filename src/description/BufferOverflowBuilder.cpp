@@ -35,16 +35,8 @@ std::vector<clang::CallExpr*> cBufferOverflowBuilder::getInputs(clang::DeclRefEx
 
 			break;
 
-			case clang::Stmt::StmtClass::BinaryOperatorClass: { /*
-			 if(inputClassificationtypes.find(llvm::cast<clang::CallExpr>(aux)->getDirectCallee()->getNameAsString()) != inputClassificationtypes.end()){
-			 ASTTraversal::cFindVariableVisitor m_visitor(sink);
-			 m_visitor.TraverseStmt(const_cast<clang::Stmt*>(aux));
-
-			 if (m_visitor.isFound()) {
-			 //TODO Get right handed side of binaryoperator
-			 //m_input.push_back(llvm::cast<clang::CallExpr>(aux));
-			 }
-			 }*/
+			default: {
+				//TODO binary operator class -- find cases.
 			}
             break;
 		}

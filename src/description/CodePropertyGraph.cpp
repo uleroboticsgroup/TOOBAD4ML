@@ -64,7 +64,13 @@ SinkPathGraph cCodePropertyGraph::GetSPG(clang::Expr& sink) {
     for (clang::CFGBlock* block: affectedBlocks) {
         for (clang::CFGBlock::iterator instruction = block->begin(); instruction != block->end(); ++instruction) {
             if((*instruction).getKind() == clang::CFGElement::Kind::Statement) {
-                SPG.push_back((*instruction).castAs<clang::CFGStmt>());
+                clang::CFGStmt currentStmt = (*instruction).castAs<clang::CFGStmt>();
+                if (currentStmt.getStmt() == &sink) {
+                    SPG.push_back(currentStmt);
+                    break;
+                }
+
+                SPG.push_back(currentStmt);
             }
         }
     }

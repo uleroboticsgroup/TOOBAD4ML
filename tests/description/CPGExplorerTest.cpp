@@ -21,7 +21,7 @@ class CPGExplorerTest:
 
 protected:
     void SetUp() override {
-        builder = new cPadmanabhuniBuilder();
+        cPadmanabhuniBuilder* builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
 
@@ -51,29 +51,33 @@ protected:
                 bofs.push_back(bof);
             }
         }
+
+        explorer = new cCPGExplorer(*builder->CreateDescriptor());
+    }
+
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
     }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cPadmanabhuniBuilder* builder;
+    cCPGExplorer* explorer;
 };
 
 TEST_F(CPGExplorerTest, Inspect) {
-    cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
     EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;");
 }
 
 TEST_F(CPGExplorerTest, Constructor) {
-    cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     EXPECT_TRUE(explorer != nullptr);
 }
 
 
 
 TEST_F(CPGExplorerTest, SetDescriptor) {
-    cCPGExplorer* explorer = new cCPGExplorer(*builder->CreateDescriptor());
     cMockDescriptor* mock = new cMockDescriptor();
     explorer->SetDescriptor(*mock);
     std::string result = explorer->Inspect(*cpgs[0], bofs[0]);

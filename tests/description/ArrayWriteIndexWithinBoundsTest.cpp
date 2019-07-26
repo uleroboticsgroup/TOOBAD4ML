@@ -17,10 +17,6 @@ class ArrayWriteIndexWithinBoundsTest:
     public ::testing::Test {
 
 protected:
-
-    ArrayWriteIndexWithinBoundsTest():
-        awi(new cMockDescriptor) {}
-
     void SetUp() override {
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
@@ -52,30 +48,37 @@ protected:
             }
         }
 
+        awi = new cArrayWriteIndexWithinBounds(new cMockDescriptor);
+    
     }
 
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
+        delete awi;
+    }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cArrayWriteIndexWithinBounds awi;
+    cArrayWriteIndexWithinBounds* awi;
 };
 
 //Type 1
 TEST_F(ArrayWriteIndexWithinBoundsTest, WithinBounds) {
-    ASSERT_EQ(awi.ExtractFeature(*cpgs[0], bofs[0]), "1;");
+    ASSERT_EQ(awi->ExtractFeature(*cpgs[0], bofs[0]), "1;");
 
 }
 
 //Type 0
 TEST_F(ArrayWriteIndexWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(awi.ExtractFeature(*cpgs[1], bofs[1]), "0;");
+    ASSERT_EQ(awi->ExtractFeature(*cpgs[1], bofs[1]), "0;");
 }
 
 
 //Type -1
 TEST_F(ArrayWriteIndexWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(awi.ExtractFeature(*cpgs[2], bofs[2]), "-1;");
+    ASSERT_EQ(awi->ExtractFeature(*cpgs[2], bofs[2]), "-1;");
 
 }
 

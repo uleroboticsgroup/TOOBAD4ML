@@ -46,6 +46,11 @@ public:
 	 */
 	int FormatStringParser(std::string, std::string, clang::Expr*);
 
+private:
+
+	int getSprintfWriteSize(std::string formatString, clang::Expr* sink);
+	int getScanfSize(std::string formatString);
+
 }; /*cFormatStringPrecisionWithinBounds*/
 
 } /* description */
