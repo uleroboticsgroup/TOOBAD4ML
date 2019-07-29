@@ -11,9 +11,10 @@ using namespace description;
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------
 
-cBufferOverflow::cBufferOverflow(clang::Expr* sink, clang::DeclRefExpr* buffer, std::vector<clang::CallExpr*> inputs) :
+cBufferOverflow::cBufferOverflow(clang::Expr* sink, clang::DeclRefExpr* dstBuffer,clang::DeclRefExpr* srcBuffer, std::vector<clang::CallExpr*> inputs) :
 		m_sink(sink), 
-		m_dstBuffer(buffer),
+		m_dstBuffer(dstBuffer),
+		m_srcBuffer(srcBuffer),
 		m_input(inputs) {}
 
 cBufferOverflow::~cBufferOverflow() {
@@ -27,8 +28,8 @@ clang::Expr* cBufferOverflow::GetSink() {
 	return m_sink;
 }
 
-clang::DeclRefExpr* cBufferOverflow::GetBuffer() {
-	return m_dstBuffer;
+clang::DeclRefExpr* cBufferOverflow::GetBuffer(BufferType bufferType) {
+	return bufferType == BufferType::DST ? m_dstBuffer : m_srcBuffer;
 }
 
 std::vector<clang::CallExpr*> cBufferOverflow::GetInput() {

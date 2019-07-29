@@ -28,13 +28,13 @@ std::string cStringCopyWithinBounds::ExtractFeature(
 	std::vector<std::string> sinkTypes = {"strcpy"}; //sinks type 1
 
 	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass && 
-		bof.GetBuffer() != nullptr) {
+		bof.GetBuffer(BufferType::DST) != nullptr) {
 			
 		clang::CallExpr* sinkCallExpr = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
 
 
 		// TODO --- SAME PROBLEM :: get size of destination buffer
-		if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+		if(auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer(BufferType::DST)->getType().getTypePtr())) {
 			destination = t->getSize().getLimitedValue();
 		}
 

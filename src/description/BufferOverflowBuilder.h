@@ -4,13 +4,13 @@
 // ----------------------------------------------------------------------------
 #include <clang/AST/Expr.h>
 #include "description/CodePropertyGraph.h"
+#include "description/BufferOverflow.h"
 // ----------------------------------------------------------------------------
 
 namespace TOOBAD4ML {
 
 namespace description {
 // ----------------------------------------------------------------------------
-class cBufferOverflow;
 class cCodePropertyGraph;
 // ----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ public:
 
 private:
     std::vector<clang::CallExpr*> getInputs(clang::DeclRefExpr&, SinkPathGraph);
-    clang::DeclRefExpr* getBuffer(clang::Expr&);
+    clang::DeclRefExpr* getBuffer(clang::Expr&, BufferType);
 };
 
 }

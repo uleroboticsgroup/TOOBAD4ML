@@ -31,7 +31,7 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 	int sourceBufferSize = 0;
 
 	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass && 
-		bof.GetBuffer() != nullptr // && bof.getSrcBuffer != nullptr
+		bof.GetBuffer(BufferType::DST) != nullptr // && bof.getSrcBuffer != nullptr
 		) {
 		
 		clang::CallExpr* sinkCallExpr = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
@@ -39,7 +39,7 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 		if (sinkCallExpr->getDirectCallee()->getNameAsString() == "strncpy" && 
 			sinkCallExpr->getNumArgs() == 3) {
 			
-			destinationBufferSize = exprUtils->guessBufferSize(bof.GetBuffer(), cpg.GetAST().getASTContext());
+			destinationBufferSize = exprUtils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext());
 			// sourceBufferSize = guessBufferSize(bof.GetSrcBuffer)
 			clang::Expr* limitVarExpr = sinkCallExpr->getArg(2)->IgnoreCasts();
 			limit = exprUtils->guessArgumentSize(limitVarExpr, cpg.GetAST().getASTContext());

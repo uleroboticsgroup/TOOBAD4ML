@@ -225,7 +225,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 	std::string feature = "-1";
 
 	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass && 
-		bof.GetBuffer() != nullptr) {
+		bof.GetBuffer(BufferType::DST) != nullptr) {
 		
 		// SAME PROBLEM OF ALWAYS - We need the size of the buffer.
 		clang::CallExpr* call = llvm::dyn_cast<clang::CallExpr>(bof.GetSink());
@@ -235,7 +235,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 				// buffer size
 				unsigned destinationSize;
-				if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+				if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer(BufferType::DST)->getType().getTypePtr())) {
 
 					destinationSize = t->getSize().getLimitedValue();
 
@@ -255,7 +255,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 							int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "sprintf", bof.GetSink());
 
 							if(limit != -1) {
-								if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+								if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer(BufferType::DST)->getType().getTypePtr())) {
 
 									uint64_t destinationSize = t->getSize().getLimitedValue();
 
@@ -284,7 +284,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 
 						uint64_t limitSize = intLiteral->getValue().getLimitedValue();
 
-						if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+						if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer(BufferType::DST)->getType().getTypePtr())) {
 
 							uint64_t destinationSize = t->getSize().getLimitedValue();
 
@@ -317,7 +317,7 @@ std::string cFormatStringPrecisionWithinBounds::ExtractFeature(
 						int limit = cFormatStringPrecisionWithinBounds::FormatStringParser(formatString, "scanf", bof.GetSink());
 
 						if(limit != -1) {
-							if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer()->getType().getTypePtr())) {
+							if (auto t = llvm::dyn_cast_or_null<clang::ConstantArrayType>(bof.GetBuffer(BufferType::DST)->getType().getTypePtr())) {
 
 							uint64_t destinationSize = t->getSize().getLimitedValue();
 

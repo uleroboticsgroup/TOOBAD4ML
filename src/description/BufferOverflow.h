@@ -54,7 +54,7 @@ public:
 	 * @param sink  AST node of the statement where the BOF originally
      *              occurred.
 	 */
-    cBufferOverflow(clang::Expr*, clang::DeclRefExpr*, std::vector<clang::CallExpr*>);
+    cBufferOverflow(clang::Expr*, clang::DeclRefExpr*, clang::DeclRefExpr*, std::vector<clang::CallExpr*>);
     ~cBufferOverflow();
 
 
@@ -70,7 +70,7 @@ public:
 
 	clang::Expr* GetSink();
 
-	clang::DeclRefExpr* GetBuffer();
+	clang::DeclRefExpr* GetBuffer(BufferType);
 
 	std::vector<clang::CallExpr*> GetInput();
 

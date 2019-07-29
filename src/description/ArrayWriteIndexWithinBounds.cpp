@@ -27,7 +27,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 	unsigned indexArray = 0;
 
 	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass && 
-		bof.GetBuffer() != nullptr) {
+		bof.GetBuffer(BufferType::DST) != nullptr) {
 		
 		clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink());
 
