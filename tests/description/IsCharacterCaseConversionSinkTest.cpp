@@ -17,10 +17,6 @@ class IsCharacterCaseConversionSinkTest:
     public ::testing::Test {
 
 protected:
-
-    IsCharacterCaseConversionSinkTest():
-        icc(new cMockDescriptor) {}
-
     void SetUp() override {
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
@@ -53,30 +49,36 @@ protected:
             }
         }
 
+        icc = new cIsCharacterCaseConversionSink(new cMockDescriptor());
     }
 
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
+        delete icc;
+    }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cIsCharacterCaseConversionSink icc;
+    cIsCharacterCaseConversionSink* icc;
 };
 
 //Type 1
 TEST_F(IsCharacterCaseConversionSinkTest, IsCharacterCaseConversion) {
-    ASSERT_EQ(icc.ExtractFeature(*cpgs[0], bofs[0]), "1;");
+    ASSERT_EQ(icc->ExtractFeature(*cpgs[0], bofs[0]), "1;");
 
 }
 
 //Type 0
 TEST_F(IsCharacterCaseConversionSinkTest, IsNotCharacterCaseConversion) {
-    ASSERT_EQ(icc.ExtractFeature(*cpgs[1], bofs[1]), "0;");
+    ASSERT_EQ(icc->ExtractFeature(*cpgs[0], bofs[1]), "0;");
 }
 
 
 //Type -1
 TEST_F(IsCharacterCaseConversionSinkTest, NotAplicable) {
-    ASSERT_EQ(icc.ExtractFeature(*cpgs[2], bofs[2]), "-1;");
+    ASSERT_EQ(icc->ExtractFeature(*cpgs[0], bofs[2]), "-1;");
 
 }
 

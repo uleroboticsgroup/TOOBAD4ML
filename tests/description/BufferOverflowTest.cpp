@@ -73,7 +73,7 @@ TEST_F(BufferOverflowTest, GetInput) {
 }
 
 TEST_F(BufferOverflowTest, GetBuffer) {
-    clang::DeclRefExpr* bof_buffer = bof.get()->GetBuffer();
+    clang::DeclRefExpr* bof_buffer = bof.get()->GetBuffer(BufferType::DST);
     
     EXPECT_EQ("buffer", bof_buffer->getNameInfo().getAsString());
 }

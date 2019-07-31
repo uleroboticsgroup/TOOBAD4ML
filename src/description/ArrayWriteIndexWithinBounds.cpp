@@ -1,6 +1,7 @@
 #include "description/ArrayWriteIndexWithinBounds.h"
 #include "description/BufferOverflow.h"
-
+#include "description/ExprUtils.h"
+#include "description/CodePropertyGraph.h"
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -21,6 +22,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
         cCodePropertyGraph &cpg, cBufferOverflow &bof) {
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
+	cExprUtils* exprUtils = cExprUtils::GetInstance();
 
 	std::string feature = "-1";
 	unsigned destinationSize = 0;
@@ -32,7 +34,7 @@ std::string cArrayWriteIndexWithinBounds::ExtractFeature(
 		clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(bof.GetSink());
 
 		// destinationSize -> calculate with refactored function.
-
+		destinationSize = exprUtils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext());
 		if (sinkBinaryOperator->getLHS()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass) {
 			clang::ArraySubscriptExpr* sinkArraySubscriptExpr =  llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(sinkBinaryOperator->getLHS());
 		

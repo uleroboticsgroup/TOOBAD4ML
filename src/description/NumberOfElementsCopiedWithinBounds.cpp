@@ -5,6 +5,7 @@
 #include "clang/AST/Type.h"
 #include "description/ExprUtils.h"
 #include "iostream"
+
 // ----------------------------------------------------------------------------
 
 using namespace TOOBAD4ML;
@@ -40,24 +41,23 @@ std::string cNumberOfElementsCopiedWithinBounds::ExtractFeature(
 			sinkCallExpr->getNumArgs() == 3) {
 			
 			destinationBufferSize = exprUtils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext());
-			// sourceBufferSize = guessBufferSize(bof.GetSrcBuffer)
+			sourceBufferSize = exprUtils->guessBufferSize(bof.GetBuffer(BufferType::SRC), cpg.GetAST().getASTContext());
 			clang::Expr* limitVarExpr = sinkCallExpr->getArg(2)->IgnoreCasts();
 			limit = exprUtils->guessArgumentSize(limitVarExpr, cpg.GetAST().getASTContext());
-		}
-		
-		if (destinationBufferSize == -1 || sourceBufferSize == -1 || limit == -1) {
-			// Unknown - cannot be evaluated
-			feature = "2";
-		}
-		else if(limit > 0 && limit < destinationBufferSize && limit < sourceBufferSize) {
-			// True - within bounds
-			feature = "1";
-		}
-		else {
-			// False - outside bounds
-			feature = "0";
-		}
 
+			if (destinationBufferSize == -1 || sourceBufferSize == -1 || limit == -1) {
+				// Unknown - cannot be evaluated
+				feature = "2";
+			}
+			else if(limit > 0 && limit <= destinationBufferSize && limit <= sourceBufferSize) {
+				// True - within bounds
+				feature = "1";
+			}
+			else {
+				// False - outside bounds
+				feature = "0";
+			}
+		}	
 	}
 
 	return decoratedFeature.append(feature.append(cDescriptorDecorator::FEATURE_SEPARATOR));

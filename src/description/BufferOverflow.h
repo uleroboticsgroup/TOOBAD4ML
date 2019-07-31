@@ -54,7 +54,7 @@ public:
 	 * @param sink  AST node of the statement where the BOF originally
      *              occurred.
 	 */
-    cBufferOverflow(clang::Expr*, clang::DeclRefExpr*, clang::DeclRefExpr*, std::vector<clang::CallExpr*>);
+    cBufferOverflow(clang::Expr*, clang::DeclRefExpr*, clang::DeclRefExpr*, std::vector<clang::CallExpr*>, std::vector<clang::Expr*>);
     ~cBufferOverflow();
 
 
@@ -74,6 +74,8 @@ public:
 
 	std::vector<clang::CallExpr*> GetInput();
 
+    std::vector<clang::Expr*> GetSinkSanitizations();
+    
     // ATTRIBUTES
     // ------------------------------------------------------------------------
 
@@ -93,6 +95,9 @@ private:
 	//! List of AST nodes containing statements involved in reading input data,
     /// that affects {\ref m_buffer}.
 	std::vector<clang::CallExpr*> m_input;
+
+
+    std::vector<clang::Expr*> m_sinkSanitizations;
 
 }; /* cBufferOverflow */
 

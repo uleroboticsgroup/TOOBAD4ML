@@ -3,7 +3,7 @@
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/CompilationDatabase.h"
 #include "description/CodePropertyGraph.h"
-#include "description/ArrayWriteIndexWithinBounds.h"
+#include "description/StringLengthSourceBuffer.h"
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
@@ -13,7 +13,7 @@ namespace TOOBAD4ML{
 
 namespace description{
 
-class ArrayWriteIndexWithinBoundsTest: 
+class StringLengthSourceBufferTest: 
     public ::testing::Test {
 
 protected:
@@ -22,7 +22,7 @@ protected:
         cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        Sources.push_back("data/arraywriteindex.c");
+        Sources.push_back("data/stringlength.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -48,37 +48,34 @@ protected:
             }
         }
 
-        awi = new cArrayWriteIndexWithinBounds(new cMockDescriptor);
+        slsb = new cStringLengthSourceBuffer(new cMockDescriptor);
     
     }
 
     void TearDown() override {
         cpgs.clear();
         bofs.clear();
-        delete awi;
+        delete slsb;
     }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cArrayWriteIndexWithinBounds* awi;
+    cStringLengthSourceBuffer* slsb;
 };
 
-//Type 1
-TEST_F(ArrayWriteIndexWithinBoundsTest, WithinBounds) {
-    ASSERT_EQ(awi->ExtractFeature(*cpgs[0], bofs[0]), "1;");
-
-}
-
-//Type 0
-TEST_F(ArrayWriteIndexWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(awi->ExtractFeature(*cpgs[0], bofs[1]), "0;");
+TEST_F(StringLengthSourceBufferTest, Simple) {
+    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "1;");
 }
 
 
-//Type -1
-TEST_F(ArrayWriteIndexWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(awi->ExtractFeature(*cpgs[0], bofs[2]), "-1;");
+TEST_F(StringLengthSourceBufferTest, StrlenOverDstBuffer) {
+    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[0]), "2;");
+
+}
+
+TEST_F(StringLengthSourceBufferTest, NoSrcBuffer) {
+    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[2]), "0;");
 
 }
 

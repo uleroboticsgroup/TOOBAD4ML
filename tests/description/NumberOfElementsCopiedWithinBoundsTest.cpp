@@ -18,9 +18,6 @@ class NumberOfElementsCopiedWithinBoundsTest:
 
 protected:
 
-    NumberOfElementsCopiedWithinBoundsTest():
-        noe(new cMockDescriptor) {}
-
     void SetUp() override {
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
@@ -51,40 +48,47 @@ protected:
 
                 bofs.push_back(bof);
             }
-        }
+        }  
 
+        noe = new cNumberOfElementsCopiedWithinBounds(new cMockDescriptor());
     }
 
+
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
+        delete noe;
+    }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cNumberOfElementsCopiedWithinBounds noe;
+    cNumberOfElementsCopiedWithinBounds* noe;
 };
-
-//Type 0
-TEST_F(NumberOfElementsCopiedWithinBoundsTest, GreaterThanDestination) {
-    ASSERT_EQ(noe.ExtractFeature(*cpgs[0], bofs[0]), "0;");
-
-}
 
 //Type 1
 TEST_F(NumberOfElementsCopiedWithinBoundsTest, LessOrEqualThanDestination) {
-    ASSERT_EQ(noe.ExtractFeature(*cpgs[1], bofs[1]), "1;");
+    ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[1]), "1;");
 }
 
+//Type 0
+TEST_F(NumberOfElementsCopiedWithinBoundsTest, GreaterThanDestination) {
+    ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[0]), "0;");
+
+}
 
 //Type -1
 TEST_F(NumberOfElementsCopiedWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(noe.ExtractFeature(*cpgs[2], bofs[2]), "-1;");
+    ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[2]), "-1;");
 
 }
 
+/*
 //Type 2
 TEST_F(NumberOfElementsCopiedWithinBoundsTest, NotEvaluable) {
     // UNABLE TO FIND REAL CASE
 }
-
+*/
 }
 
 }

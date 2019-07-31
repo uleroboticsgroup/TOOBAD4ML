@@ -59,7 +59,7 @@ TEST_F(BufferOverflowBuilderTest, CreateBufferOverflow){
     cBufferOverflow bof = BOFBuilder.CreateBufferOverflow(*sink, *cpg);
 
     std::vector<clang::CallExpr*> bof_input = bof.GetInput();
-    clang::DeclRefExpr* bof_buffer = bof.GetBuffer();
+    clang::DeclRefExpr* bof_buffer = bof.GetBuffer(BufferType::DST);
     clang::Expr* bof_sink = bof.GetSink();
 
     EXPECT_EQ(sink, bof_sink);

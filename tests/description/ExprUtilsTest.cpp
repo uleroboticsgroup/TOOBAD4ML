@@ -52,8 +52,8 @@ protected:
 
 
     // ATTRIBUTES
-    cCodePropertyGraph *cpg;
     cBufferOverflow *bof;
+    cCodePropertyGraph *cpg;
     cExprUtils* exprUtils;
 };
 
@@ -63,7 +63,7 @@ TEST_F(ExprUtilsTest, GetInstance) {
 }
 
 TEST_F(ExprUtilsTest, GuessBufferSizeConstantArray) {
-    EXPECT_EQ(256, exprUtils->guessBufferSize(bof->GetBuffer(), cpg->GetAST().getASTContext()));
+    EXPECT_EQ(256, exprUtils->guessBufferSize(bof->GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
 }
 /** 
  * TODO
@@ -80,7 +80,7 @@ TEST_F(ExprUtilsTest, GuessBufferSizeConstantArray) {
 
 
 TEST_F(ExprUtilsTest, GuessArgumentSizeDeclRefExprClass) {
-    EXPECT_EQ(256, exprUtils->guessArgumentSize(bof->GetBuffer(), cpg->GetAST().getASTContext()));
+    EXPECT_EQ(256, exprUtils->guessArgumentSize(bof->GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
 }
 
 /*

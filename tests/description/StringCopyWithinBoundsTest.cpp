@@ -52,6 +52,11 @@ protected:
 
     }
 
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
+        delete scw;
+    }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
@@ -61,7 +66,7 @@ protected:
 
 //Type 0
 TEST_F(cStringCopyWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[1], bofs[1]), "0;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[1]), "0;");
 }
 
 //Type 1
@@ -71,7 +76,7 @@ TEST_F(cStringCopyWithinBoundsTest, WithinBounds) {
 }
 //Type -1
 TEST_F(cStringCopyWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[2], bofs[2]), "-1;");
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[2]), "-1;");
 
 }
 

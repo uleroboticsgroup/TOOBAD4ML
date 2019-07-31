@@ -1,5 +1,4 @@
 #include "description/ExprUtils.h"
-
 using namespace TOOBAD4ML;
 using namespace description;
 
@@ -55,7 +54,6 @@ int cExprUtils::guessBufferSize(clang::DeclRefExpr* buffer, clang::ASTContext& c
 int cExprUtils::guessArgumentSize(clang::Expr* arg, clang::ASTContext& context) {
 	int limit = -1;
 
-	arg->dumpColor();
 	switch (arg->getStmtClass()) {
 		case clang::Stmt::StmtClass::IntegerLiteralClass: {
 			clang::IntegerLiteral* limitIntLiteral = llvm::dyn_cast<clang::IntegerLiteral>(arg);

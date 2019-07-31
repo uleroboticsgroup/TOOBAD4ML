@@ -43,6 +43,15 @@ SinkPathGraph cCodePropertyGraph::GetSPG(clang::Expr& sink) {
                         break;
                     }
                 }
+                else {
+                    if(std::find(affectedBlocks.begin(), affectedBlocks.end(), (*succ_iterator).getPossiblyUnreachableBlock()) != affectedBlocks.end()) {
+                        affectedBlocks.clear();
+                        affectedBlocks.push_back(sinkBlock);
+                        it = m_CFG->end() - 2;
+                        break;
+                    }
+                }
+                
             }
         }
         else {

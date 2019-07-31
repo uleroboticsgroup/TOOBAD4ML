@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
     BufferOverflowTest.cpp
     CodePropertyGraphTest.cpp
     BufferOverflowBuilderTest.cpp
+    StringLengthSourceBufferTest.cpp
     SinkClassificationTest.cpp
     NumberOfElementsCopiedWithinBoundsTest.cpp
     ArrayWriteIndexWithinBoundsTest.cpp

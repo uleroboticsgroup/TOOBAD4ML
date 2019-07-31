@@ -18,10 +18,12 @@ class cBufferOverflowBuilder {
 
 public:
     cBufferOverflow& CreateBufferOverflow(clang::Expr&, cCodePropertyGraph&);
+    
 
 private:
     std::vector<clang::CallExpr*> getInputs(clang::DeclRefExpr&, SinkPathGraph);
     clang::DeclRefExpr* getBuffer(clang::Expr&, BufferType);
+    std::vector<clang::Expr*> getSinkSanitizations(clang::DeclRefExpr*, clang::DeclRefExpr*, SinkPathGraph);
 };
 
 }

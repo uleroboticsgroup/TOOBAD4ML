@@ -8,7 +8,6 @@
 #include "io/InputManager.h"
 #include "analysis/ModelBOFFrontendActionFactory.h"
 
-#include "iostream"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;

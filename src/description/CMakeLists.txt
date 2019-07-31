@@ -39,6 +39,7 @@ add_library(${PROJECT_NAME}
         IsCharacterCaseConversionSink.cpp
         ResetsInControlPredicates.cpp
         PadmanabhuniBuilder.cpp
+        StringLengthSourceBuffer.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

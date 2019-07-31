@@ -18,6 +18,7 @@
 #include "description/DataDependentOnDestinationBufferSizeVariant.h"
 #include "description/IsCharacterCaseConversionSink.h"
 #include "description/ResetsInControlPredicates.h"
+#include "description/StringLengthSourceBuffer.h"
 
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -33,6 +34,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+			new cStringLengthSourceBuffer(
     		new cIsCharacterCaseConversionSink(
 				// new cDataDependentOnDestinationBufferSizeVariant(
 					// new cDataDependentOnDestinationBufferSize(
@@ -47,6 +49,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 														new cFile(
 															new cEnvironmentVariable(
 																new cCommandLine(
-																	new cSinkClassification(new cMockDescriptor))))))))));
+																	new cSinkClassification(new cMockDescriptor)))))))))));
 
 }

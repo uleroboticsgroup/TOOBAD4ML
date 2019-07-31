@@ -69,13 +69,13 @@ TEST_F(FormatStringPrecisionWithinBoundsTest, GreaterThanDestination) {
 
 //Type 1
 TEST_F(FormatStringPrecisionWithinBoundsTest, LessOrEqualThanDestination) {
-    ASSERT_EQ(fsp->ExtractFeature(*cpgs[1], bofs[1]), "1;");
+    ASSERT_EQ(fsp->ExtractFeature(*cpgs[0], bofs[1]), "1;");
 }
 
 
 //Type -1
 TEST_F(FormatStringPrecisionWithinBoundsTest, NotAplicable) {
-    ASSERT_EQ(fsp->ExtractFeature(*cpgs[2], bofs[2]), "-1;");
+    ASSERT_EQ(fsp->ExtractFeature(*cpgs[0], bofs[2]), "-1;");
 
 }
 

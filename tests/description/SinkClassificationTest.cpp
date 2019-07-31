@@ -54,6 +54,12 @@ protected:
     }
 
 
+    void TearDown() override {
+        cpgs.clear();
+        bofs.clear();
+        delete sc;
+    }
+
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
