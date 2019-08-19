@@ -1,9 +1,10 @@
 #include <stdio.h>
 void echo(){
+char c = 'c';
 char buffer[256];
 char buffer2[256];
+if(strcmp(buffer2, buffer)) {
 if(strlen(buffer2) < 500) {
-if(strlen(buffer) < 500) {
 if(strlen(buffer2) < 500) {
 strcpy(buffer, buffer2);
 }
@@ -11,6 +12,7 @@ strcpy(buffer, buffer2);
 else{
 strcpy(buffer, buffer2);
 }
+buffer2[257] = c;
 }
 else{
 gets(buffer);
@@ -24,8 +26,11 @@ return 0;
 
 /// ###BEGIN_VULNERABLE_LINES###
 
-/// 8,1;8,23
+/// 9,1;9,23
 
-/// 12,1;12,23
+/// 13,1;13,23
 
-/// 16,1;16,12
+/// 15,1;15,16
+
+/// 18,1;18,12
+

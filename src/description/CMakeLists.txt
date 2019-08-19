@@ -40,6 +40,12 @@ add_library(${PROJECT_NAME}
         ResetsInControlPredicates.cpp
         PadmanabhuniBuilder.cpp
         StringLengthSourceBuffer.cpp
+        NULLCheck.cpp
+        SizeSourceBuffer.cpp
+        EOFCheck.cpp
+        CharacterCheck.cpp
+        CharacterOccurrenceStringCheck.cpp
+        StringComparison.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

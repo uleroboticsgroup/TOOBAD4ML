@@ -2,6 +2,7 @@
 #include "description/BufferOverflow.h"
 #include "description/CodePropertyGraph.h"
 #include "ASTTraversal/FindVariableVisitor.h"
+#include "iostream"
 
 using namespace TOOBAD4ML;
 using namespace description;
@@ -12,6 +13,7 @@ cBufferOverflow& cBufferOverflowBuilder::CreateBufferOverflow(clang::Expr& sink,
     clang::DeclRefExpr* dstBuffer = getBuffer(sink, BufferType::DST);
 	clang::DeclRefExpr* srcBuffer = getBuffer(sink, BufferType::SRC);
 
+	// Dump the CFG
 	//clang::LangOptions options;
 	//cpg.GetCFG().dump(options, true);
 
@@ -108,12 +110,15 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink, BufferT
 		case clang::Stmt::StmtClass::BinaryOperatorClass: {
 			clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(&sink);
 			if(sinkBinaryOperator) {
-				clang::Expr* bufferExpr = (bufferType == BufferType::DST) ? sinkBinaryOperator->getLHS() : sinkBinaryOperator->getRHS() ;
+				clang::Expr* bufferExpr = (bufferType == BufferType::DST) ? sinkBinaryOperator->getLHS()->IgnoreCasts() : sinkBinaryOperator->getRHS()->IgnoreCasts();
 				switch(bufferExpr->getStmtClass()) {
 					case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
 						// The buffer is the base of the the sink node's left handed side expression.
 						buffer = llvm::dyn_cast<clang::DeclRefExpr>(llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts());
 					}
+					break;
+					case clang::Stmt::StmtClass::DeclRefExprClass:
+						buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
 					break;
 					default: { // TODO Not default -- Use the concrete class
 						// TODO *(p + n) = 0; -- UnaryOperatorClass ??
@@ -185,6 +190,18 @@ std::vector<clang::Expr*> cBufferOverflowBuilder::getSinkSanitizations(clang::De
 
 				if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
 					sanitizations.push_back(conditionBinaryOperator);
+				}
+			}
+			break;
+			case clang::Stmt::StmtClass::CallExprClass: {
+				clang::CallExpr* callExpr = llvm::dyn_cast<clang::CallExpr>(stmt);
+				ASTTraversal::cFindVariableVisitor dstVisitor(dstBuffer);
+				dstVisitor.TraverseStmt(stmt);
+				ASTTraversal::cFindVariableVisitor srcVisitor(srcBuffer);
+				srcVisitor.TraverseStmt(stmt);
+
+				if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
+					sanitizations.push_back(callExpr);
 				}
 			}
 			break;

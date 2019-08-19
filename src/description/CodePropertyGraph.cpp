@@ -1,6 +1,5 @@
 #include "description/CodePropertyGraph.h"
 #include "clang/Basic/LangOptions.h"
-#include <iostream>
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -74,18 +73,18 @@ SinkPathGraph cCodePropertyGraph::GetSPG(clang::Expr& sink) {
         for (clang::CFGBlock::iterator instruction = block->begin(); instruction != block->end(); ++instruction) {
             if((*instruction).getKind() == clang::CFGElement::Kind::Statement) {
                 clang::CFGStmt currentStmt = (*instruction).castAs<clang::CFGStmt>();
+                SPG.push_back(currentStmt);
+
                 if (currentStmt.getStmt() == &sink) {
-                    SPG.push_back(currentStmt);
                     break;
                 }
 
-                SPG.push_back(currentStmt);
             }
         }
     }
 
     return SPG;
-}
+    }
 
 
 // ACCESSOR METHODS

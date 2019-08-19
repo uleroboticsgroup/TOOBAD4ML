@@ -19,6 +19,12 @@
 #include "description/IsCharacterCaseConversionSink.h"
 #include "description/ResetsInControlPredicates.h"
 #include "description/StringLengthSourceBuffer.h"
+#include "description/NULLCheck.h"
+#include "description/SizeSourceBuffer.h"
+#include "description/EOFCheck.h"
+#include "description/CharacterCheck.h"
+#include "description/CharacterOccurrenceStringCheck.h"
+#include "description/StringComparison.h"
 
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -34,21 +40,29 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
-			new cStringLengthSourceBuffer(
-    		new cIsCharacterCaseConversionSink(
-				// new cDataDependentOnDestinationBufferSizeVariant(
-					// new cDataDependentOnDestinationBufferSize(
-						new cStringCopyWithinBounds(
-							new cFormatStringPrecisionWithinBounds(
-								new cArrayWriteIndexWithinBounds(
-									new cNumberOfElementsCopiedWithinBounds(
-										// new cDataBufferDeclaration(
-											// new cBufferSizePredicateClassification(
-												// new cInputValidationClassification(
-													new cNetwork(
-														new cFile(
-															new cEnvironmentVariable(
-																new cCommandLine(
-																	new cSinkClassification(new cMockDescriptor)))))))))));
+		new cStringComparison(
+		new cCharacterOccurrenceStringCheck(
+		new cCharacterCheck(
+		new cEOFCheck(
+		new cSizeSourceBuffer(
+		new cNULLCheck(
+		new cStringLengthSourceBuffer(
+		new cIsCharacterCaseConversionSink(
+		// new cDataDependentOnDestinationBufferSizeVariant(
+		// new cDataDependentOnDestinationBufferSize(
+		new cStringCopyWithinBounds(
+		new cFormatStringPrecisionWithinBounds(
+		new cArrayWriteIndexWithinBounds(
+		new cNumberOfElementsCopiedWithinBounds(
+		// new cDataBufferDeclaration(
+		// new cBufferSizePredicateClassification(
+		// new cInputValidationClassification(
+		new cNetwork(
+		new cFile(
+		new cEnvironmentVariable(
+		new cCommandLine(
+		new cSinkClassification(
+		new cMockDescriptor)
+	))))))))))))))));
 
 }

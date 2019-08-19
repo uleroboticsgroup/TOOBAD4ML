@@ -106,3 +106,23 @@ int cExprUtils::guessArgumentSize(clang::Expr* arg, clang::ASTContext& context) 
 
 	return limit;
 }
+
+clang::Expr* cExprUtils::getExprFromUnaryOperator(clang::Expr* expr) {
+	return llvm::dyn_cast<clang::UnaryOperator>(expr->IgnoreCasts())->getSubExpr()->IgnoreCasts()->IgnoreParens(); 
+}
+
+clang::ValueDecl* cExprUtils::getValueFromDeclRefExpr(clang::Expr* expr) {
+    return llvm::dyn_cast<clang::DeclRefExpr>(expr->IgnoreCasts())->getDecl();
+}
+
+int cExprUtils::getValueFromIntegerLiteral(clang::Expr* expr) {
+    return llvm::dyn_cast_or_null<clang::IntegerLiteral>(expr)->getValue().getLimitedValue();
+}
+
+clang::Expr* cExprUtils::getIndexFromArraySubscriptExpr(clang::Expr* expr) {
+	return llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(expr)->getIdx();
+}
+
+clang::DeclRefExpr* cExprUtils::getArrayFromArraySubscriptExpr(clang::Expr* expr) {
+	return llvm::dyn_cast_or_null<clang::DeclRefExpr>(llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(expr)->getLHS()->IgnoreCasts()->IgnoreParens());
+}

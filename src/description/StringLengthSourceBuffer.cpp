@@ -22,28 +22,28 @@ std::string cStringLengthSourceBuffer::ExtractFeature(cCodePropertyGraph& cpg, c
             //sanitizationExpr->dumpColor();
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
+                
+                if(!clang::BinaryOperator::isAssignmentOp(condBinaryOperator->getOpcode())) {
+                    clang::CallExpr* potentialStrlenCallExpr = nullptr;
 
-                clang::CallExpr* potentialStrlenCallExpr = nullptr;
+                    if (condBinaryOperator->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
+                        potentialStrlenCallExpr = llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getLHS()->IgnoreCasts());
+                    }
+                    else if (condBinaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
+                        potentialStrlenCallExpr = llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getRHS()->IgnoreCasts());
+                    }
 
-                if (condBinaryOperator->getLHS()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
-                    potentialStrlenCallExpr = llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getLHS()->IgnoreCasts());
-                }
-                else if (condBinaryOperator->getRHS()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
-                    potentialStrlenCallExpr = llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getRHS()->IgnoreCasts());
-                }
+                    if (potentialStrlenCallExpr) {
+                        std::string functionName = potentialStrlenCallExpr->getDirectCallee()->getNameAsString();
+                        
+                        if (functionName == "strlen"){
+                            clang::DeclRefExpr* argDeclRefExpr = llvm::dyn_cast<clang::DeclRefExpr>(potentialStrlenCallExpr->getArg(0)->IgnoreCasts());
 
-                if (potentialStrlenCallExpr) {
-                    std::string functionName = potentialStrlenCallExpr->getDirectCallee()->getNameAsString();
-
-                    //std::cout << functionName << "\n";
-                    //potentialStrlenCallExpr->getArg(0)->dumpColor();
-                    if (functionName == "strlen"){
-                        clang::DeclRefExpr* argDeclRefExpr = llvm::dyn_cast<clang::DeclRefExpr>(potentialStrlenCallExpr->getArg(0)->IgnoreCasts());
-
-                        if (argDeclRefExpr->getDecl() == srcBuffer->getDecl()) {
-                            counter++;
-                        }
-                    }   
+                            if (argDeclRefExpr->getDecl() == srcBuffer->getDecl()) {
+                                counter++;
+                            }
+                        }   
+                    }
                 }
         
             }
