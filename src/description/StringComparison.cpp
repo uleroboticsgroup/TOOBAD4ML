@@ -44,29 +44,16 @@ std::string cStringComparison::ExtractFeature(cCodePropertyGraph& cpg, cBufferOv
 
     if (srcBuffer) {    
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
-            std::vector<clang::CallExpr*> functionCallExprs;
 
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
-                
-                //condBinaryOperator->getLHS()->IgnoreCasts()->dumpColor();
-                //condBinaryOperator->getRHS()->IgnoreCasts()->dumpColor();
-                //std::cout << "\n-\n";
-                if(!clang::BinaryOperator::isAssignmentOp(condBinaryOperator->getOpcode())) {
-                    if (condBinaryOperator->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
-                        functionCallExprs.push_back(llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getLHS()->IgnoreCasts()));
-                    }
-                    else if (condBinaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
-                        functionCallExprs.push_back(llvm::dyn_cast<clang::CallExpr>(condBinaryOperator->getRHS()->IgnoreCasts()));
-                    }
+                std::vector<clang::Expr*> functionCallExprs = exprUtils->getFromComparisonBinaryOperator(condBinaryOperator, clang::Stmt::StmtClass::CallExprClass);
 
-                    for(clang::CallExpr* functionCallExpr: functionCallExprs) {
-                        if (isTargetedFunction(functionCallExpr, srcBuffer->getDecl())) {
-                            counter++;
-                        }
+                for(clang::Expr* functionCallExpr: functionCallExprs) {
+                    if (isTargetedFunction(llvm::dyn_cast<clang::CallExpr>(functionCallExpr), srcBuffer->getDecl())) {
+                        counter++;
                     }
                 }
-        
             }
 
             else if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {

@@ -20,29 +20,23 @@ std::string cCharacterCheck::ExtractFeature(cCodePropertyGraph& cpg, cBufferOver
 
     if (srcBuffer) {
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
-            std::vector<clang::ValueDecl*> bufferValueDecls;
 
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
                 
-                if(!clang::BinaryOperator::isAssignmentOp(condBinaryOperator->getOpcode())) {
-                    if (condBinaryOperator->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-                        bufferValueDecls.push_back(llvm::dyn_cast<clang::DeclRefExpr>(condBinaryOperator->getLHS()->IgnoreCasts())->getDecl());
-                    }
-                    else if (condBinaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-                        bufferValueDecls.push_back(llvm::dyn_cast<clang::DeclRefExpr>(condBinaryOperator->getRHS()->IgnoreCasts())->getDecl());
-                    }
+                std::vector<clang::Expr*> bufferDeclRefExprs = exprUtils->getFromComparisonBinaryOperator(condBinaryOperator, clang::Stmt::StmtClass::DeclRefExprClass);
 
-                    for(clang::ValueDecl* potentialBufferValueDecl: bufferValueDecls) {
-                        if(potentialBufferValueDecl == srcBuffer->getDecl() && 
-                           (potentialBufferValueDecl->getType().getTypePtr()->isSpecificBuiltinType(clang::BuiltinType::Char_S) ||
-                            potentialBufferValueDecl->getType().getTypePtr()->isSpecificBuiltinType(clang::BuiltinType::Int))) {
-                            
-                            counter++;
-                        }
-                    }
+                for (clang::Expr* bufferDeclRefExpr: bufferDeclRefExprs) {
+                    clang::ValueDecl* potentialBufferValueDecl = exprUtils->getValueFromDeclRefExpr(llvm::dyn_cast<clang::DeclRefExpr>(bufferDeclRefExpr));
+
+                    if(potentialBufferValueDecl == srcBuffer->getDecl() && 
+                        (potentialBufferValueDecl->getType().getTypePtr()->isSpecificBuiltinType(clang::BuiltinType::Char_S) ||
+                        potentialBufferValueDecl->getType().getTypePtr()->isSpecificBuiltinType(clang::BuiltinType::Int))) {
+                        
+                        counter++;
+                        break;
+                    }   
                 }
-        
             }
         }
     }

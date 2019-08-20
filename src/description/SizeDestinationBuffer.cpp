@@ -1,42 +1,38 @@
-#include "description/SizeSourceBuffer.h"
+#include "description/SizeDestinationBuffer.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
 
 using namespace TOOBAD4ML;
 using namespace description;
 
-cSizeSourceBuffer::cSizeSourceBuffer(
+cSizeDestinationBuffer::cSizeDestinationBuffer(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
-std::string cSizeSourceBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
+std::string cSizeDestinationBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
 
     unsigned counter = 0;
-    clang::DeclRefExpr* srcBuffer = bof.GetBuffer(BufferType::SRC);
+    clang::DeclRefExpr* dstBuffer = bof.GetBuffer(BufferType::DST);
     cExprUtils* exprUtils = cExprUtils::GetInstance();
 
-    if (srcBuffer) {
+    if (dstBuffer) {
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
-            //std::cout << "\n";
-            //sanitizationExpr->dumpColor();
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
-                
                 std::vector<clang::Expr*> potentialStrlenUnaryExprs = exprUtils->getFromComparisonBinaryOperator(condBinaryOperator, clang::Stmt::StmtClass::UnaryExprOrTypeTraitExprClass);
 
                 for (clang::Expr* potentialStrlenUnaryExpr: potentialStrlenUnaryExprs) {
+                    // Check if the function is sizeof(_)
                     clang::UnaryExprOrTypeTraitExpr* potentialStrlenCastedUnaryExpr = llvm::dyn_cast_or_null<clang::UnaryExprOrTypeTraitExpr>(potentialStrlenUnaryExpr);
-                    // Check if the function is sizeof(srcBuffer)
                     if (potentialStrlenCastedUnaryExpr->getKind() == clang::UnaryExprOrTypeTrait::UETT_SizeOf) {
                         clang::Expr* unaryExprArg = potentialStrlenCastedUnaryExpr->getArgumentExpr()->IgnoreParens();
 
                         if (unaryExprArg->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-                            if (exprUtils->getValueFromDeclRefExpr(unaryExprArg) == srcBuffer->getDecl()) {
+                            if (exprUtils->getValueFromDeclRefExpr(unaryExprArg) == dstBuffer->getDecl()) {
                                 counter++;
-                                break;
                             }
                         }
                     }   

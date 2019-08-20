@@ -46,6 +46,10 @@ add_library(${PROJECT_NAME}
         CharacterCheck.cpp
         CharacterOccurrenceStringCheck.cpp
         StringComparison.cpp
+        SizeDestinationBuffer.cpp
+        SizeDestinationBufferMinusOne.cpp
+        SizeDestinationBufferMinusX.cpp
+        StringLengthDestinationBuffer.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

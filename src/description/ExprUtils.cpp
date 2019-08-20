@@ -1,4 +1,5 @@
 #include "description/ExprUtils.h"
+
 using namespace TOOBAD4ML;
 using namespace description;
 
@@ -125,4 +126,21 @@ clang::Expr* cExprUtils::getIndexFromArraySubscriptExpr(clang::Expr* expr) {
 
 clang::DeclRefExpr* cExprUtils::getArrayFromArraySubscriptExpr(clang::Expr* expr) {
 	return llvm::dyn_cast_or_null<clang::DeclRefExpr>(llvm::dyn_cast_or_null<clang::ArraySubscriptExpr>(expr)->getLHS()->IgnoreCasts()->IgnoreParens());
+}
+
+std::vector<clang::Expr*> cExprUtils::getFromComparisonBinaryOperator(clang::BinaryOperator* binaryOperator, clang::Stmt::StmtClass targetClass) {
+	std::vector<clang::Expr*> matches;
+
+	if(!clang::BinaryOperator::isAssignmentOp(binaryOperator->getOpcode())) {
+		// Check left side
+		if (binaryOperator->getLHS()->IgnoreCasts()->getStmtClass() == targetClass) {
+			matches.push_back(binaryOperator->getLHS()->IgnoreCasts());
+		}
+		// Check right side
+		if (binaryOperator->getRHS()->IgnoreCasts()->getStmtClass() == targetClass) {
+			matches.push_back(binaryOperator->getRHS()->IgnoreCasts());
+		}
+	}
+
+	return matches;
 }

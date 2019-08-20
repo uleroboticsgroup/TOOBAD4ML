@@ -2,6 +2,7 @@
 #define DESCRIPTION_EXPRUTILS
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/Expr.h"
+#include "clang/AST/Stmt.h"
 
 namespace TOOBAD4ML {
 
@@ -20,6 +21,7 @@ public:
     clang::Expr* getExprFromUnaryOperator(clang::Expr*);
     clang::Expr* getIndexFromArraySubscriptExpr(clang::Expr*);
     clang::DeclRefExpr* getArrayFromArraySubscriptExpr(clang::Expr*);
+    std::vector<clang::Expr*> getFromComparisonBinaryOperator(clang::BinaryOperator*, clang::Stmt::StmtClass);
 
 private:
     cExprUtils() {};
