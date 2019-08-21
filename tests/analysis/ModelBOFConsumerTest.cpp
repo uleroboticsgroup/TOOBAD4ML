@@ -30,7 +30,7 @@ TEST(BOFConsumer, HandleTranslationUnit) {
     cModelBOFConsumerTest helper;
     std::vector<std::string> dataset = helper.getDataset(consumer);
     EXPECT_EQ(dataset.size(), 1);
-    EXPECT_EQ(dataset[0], "5;1;0;0;0;-1;-1;-1;-1;-1;0;");
+    EXPECT_EQ(dataset[0], "5;1;0;0;0;-1;-1;-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;");
 }
 
 TEST(BOFConsumer, Constructor) {

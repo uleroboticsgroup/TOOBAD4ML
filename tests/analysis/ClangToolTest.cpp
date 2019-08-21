@@ -90,7 +90,7 @@ TEST_F(ClangToolTest, Run) {
     
     std::size_t pos = buffer.str().find("Completed");      
 
-    EXPECT_EQ(buffer.str().substr(pos), "Completed\nResults:\n5;1;0;0;0;-1;-1;-1;-1;-1;0;\n");
+    EXPECT_EQ(buffer.str().substr(pos), "Completed\nResults:\n5;1;0;0;0;-1;-1;-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;\n");
 }
 
 } /* analysis */

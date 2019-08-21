@@ -64,15 +64,15 @@ protected:
     cSizeSourceBuffer* slsb;
 };
 
-TEST_F(cSizeSourceBufferTest, Inside) {
-    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "3;");
-}
-
-
 TEST_F(cSizeSourceBufferTest, Normal) {
     ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[0]), "2;");
 
 }
+
+TEST_F(cSizeSourceBufferTest, Inside) {
+    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "3;");
+}
+
 
 TEST_F(cSizeSourceBufferTest, DstBuffer) {
     ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[2]), "3;");

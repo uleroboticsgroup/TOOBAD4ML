@@ -68,7 +68,7 @@ protected:
 
 TEST_F(CPGExplorerTest, Inspect) {
     std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
-    EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;0;");
+    EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;");
 }
 
 TEST_F(CPGExplorerTest, Constructor) {

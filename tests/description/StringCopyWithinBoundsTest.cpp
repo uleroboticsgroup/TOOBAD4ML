@@ -64,16 +64,17 @@ protected:
     cStringCopyWithinBounds* scw;
 };
 
-//Type 0
-TEST_F(cStringCopyWithinBoundsTest, OutsideBounds) {
-    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[1]), "0;");
-}
-
 //Type 1
 TEST_F(cStringCopyWithinBoundsTest, WithinBounds) {
     ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[0]), "1;");
 
 }
+
+//Type 0
+TEST_F(cStringCopyWithinBoundsTest, OutsideBounds) {
+    ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[1]), "0;");
+}
+
 //Type -1
 TEST_F(cStringCopyWithinBoundsTest, NotAplicable) {
     ASSERT_EQ(scw->ExtractFeature(*cpgs[0], bofs[2]), "-1;");

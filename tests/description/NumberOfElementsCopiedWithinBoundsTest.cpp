@@ -66,15 +66,15 @@ protected:
     cNumberOfElementsCopiedWithinBounds* noe;
 };
 
-//Type 1
-TEST_F(NumberOfElementsCopiedWithinBoundsTest, LessOrEqualThanDestination) {
-    ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[1]), "1;");
-}
-
 //Type 0
 TEST_F(NumberOfElementsCopiedWithinBoundsTest, GreaterThanDestination) {
     ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[0]), "0;");
 
+}
+
+//Type 1
+TEST_F(NumberOfElementsCopiedWithinBoundsTest, LessOrEqualThanDestination) {
+    ASSERT_EQ(noe->ExtractFeature(*cpgs[0], bofs[1]), "1;");
 }
 
 //Type -1

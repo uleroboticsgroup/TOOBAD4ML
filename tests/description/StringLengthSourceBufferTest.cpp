@@ -64,14 +64,13 @@ protected:
     cStringLengthSourceBuffer* slsb;
 };
 
-TEST_F(StringLengthSourceBufferTest, Simple) {
-    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "1;");
-}
-
-
 TEST_F(StringLengthSourceBufferTest, Double) {
     ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[0]), "2;");
 
+}
+
+TEST_F(StringLengthSourceBufferTest, Simple) {
+    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "1;");
 }
 
 TEST_F(StringLengthSourceBufferTest, None) {
