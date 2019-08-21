@@ -1,7 +1,7 @@
 #include "description/SizeSourceBuffer.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-
+#include "iostream"
 using namespace TOOBAD4ML;
 using namespace description;
 
@@ -21,7 +21,6 @@ std::string cSizeSourceBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOv
     if (srcBuffer) {
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
             //std::cout << "\n";
-            //sanitizationExpr->dumpColor();
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
                 

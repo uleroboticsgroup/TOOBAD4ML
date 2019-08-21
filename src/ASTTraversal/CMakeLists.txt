@@ -18,6 +18,7 @@ add_library(${PROJECT_NAME}
         ExtractVulnerabilitiesVisitor.cpp
         FindSelectedASTNodesVisitor.cpp
         FindVariableVisitor.cpp
+        FindStmtVisitor.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

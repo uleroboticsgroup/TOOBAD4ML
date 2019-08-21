@@ -18,6 +18,16 @@ add_executable(${PROJECT_NAME}
     ArrayWriteIndexWithinBoundsTest.cpp
     FormatStringPrecisionWithinBoundsTest.cpp
     StringCopyWithinBoundsTest.cpp
+    SizeSourceBufferTest.cpp
+    NULLCheckTest.cpp
+    EOFCheckTest.cpp
+    CharacterCheckTest.cpp
+    CharacterOccurrenceStringCheckTest.cpp
+    StringComparisonTest.cpp
+    SizeDestinationBufferTest.cpp
+    SizeDestinationBufferMinusOneTest.cpp
+    SizeDestinationBufferMinusXTest.cpp
+    StringLengthDestinationBufferTest.cpp
     CPGExplorerTest.cpp
 )
 target_include_directories(${PROJECT_NAME}

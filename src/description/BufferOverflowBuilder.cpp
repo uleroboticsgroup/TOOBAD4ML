@@ -176,9 +176,12 @@ bool isBufferInside(clang::Expr* sideExpr, clang::DeclRefExpr* buffer) {
  
 std::vector<clang::Expr*> cBufferOverflowBuilder::getSinkSanitizations(clang::DeclRefExpr* dstBuffer, clang::DeclRefExpr* srcBuffer, SinkPathGraph spg) {
 	std::vector<clang::Expr*> sanitizations;
+	//std::cout << "----------------------------------------------\n\n";
 
 	for(clang::CFGStmt cfgStmt: spg)  {
 		clang::Stmt* stmt = const_cast<clang::Stmt*>(cfgStmt.getStmt());
+		//stmt->dumpColor();
+		//std::cout << "\n";
 		switch	(stmt->getStmtClass()) {
 			case clang::Stmt::StmtClass::BinaryOperatorClass: {
 				clang::BinaryOperator* conditionBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(stmt);
@@ -205,7 +208,7 @@ std::vector<clang::Expr*> cBufferOverflowBuilder::getSinkSanitizations(clang::De
 				}
 			}
 			break;
-			//TODO Other cases switchCase // callExpr ?.
+			//TODO Other cases switchCase
 		}
 	}
 

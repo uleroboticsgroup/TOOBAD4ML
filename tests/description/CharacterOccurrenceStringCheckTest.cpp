@@ -3,7 +3,7 @@
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/CompilationDatabase.h"
 #include "description/CodePropertyGraph.h"
-#include "description/StringLengthSourceBuffer.h"
+#include "description/CharacterOccurrenceStringCheck.h"
 #include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
@@ -13,7 +13,7 @@ namespace TOOBAD4ML{
 
 namespace description{
 
-class StringLengthSourceBufferTest: 
+class CharacterOccurrenceStringCheckTest: 
     public ::testing::Test {
 
 protected:
@@ -22,7 +22,7 @@ protected:
         cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        Sources.push_back("data/stringlength.c");
+        Sources.push_back("data/characterocurrencestringcheck.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -48,34 +48,33 @@ protected:
             }
         }
 
-        slsb = new cStringLengthSourceBuffer(new cMockDescriptor);
+        cCheck = new cCharacterOccurrenceStringCheck(new cMockDescriptor);
     
     }
 
     void TearDown() override {
         cpgs.clear();
         bofs.clear();
-        delete slsb;
+        delete cCheck;
     }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cStringLengthSourceBuffer* slsb;
+    cCharacterOccurrenceStringCheck* cCheck;
 };
 
-TEST_F(StringLengthSourceBufferTest, Simple) {
-    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[1]), "1;");
-}
-
-
-TEST_F(StringLengthSourceBufferTest, Double) {
-    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[0]), "2;");
+TEST_F(CharacterOccurrenceStringCheckTest, StrchrDstBuffer) {
+    ASSERT_EQ(cCheck->ExtractFeature(*cpgs[0], bofs[0]), "0;");
 
 }
 
-TEST_F(StringLengthSourceBufferTest, None) {
-    ASSERT_EQ(slsb->ExtractFeature(*cpgs[0], bofs[2]), "0;");
+TEST_F(CharacterOccurrenceStringCheckTest, Strpbrk) {
+    ASSERT_EQ(cCheck->ExtractFeature(*cpgs[0], bofs[1]), "1;");
+}
+
+TEST_F(CharacterOccurrenceStringCheckTest, Memchar) {
+    ASSERT_EQ(cCheck->ExtractFeature(*cpgs[0], bofs[2]), "2;");
 
 }
 

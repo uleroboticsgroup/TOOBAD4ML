@@ -1,5 +1,7 @@
 #include "description/CodePropertyGraph.h"
 #include "clang/Basic/LangOptions.h"
+#include "ASTTraversal/FindStmtVisitor.h"
+
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -69,18 +71,44 @@ SinkPathGraph cCodePropertyGraph::GetSPG(clang::Expr& sink) {
     }
 
     // Get all the instructions from the blocks which affect the sink
+    std::vector<clang::CFGStmt> stmtCallExprs;
     for (clang::CFGBlock* block: affectedBlocks) {
+        stmtCallExprs.clear();
         for (clang::CFGBlock::iterator instruction = block->begin(); instruction != block->end(); ++instruction) {
             if((*instruction).getKind() == clang::CFGElement::Kind::Statement) {
                 clang::CFGStmt currentStmt = (*instruction).castAs<clang::CFGStmt>();
-                SPG.push_back(currentStmt);
 
+                if (currentStmt.getStmt()->getStmtClass() == clang::Stmt::StmtClass::CallExprClass) {
+                    stmtCallExprs.push_back(currentStmt);
+                }   
+                else {
+                    ASTTraversal::cFindStmtVisitor visitor(stmtCallExprs);
+                    visitor.TraverseStmt(const_cast<clang::Stmt*>(currentStmt.getStmt()));
+
+                    if (visitor.CallExprFound()) {
+                        for(std::vector<clang::CFGStmt>::iterator it = stmtCallExprs.begin(); it != stmtCallExprs.end(); ++it) {
+                            if ((*it).getStmt() == visitor.CallExprFound()) {
+                                stmtCallExprs.erase(it);
+                                break;
+                            }
+                        }    
+                    }
+    
+                    SPG.push_back(currentStmt);
+                }
+                
                 if (currentStmt.getStmt() == &sink) {
+                    // Any further instruction does not affect our sink
                     break;
                 }
 
             }
         }
+
+        // Remaining CallExprs do not belong to any of the already added statements -> we add them
+        for(clang::CFGStmt stmt: stmtCallExprs) {
+            SPG.push_back(stmt);
+        }    
     }
 
     return SPG;

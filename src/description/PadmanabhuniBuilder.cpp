@@ -27,6 +27,8 @@
 #include "description/StringComparison.h"
 #include "description/SizeDestinationBuffer.h"
 #include "description/SizeDestinationBufferMinusOne.h"
+#include "description/SizeDestinationBufferMinusX.h"
+#include "description/StringLengthDestinationBuffer.h"
 
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
@@ -42,6 +44,8 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cStringLengthDestinationBuffer(
+		new cSizeDestinationBufferMinusX(
 		new cSizeDestinationBufferMinusOne(
 		new cSizeDestinationBuffer(
 		new cStringComparison(
@@ -67,6 +71,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	))))))))))))))))));
+	))))))))))))))))))));
 
 }

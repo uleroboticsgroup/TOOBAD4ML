@@ -16,6 +16,7 @@ bool isTargetedFunction(clang::CallExpr* functionCallExpr, clang::ValueDecl* src
     clang::DeclRefExpr* argDeclRefExpr = nullptr;
 
     if (functionName == "strcmp" || functionName == "strncmp"){
+        //functionCallExpr->dumpColor();
         argDeclRefExpr = llvm::dyn_cast<clang::DeclRefExpr>(functionCallExpr->getArg(0)->IgnoreCasts());
 
         if (argDeclRefExpr->getDecl() == srcBuffer) {
@@ -41,10 +42,9 @@ std::string cStringComparison::ExtractFeature(cCodePropertyGraph& cpg, cBufferOv
     clang::CallExpr* callExpr = nullptr;
     clang::DeclRefExpr* srcBuffer = bof.GetBuffer(BufferType::SRC);
 
-
-    if (srcBuffer) {    
+    if (srcBuffer) {
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
-
+            
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
                 std::vector<clang::Expr*> functionCallExprs = exprUtils->getFromComparisonBinaryOperator(condBinaryOperator, clang::Stmt::StmtClass::CallExprClass);
@@ -52,6 +52,7 @@ std::string cStringComparison::ExtractFeature(cCodePropertyGraph& cpg, cBufferOv
                 for(clang::Expr* functionCallExpr: functionCallExprs) {
                     if (isTargetedFunction(llvm::dyn_cast<clang::CallExpr>(functionCallExpr), srcBuffer->getDecl())) {
                         counter++;
+                        break;
                     }
                 }
             }
