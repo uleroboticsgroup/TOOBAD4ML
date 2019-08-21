@@ -11,9 +11,7 @@ if(memchar(buffer, 'c', 6)) {
 strcpy(buffer2, buffer);
 }
 }
-buffer2[257] = c;
 }
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();

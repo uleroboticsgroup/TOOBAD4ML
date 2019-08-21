@@ -17,7 +17,6 @@ buffer2[257] = c;
 else{
 strcpy(buffer, buffer2);
 }
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();

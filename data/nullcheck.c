@@ -10,13 +10,10 @@ if(&buffer > 0) {
 strcpy(buffer2, buffer);
 }
 }
-buffer2[257] = c;
 }
 if(*buffer2 > 0) {
 strcpy(buffer2, buffer);
 }
-
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();
@@ -25,9 +22,9 @@ return 0;
 
 /// ###BEGIN_VULNERABLE_LINES###
 
-/// 10,1;10,23
-
 /// 8,1;8,23
 
-/// 16,1;16,23
+/// 10,1;10,23
+
+/// 15,1;15,23
 

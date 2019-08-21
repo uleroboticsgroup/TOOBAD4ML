@@ -12,8 +12,6 @@ buffer2[257] = c;
 }
 }
 }
-
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();

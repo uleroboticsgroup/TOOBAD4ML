@@ -10,13 +10,10 @@ if(sizeof(buffer) <= 500) {
 strcpy(buffer2, buffer);
 }
 }
-buffer2[257] = c;
 }
 if(sizeof(buffer2) < 500) {
 strcpy(buffer2, buffer);
 }
-
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();
@@ -29,5 +26,5 @@ return 0;
 
 /// 10,1;10,23
 
-/// 16,1;16,23
+/// 15,1;15,23
 

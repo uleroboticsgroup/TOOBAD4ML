@@ -17,7 +17,6 @@ buffer2[257] = c;
 else{
 gets(buffer);
 }
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();

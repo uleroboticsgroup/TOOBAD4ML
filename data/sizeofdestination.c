@@ -11,12 +11,7 @@ if(sizeof(buffer2) <= 500) {
 strcpy(buffer2, buffer);
 }
 }
-buffer2[257] = c;
 }
-if(sizeof(buffer2) < 500) {
-}
-
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();

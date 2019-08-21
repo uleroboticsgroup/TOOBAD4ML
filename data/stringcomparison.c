@@ -8,9 +8,7 @@ strcpy(buffer2, buffer);
 if(strncmp(buffer, buffer2, 8)) {
 strcpy(buffer2, buffer);
 }
-buffer2[257] = c;
 }
-printf("Input given: %s", buffer);
 }
 int main(){
 echo();
@@ -21,4 +19,4 @@ return 0;
 
 /// 7,1;7,23
 
-
+/// 9,1;9,23
