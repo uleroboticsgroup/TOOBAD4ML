@@ -1,15 +1,19 @@
 #include "description/NULLCheck.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-#include "iostream"
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
+// CONSTRUCTOR
+// ------------------------------------------------------------------------
 cNULLCheck::cNULLCheck(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
+// INHERITED METHODS
+// ------------------------------------------------------------------------
 std::string cNULLCheck::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
     cExprUtils* exprUtils = cExprUtils::GetInstance();

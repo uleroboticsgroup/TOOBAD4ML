@@ -1,13 +1,25 @@
 #include "FileManager.h"
 #include "IOutputFormatStrategy.h"
+// ------------------------------------------------------------------------
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/raw_os_ostream.h>
 #include <clang/Basic/FileManager.h>
+// ------------------------------------------------------------------------
 #include <iostream>
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace IO;
 
+// SINGLETON ATTRIBUTE INITIALIZATION
+// ------------------------------------------------------------------------
+std::unique_ptr<cFileManager> cFileManager::m_instance = 0;
+
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
+cFileManager::cFileManager() {};
+
+// CLASS METHODS
+// ------------------------------------------------------------------------
 bool cFileManager::Write(std::vector<std::string> descriptor, IOutputFormatStrategy* strategy, const llvm::Twine& file, bool append) {    
     if (file.str() == "") {
         llvm::raw_os_ostream stdout(std::cout);
@@ -32,8 +44,6 @@ bool cFileManager::Write(std::vector<std::string> descriptor, IOutputFormatStrat
     return status;
 }
 
-std::unique_ptr<cFileManager> cFileManager::m_instance = 0;
-
 cFileManager* cFileManager::GetInstance() {
     if (!m_instance) {
         m_instance = std::unique_ptr<cFileManager>(new cFileManager()); 
@@ -41,5 +51,3 @@ cFileManager* cFileManager::GetInstance() {
 
     return m_instance.get();
 };
-
-cFileManager::cFileManager() {};

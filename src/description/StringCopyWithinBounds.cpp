@@ -1,10 +1,8 @@
 #include "description/BufferOverflow.h"
 #include "StringCopyWithinBounds.h"
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
-
 namespace description {
-
 
 // CONSTRUCTORS & DESTRUCTORS
 // ----------------------------------------------------------------------------

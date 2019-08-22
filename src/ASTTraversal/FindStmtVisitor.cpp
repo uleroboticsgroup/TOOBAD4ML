@@ -1,8 +1,8 @@
 #include "ASTTraversal/FindStmtVisitor.h"
-
+// ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace ASTTraversal;
-
+// ----------------------------------------------------------------------------
 std::vector<clang::CallExpr*> getCallExprs(std::vector<clang::CFGStmt> stmts) {
     std::vector<clang::CallExpr*> targetCallExprs;
 
@@ -14,9 +14,14 @@ std::vector<clang::CallExpr*> getCallExprs(std::vector<clang::CFGStmt> stmts) {
     return targetCallExprs;
 }
 
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
+
 cFindStmtVisitor::cFindStmtVisitor(std::vector<clang::CFGStmt> targetCallExprs) :
 		m_targetCallExprs(getCallExprs(targetCallExprs)), m_callExprFound(nullptr) {}
 
+// CLASS METHODS
+// ------------------------------------------------------------------------
 
 bool cFindStmtVisitor::VisitCallExpr(clang::CallExpr* currentCallExpr) {
     for(clang::CallExpr* targetCallExpr: m_targetCallExprs) {

@@ -1,9 +1,9 @@
 #ifndef IO_CSVOUTPUT_H
 #define IO_CSVOUTPUT_H
+// ------------------------------------------------------------------------
 #include "IOutputFormatStrategy.h"
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
-
 namespace IO {
 
 /*!

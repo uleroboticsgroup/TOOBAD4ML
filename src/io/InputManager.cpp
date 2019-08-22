@@ -2,20 +2,14 @@
 #include <clang/Tooling/Tooling.h>
 #include "io/InputManager.h"
 #include "io/CmdLineArguments.h"
+// ------------------------------------------------------------------------
 #include <iostream>
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace IO;
 
-/*
-* Parses the command line arguments to get the source.
-*
-* @param argc   Number of command-line arguments. It must be greater than
-*               1 because the binary already counts as an argsument.
-* @param argv   List of command-line arguments, including program's name,
-*               sources and/or options.
-* @returns Source path.
-*/
+// CLASS METHODS
+// ------------------------------------------------------------------------
 sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char** argv) {
     // define the arguments to be extracted
     llvm::cl::list<std::string> sources(
@@ -49,12 +43,6 @@ sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char*
     
 }
 
-/*
-* Retrieves the compilation database from a source.
-*
-* @param source    Source path.
-* @returns A reference to the corresponding compilation database.
-*/
 std::unique_ptr<clang::tooling::CompilationDatabase>
 cInputManager::GetCompilationDatabase(const llvm::Twine& source) {
     std::string errorMessage;

@@ -1,10 +1,15 @@
 #include "description/ExprUtils.h"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
+// SINGLETON ATTRIBUTE INITIALIZATION
+// ------------------------------------------------------------------------
 std::unique_ptr<cExprUtils> cExprUtils::m_instance = 0;
 
+
+// CLASS METHODS
+// ------------------------------------------------------------------------
 cExprUtils* cExprUtils::GetInstance() {
     if (!m_instance) {
         m_instance = std::unique_ptr<cExprUtils>(new cExprUtils());

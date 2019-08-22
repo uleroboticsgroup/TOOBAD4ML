@@ -1,16 +1,12 @@
 #include "description/StringComparison.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-#include "iostream"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
-cStringComparison::cStringComparison(
-		IDescriptor* decoratedComponent) :
-		cDescriptorDecorator(decoratedComponent) {
-};
-
+// OTHER METHODS
+// ------------------------------------------------------------------------
 bool isTargetedFunction(clang::CallExpr* functionCallExpr, clang::ValueDecl* srcBuffer) {
     std::string functionName = functionCallExpr->getDirectCallee()->getNameAsString();
     clang::DeclRefExpr* argDeclRefExpr = nullptr;
@@ -33,6 +29,15 @@ bool isTargetedFunction(clang::CallExpr* functionCallExpr, clang::ValueDecl* src
     return false;
 }
 
+// CONSTRUCTOR & DESTRUCTORS
+// ------------------------------------------------------------------------
+cStringComparison::cStringComparison(
+		IDescriptor* decoratedComponent) :
+		cDescriptorDecorator(decoratedComponent) {
+};
+
+// INHERITED METHODS
+// ------------------------------------------------------------------------
 std::string cStringComparison::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
     cExprUtils* exprUtils = cExprUtils::GetInstance();

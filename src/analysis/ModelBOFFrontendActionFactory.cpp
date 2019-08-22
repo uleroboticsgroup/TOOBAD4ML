@@ -1,15 +1,16 @@
 #include "ModelBOFFrontendActionFactory.h"
 #include "ModelBOFAction.h"
-
-//DELETE
-#include <iostream>
-
+// ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
-
+// ----------------------------------------------------------------------------
+// CONSTRUCTORS & DESTRUCTORS
+// ----------------------------------------------------------------------------
 cModelBOFFrontendActionFactory::cModelBOFFrontendActionFactory(cModelBOFAction& action)
     :m_modelBOFAction(std::unique_ptr<cModelBOFAction>(&action)) {}
 
+// CLASS METHODS
+// ----------------------------------------------------------------------------
 clang::FrontendAction* cModelBOFFrontendActionFactory::create() {
     return m_modelBOFAction.get();
 }

@@ -1,9 +1,9 @@
 
 #ifndef SRC_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
 #define SRC_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
-
+// ------------------------------------------------------------------------
 #include "description/DescriptorDecorator.h"
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
 
 namespace description {

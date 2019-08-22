@@ -7,6 +7,8 @@ namespace TOOBAD4ML {
 
 namespace IO {
 
+// CLASS FORWARDING
+// ----------------------------------------------------------------------------
 class IOutputFormatStrategy;
 
 enum eOutputFormatType {

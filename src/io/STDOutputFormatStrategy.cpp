@@ -1,9 +1,12 @@
 #include "STDOutputFormatStrategy.h"
+// ------------------------------------------------------------------------
 #include <iostream>
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace IO;
 
+// CLASS METHODS
+// ------------------------------------------------------------------------
 bool cSTDOutputFormatStrategy::Write(llvm::raw_ostream& stream, Descriptor descriptor) {
     stream << "Results:" << "\n";
     

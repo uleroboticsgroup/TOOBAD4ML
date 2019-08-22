@@ -3,12 +3,14 @@
 #include "description/CodePropertyGraph.h"
 #include "ASTTraversal/FindVariableVisitor.h"
 #include "iostream"
-
+// ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
-
+// ----------------------------------------------------------------------------
 typedef std::pair<int, int> BufferArgIndices; 
 
+// CLASS METHODS
+// ------------------------------------------------------------------------
 cBufferOverflow& cBufferOverflowBuilder::CreateBufferOverflow(clang::Expr& sink, cCodePropertyGraph& cpg) {
     clang::DeclRefExpr* dstBuffer = getBuffer(sink, BufferType::DST);
 	clang::DeclRefExpr* srcBuffer = getBuffer(sink, BufferType::SRC);

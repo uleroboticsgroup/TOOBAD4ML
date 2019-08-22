@@ -1,16 +1,20 @@
 #include "description/CharacterCheck.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-#include "iostream"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
+// ------------------------------------------------------------------------
 
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
 cCharacterCheck::cCharacterCheck(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
+// INHERITED METHODS
+// ------------------------------------------------------------------------
 std::string cCharacterCheck::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
     cExprUtils* exprUtils = cExprUtils::GetInstance();

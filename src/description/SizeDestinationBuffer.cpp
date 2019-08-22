@@ -1,15 +1,19 @@
 #include "description/SizeDestinationBuffer.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
 cSizeDestinationBuffer::cSizeDestinationBuffer(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
+// INHERITED METHODS
+// ------------------------------------------------------------------------
 std::string cSizeDestinationBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);

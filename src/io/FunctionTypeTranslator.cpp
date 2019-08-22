@@ -1,7 +1,7 @@
 #include "io/FunctionTypeTranslator.h"
 
 using namespace TOOBAD4ML;
-using namespace io;
+using namespace IO;
 
 /*
 cFunctionTypeTranslator::cFunctionTypeTranslator(){

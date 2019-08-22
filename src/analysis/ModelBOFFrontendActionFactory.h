@@ -1,7 +1,8 @@
 #ifndef ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
 #define ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
-
+// ----------------------------------------------------------------------------
 #include <clang/Tooling/Tooling.h>
+// ----------------------------------------------------------------------------
 
 namespace TOOBAD4ML {
 
@@ -12,7 +13,7 @@ namespace analysis {
  * \class cModelBOFFrontendActionFactory
  *
  * \brief
- * A utility to create the BOF action to be used inside clang.
+ * A utility to create the BOF Action to be used inside clang.
  *
  */
 class cModelBOFFrontendActionFactory:

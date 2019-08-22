@@ -1,15 +1,19 @@
 #include "CmdLineArguments.h"
 #include "IOutputFormatStrategy.h"
 #include "FormatStrategyFactory.h"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace IO;
 
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
 sCmdLineArguments::sCmdLineArguments(std::vector<std::string> sources, std::map<eFlagsType, std::string> flags):
     m_sources(sources),
     m_flags(flags),
     m_append(false) {}
 
+// CLASS METHODS
+// ------------------------------------------------------------------------
 std::vector<std::string> sCmdLineArguments::getSources() {
     return m_sources;
 }

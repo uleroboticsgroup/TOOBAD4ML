@@ -1,10 +1,9 @@
 #ifndef IO_STDOUTFORMAT_H
 #define IO_STDOUTFORMAT_H
-
+// ------------------------------------------------------------------------
 #include "IOutputFormatStrategy.h"
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
-
 namespace IO {
 
 /*!

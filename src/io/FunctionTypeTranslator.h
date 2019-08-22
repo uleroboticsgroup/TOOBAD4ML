@@ -5,7 +5,7 @@
 
 namespace TOOBAD4ML {
 
-namespace io {
+namespace IO {
 
 enum class eVulnerableFunctionType {
 	STR_COPY = 1,

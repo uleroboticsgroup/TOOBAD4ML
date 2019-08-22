@@ -1,10 +1,12 @@
 #include "io/FormatStrategyFactory.h"
 #include "io/CSVOutputFormatStrategy.h"
 #include "io/STDOutputFormatStrategy.h"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace IO;
 
+// CLASS METHODS
+// ------------------------------------------------------------------------
 IOutputFormatStrategy& cFormatStrategyFactory::CreateCSVOutputFormatStrategy() {
     return *(new cCSVOutputFormatStrategy());
 }

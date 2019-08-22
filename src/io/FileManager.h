@@ -1,12 +1,13 @@
 #ifndef IO_FILEMANAGER_H_
 #define IO_FILEMANAGER_H_
-
+// ------------------------------------------------------------------------
 #include <clang/Basic/FileManager.h>
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
-
 namespace IO {
 
+// CLASS FORWARDING
+// ----------------------------------------------------------------------------
 class IOutputFormatStrategy;
 
 /*!

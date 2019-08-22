@@ -1,15 +1,19 @@
 #include "description/StringLengthDestinationBuffer.h"
 #include "description/BufferOverflow.h"
 #include "description/ExprUtils.h"
-
+// ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
+// CONSTRUCTORS & DESTRUCTORS
+// ------------------------------------------------------------------------
 cStringLengthDestinationBuffer::cStringLengthDestinationBuffer(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
+// INHERITED METHODS
+// ------------------------------------------------------------------------
 std::string cStringLengthDestinationBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
