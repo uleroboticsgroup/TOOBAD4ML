@@ -1,4 +1,4 @@
-PROJECT_NAME           = "TOOBAD4ML"
-INPUT			= ./src
+PROJECT_NAME        = "TOOBAD4ML"
+INPUT			    = ./src
 OUTPUT_DIRECTORY	= ./docs
-RECURSIVE		= YES
+RECURSIVE		    = YES

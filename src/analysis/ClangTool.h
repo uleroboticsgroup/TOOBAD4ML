@@ -87,6 +87,7 @@ private:
     //! Tool to run actions.
     std::unique_ptr<clang::tooling::ClangTool> m_tool;
 
+    //! Inline execution arguments
     IO::sCmdLineArguments& m_args;
 
 }; /* class cClangTool */

@@ -96,7 +96,7 @@ private:
     /// that affects {\ref m_buffer}.
 	std::vector<clang::CallExpr*> m_input;
 
-
+    //! List of AST nodes where sanitizations related to the sink are performed.
     std::vector<clang::Expr*> m_sinkSanitizations;
 
 }; /* cBufferOverflow */

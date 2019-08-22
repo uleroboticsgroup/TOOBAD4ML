@@ -14,7 +14,11 @@ namespace analysis {
  *
  * \brief
  * A utility to create the BOF Action to be used inside clang.
- *
+ *  
+ * \details
+ * This class implements the Factory pattern.
+ * The only task of this class is to create <CODE>TOOBAD4ML::analysis::cModelBOFAction</CODE>
+ * objects.
  */
 class cModelBOFFrontendActionFactory:
     public clang::tooling::FrontendActionFactory {

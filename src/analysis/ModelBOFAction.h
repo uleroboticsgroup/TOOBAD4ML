@@ -61,7 +61,10 @@ protected:
 	// ------------------------------------------------------------------------
 
 private:
+	//! CMD line arguments
 	std::unique_ptr<IO::sCmdLineArguments> m_cmdLineArguments;
+
+	//! The consumer which will be given by the ModelBOFAction
 	cModelBOFConsumer* m_modelBOFConsumer;
 	
 }; /* class cModelBOFAction */

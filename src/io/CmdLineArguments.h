@@ -1,11 +1,12 @@
 #ifndef IO_CMDLINEARGS_H_
 #define IO_CMDLINEARGS_H_
-
+// ------------------------------------------------------------------------
 #include <iostream>
 #include <vector>
 #include <map>
+// ------------------------------------------------------------------------
 #include "llvm/ADT/Twine.h"
-
+// ------------------------------------------------------------------------
 namespace TOOBAD4ML {
 
 namespace IO {
@@ -54,8 +55,11 @@ public:
     // ATTRIBUTES
     // ------------------------------------------------------------------------
 public:
+    //! The file sources
     std::vector<std::string> m_sources;
+    //! The flags of the command line
     std::map<eFlagsType, std::string> m_flags;
+    //! Flag which controls if the output should be appended to the end of the file or not.
     bool m_append;
 };
 
