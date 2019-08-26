@@ -1,5 +1,5 @@
-#ifndef SRC_AST_TRAVERSAL_FINDSTMTVISITOR_H_
-#define SRC_AST_TRAVERSAL_FINDSTMTVISITOR_H_
+#ifndef TOOBAD4ML_AST_TRAVERSAL_FINDSTMTVISITOR_H_
+#define TOOBAD4ML_AST_TRAVERSAL_FINDSTMTVISITOR_H_
 // ----------------------------------------------------------------------------
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Analysis/CFG.h>

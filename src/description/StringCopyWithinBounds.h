@@ -1,6 +1,6 @@
 
-#ifndef SRC_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
-#define SRC_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
+#ifndef TOOBAD4ML_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
+#define TOOBAD4ML_DESCRIPTION_STRINGCOPYWITHINBOUNDS_H_
 // ------------------------------------------------------------------------
 #include "description/DescriptorDecorator.h"
 // ------------------------------------------------------------------------

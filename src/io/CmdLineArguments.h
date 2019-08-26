@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 // ------------------------------------------------------------------------
+#include "description/DescriptorFactory.h"
+// ------------------------------------------------------------------------
 #include "llvm/ADT/Twine.h"
 // ------------------------------------------------------------------------
 namespace TOOBAD4ML {
@@ -15,7 +17,8 @@ class IOutputFormatStrategy;
 
 enum eFlagsType {
     OUTPUT_FILENAME,
-    OUTPUT_EXTENSION
+    OUTPUT_EXTENSION,
+    DESCRIPTOR_SET
 };
 
 /*!
@@ -49,8 +52,6 @@ public:
 
     bool getAppend();
     void setAppend(bool);
-
-
 
     // ATTRIBUTES
     // ------------------------------------------------------------------------

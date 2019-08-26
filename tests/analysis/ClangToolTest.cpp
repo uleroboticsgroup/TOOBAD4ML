@@ -5,6 +5,7 @@
 #include "io/CmdLineArguments.h"
 #include "analysis/ModelBOFAction.h"
 #include "analysis/ModelBOFFrontendActionFactory.h"
+#include "description/DescriptorFactory.h"
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // TODO Create a directory with tests files.
@@ -79,7 +80,8 @@ TEST_F(ClangToolTest, Run) {
 
     IO::sCmdLineArguments cmdArgs(files, flags);
     cClangTool* clangTool = new cClangTool(cmdArgs);
-    cModelBOFAction* action = new cModelBOFAction();
+    description::cDescriptorFactory descriptorFactory;
+    cModelBOFAction* action = new cModelBOFAction(descriptorFactory.CreateDescriptor("Padmanabhuni"));
     cModelBOFFrontendActionFactory* factory = new cModelBOFFrontendActionFactory(*action);
 
     std::stringstream buffer;

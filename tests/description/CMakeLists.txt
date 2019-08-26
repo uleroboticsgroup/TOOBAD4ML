@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME}
     SizeDestinationBufferMinusOneTest.cpp
     SizeDestinationBufferMinusXTest.cpp
     StringLengthDestinationBufferTest.cpp
+    LengthTypeTest.cpp
     CPGExplorerTest.cpp
 )
 target_include_directories(${PROJECT_NAME}

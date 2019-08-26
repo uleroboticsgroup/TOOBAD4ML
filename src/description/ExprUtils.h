@@ -1,5 +1,5 @@
-#ifndef DESCRIPTION_EXPRUTILS
-#define DESCRIPTION_EXPRUTILS
+#ifndef TOOBAD4ML_DESCRIPTION_EXPRUTILS_H_
+#define TOOBAD4ML_DESCRIPTION_EXPRUTILS_H_
 // ------------------------------------------------------------------------
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/Expr.h"

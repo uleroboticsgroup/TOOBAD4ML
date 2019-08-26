@@ -50,6 +50,10 @@ add_library(${PROJECT_NAME}
         SizeDestinationBufferMinusOne.cpp
         SizeDestinationBufferMinusX.cpp
         StringLengthDestinationBuffer.cpp
+        DescriptorFactory.cpp
+        ContainerType.cpp
+        IndexType.cpp
+        LengthType.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -110,6 +110,8 @@
 #include "io/CmdLineArguments.h"
 #include "analysis/ModelBOFFrontendActionFactory.h"
 #include "io/InputManager.h"
+#include "description/DescriptorFactory.h"
+#include "description/Descriptor.h"
 #include <iostream>
 
 // ----------------------------------------------------------------------------
@@ -140,7 +142,10 @@ int main(int argc, const char **argv) {
 
         TOOBAD4ML::analysis::cClangTool tool(*currentArguments);
         
-        TOOBAD4ML::analysis::cModelBOFAction* action = new TOOBAD4ML::analysis::cModelBOFAction();
+        TOOBAD4ML::description::cDescriptorFactory descriptionFactory;
+        TOOBAD4ML::description::IDescriptor* descriptor = descriptionFactory.CreateDescriptor(arguments.getFlags()[TOOBAD4ML::IO::eFlagsType::DESCRIPTOR_SET]);
+
+        TOOBAD4ML::analysis::cModelBOFAction* action = new TOOBAD4ML::analysis::cModelBOFAction(descriptor);
         TOOBAD4ML::analysis::cModelBOFFrontendActionFactory* factory = new TOOBAD4ML::analysis::cModelBOFFrontendActionFactory(*action);
         tool.Run(factory);
 

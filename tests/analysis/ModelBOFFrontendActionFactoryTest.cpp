@@ -2,6 +2,7 @@
 #include "clang/Tooling/Tooling.h"
 #include "analysis/ModelBOFFrontendActionFactory.h"
 #include "analysis/ModelBOFAction.h"
+#include "description/DescriptorFactory.h"
 // ----------------------------------------------------------------------------
 
 namespace TOOBAD4ML {
@@ -13,7 +14,8 @@ class ModelBOFFrontendActionFactoryTest
 
 protected:
     void SetUp() override {
-        action = new cModelBOFAction();
+        description::cDescriptorFactory descriptorFactory;
+        action = new cModelBOFAction(descriptorFactory.CreateDescriptor("Padmanabhuni"));
         factory = new cModelBOFFrontendActionFactory(*action);
     }
 

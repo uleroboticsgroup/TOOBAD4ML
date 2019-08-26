@@ -12,6 +12,10 @@
 
 namespace TOOBAD4ML {
 
+namespace description {
+	class IDescriptor;
+}
+
 namespace IO {
 	class IOutputFormatStrategy;
 }
@@ -36,6 +40,8 @@ class cModelBOFAction: public clang::ASTFrontendAction {
     // clang::FrontendAction CLASS METHODS
     // ------------------------------------------------------------------------
 public:
+
+	cModelBOFAction(description::IDescriptor *);
 
 	cModelBOFConsumer* getModelBOFConsumer();
 
@@ -66,6 +72,10 @@ private:
 
 	//! The consumer which will be given by the ModelBOFAction
 	cModelBOFConsumer* m_modelBOFConsumer;
+
+protected:
+	//! The descriptor to be used by the modelBOFConsumer
+	description::IDescriptor* m_descriptor;
 	
 }; /* class cModelBOFAction */
 

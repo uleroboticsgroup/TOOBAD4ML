@@ -17,6 +17,9 @@ sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char*
             llvm::cl::desc("<source0> [...<sourceN>]"),
             llvm::cl::OneOrMore
     );
+
+    llvm::cl::opt<std::string> Descriptor("d", llvm::cl::desc("Specify descriptor: \n\tPadmanabhuni"), llvm::cl::Required);
+
     llvm::cl::opt<std::string> OutputFilename("o",  llvm::cl::desc("Specify output filename"),  llvm::cl::value_desc("filename"));
 
     llvm::cl::opt<std::string> OutputFormat("f",  llvm::cl::desc("Specify output format: \n\tSTD \n\tCSV\n Default output is standard output."),
@@ -37,7 +40,8 @@ sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char*
         flags.insert(std::make_pair(eFlagsType::OUTPUT_FILENAME, ""));     
     }
 
-
+    flags.insert(std::make_pair(eFlagsType::DESCRIPTOR_SET, Descriptor.getValue()));
+    
     sCmdLineArguments *cmdLine = new sCmdLineArguments(sources, flags);
     return *cmdLine;
     

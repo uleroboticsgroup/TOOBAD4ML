@@ -2,9 +2,7 @@
 #ifndef TOOBAD4ML_DESCRIPTION_DESCRIPTOR_H
 #define TOOBAD4ML_DESCRIPTION_DESCRIPTOR_H
 // ----------------------------------------------------------------------------
-#include <llvm/ADT/StringRef.h>
-// ----------------------------------------------------------------------------
-
+#include <string>
 
 namespace TOOBAD4ML {
 

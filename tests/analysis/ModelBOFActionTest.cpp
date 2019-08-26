@@ -4,6 +4,7 @@
 #include "analysis/ModelBOFConsumer.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "ModelBOFActionTestHelper.h"
+#include "description/DescriptorFactory.h"
 #include <iostream>
 // ----------------------------------------------------------------------------
 // TODO Create a directory with tests files.
@@ -18,7 +19,8 @@ class BOFActionTest : public ::testing::Test{
 
 protected:
     void SetUp() override {
-        action = new cModelBOFAction();
+        description::cDescriptorFactory descriptorFactory;
+        action = new cModelBOFAction(descriptorFactory.CreateDescriptor("Padmanabhuni"));
     }
 
     cModelBOFAction* action;
@@ -29,7 +31,8 @@ TEST_F(BOFActionTest, CreateASTConsumer) {
     clang::CompilerInstance ci;
     llvm::StringRef file("test");
     ci.createDiagnostics();
-    cModelBOFActionTestHelper helper;
+    description::cDescriptorFactory descriptorFactory;
+    cModelBOFActionTestHelper helper(descriptorFactory.CreateDescriptor("Padmanabhuni"));
     clang::ASTConsumer* generatedConsumer = helper.CreateASTConsumerTestHelper(ci, file).get();
     EXPECT_EQ(helper.getModelBOFConsumer(), generatedConsumer);
 };

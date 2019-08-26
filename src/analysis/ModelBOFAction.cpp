@@ -7,6 +7,7 @@
 #include <clang/Frontend/CompilerInstance.h>
 #include <iostream>
 #include "io/CmdLineArguments.h"
+#include "description/Descriptor.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -15,6 +16,9 @@ using namespace analysis;
 
 // clang::FrontendAction INHERITED METHODS
 // ----------------------------------------------------------------------------
+
+cModelBOFAction::cModelBOFAction(description::IDescriptor* descriptor)
+	:m_descriptor(descriptor) {}
 
 std::unique_ptr<clang::ASTConsumer> cModelBOFAction::CreateASTConsumer(
 		clang::CompilerInstance& CI, llvm::StringRef file) {
@@ -40,3 +44,5 @@ void cModelBOFAction::setCmdLineArguments(IO::sCmdLineArguments& cmdLineArgs) {
 void cModelBOFAction::EndSourceFileAction() {
 	m_modelBOFConsumer->Output(*(m_cmdLineArguments.get()));
 };
+
+

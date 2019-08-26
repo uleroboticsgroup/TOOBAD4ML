@@ -1,5 +1,5 @@
-#ifndef ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
-#define ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
+#ifndef TOOBAD4ML_ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
+#define TOOBAD4ML_ANALYSIS_MODELBOFFRONTENDACTIONFACTORY_H
 // ----------------------------------------------------------------------------
 #include <clang/Tooling/Tooling.h>
 // ----------------------------------------------------------------------------
