@@ -29,6 +29,9 @@ add_executable(${PROJECT_NAME}
     SizeDestinationBufferMinusXTest.cpp
     StringLengthDestinationBufferTest.cpp
     LengthTypeTest.cpp
+    AddressTypeTest.cpp
+    IndexTypeTest.cpp
+    ContainerTypeTest.cpp
     CPGExplorerTest.cpp
 )
 target_include_directories(${PROJECT_NAME}

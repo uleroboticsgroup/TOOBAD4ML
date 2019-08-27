@@ -13,7 +13,8 @@ namespace description {
 class IDescriptor;
 
 enum eDescriptor {
-    PADMANABHUNI
+    PADMANABHUNI,
+    UNKNOWN
 };
 
 /*!

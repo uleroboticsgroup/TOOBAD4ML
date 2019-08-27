@@ -54,6 +54,7 @@ add_library(${PROJECT_NAME}
         ContainerType.cpp
         IndexType.cpp
         LengthType.cpp
+        AddressType.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

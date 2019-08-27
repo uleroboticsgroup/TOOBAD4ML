@@ -2,31 +2,27 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/CompilationDatabase.h"
-#include "description/CPGExplorer.h"
 #include "description/CodePropertyGraph.h"
-#include "description/PadmanabhuniBuilder.h"
-#include "description/SinkClassification.h"
+#include "description/AddressType.h"
+#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
 #include "description/BufferOverflowBuilder.h"
-#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
-//#include "route.h"
 
 namespace TOOBAD4ML{
 
 namespace description{
 
-class CPGExplorerTest: 
+class AddressTypeTest: 
     public ::testing::Test {
 
 protected:
     void SetUp() override {
-        cPadmanabhuniBuilder* builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        Sources.push_back("data/test.c");
+        Sources.push_back("data/addresstype.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -52,36 +48,77 @@ protected:
             }
         }
 
-        explorer = new cCPGExplorer(*builder->CreateDescriptor());
+        addressType = new cAddressType(new cMockDescriptor);
+    
     }
 
     void TearDown() override {
         cpgs.clear();
         bofs.clear();
+        delete addressType;
     }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cCPGExplorer* explorer;
+    cAddressType* addressType;
 };
 
-TEST_F(CPGExplorerTest, Inspect) {
-    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
-    EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;-1;-1;-1;-1;");
+TEST_F(AddressTypeTest, RegularAccess) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[0]), "0;");
+
 }
 
-TEST_F(CPGExplorerTest, Constructor) {
-    EXPECT_TRUE(explorer != nullptr);
+TEST_F(AddressTypeTest, Addition) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[1]), "1;");
+
+}
+TEST_F(AddressTypeTest, Subtraction) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[2]), "1;");
+
+}
+TEST_F(AddressTypeTest, Multiplication) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[3]), "2;");
+
+}
+TEST_F(AddressTypeTest, Division) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[4]), "2;");
+
+}
+TEST_F(AddressTypeTest, Modulus) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[5]), "3;");
+
+}
+TEST_F(AddressTypeTest, FunctionAddition) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[6]), "4;");
+
 }
 
+TEST_F(AddressTypeTest, Function) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[7]), "4;");
 
+}
 
-TEST_F(CPGExplorerTest, SetDescriptor) {
-    cMockDescriptor* mock = new cMockDescriptor();
-    explorer->SetDescriptor(*mock);
-    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
-    EXPECT_EQ(result, "");
+TEST_F(AddressTypeTest, ArrayAccess) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[8]), "5;");
+
+}
+TEST_F(AddressTypeTest, RightShift) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[9]), "2;");
+
+}
+TEST_F(AddressTypeTest, LeftShift) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[10]), "2;");
+
+}
+
+TEST_F(AddressTypeTest, Pow) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[11]), "3;");
+
+}
+TEST_F(AddressTypeTest, Sqrt) {
+    ASSERT_EQ(addressType->ExtractFeature(*cpgs[0], bofs[12]), "3;");
+
 }
 
 }

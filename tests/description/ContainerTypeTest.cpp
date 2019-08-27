@@ -2,31 +2,27 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/CompilationDatabase.h"
-#include "description/CPGExplorer.h"
 #include "description/CodePropertyGraph.h"
-#include "description/PadmanabhuniBuilder.h"
-#include "description/SinkClassification.h"
+#include "description/ContainerType.h"
+#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
 #include "description/BufferOverflowBuilder.h"
-#include "ASTTraversal/ExtractVulnerabilitiesVisitor.h"
-//#include "route.h"
 
 namespace TOOBAD4ML{
 
 namespace description{
 
-class CPGExplorerTest: 
+class ContainerTypeTest: 
     public ::testing::Test {
 
 protected:
     void SetUp() override {
-        cPadmanabhuniBuilder* builder = new cPadmanabhuniBuilder();
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
         cBufferOverflowBuilder BOFBuilder;
 
         std::vector<std::string> Sources;
-        Sources.push_back("data/test.c");
+        Sources.push_back("data/containertype.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
         Tool.setDiagnosticConsumer(new clang::IgnoringDiagConsumer());
@@ -52,37 +48,42 @@ protected:
             }
         }
 
-        explorer = new cCPGExplorer(*builder->CreateDescriptor());
+        containerType = new cContainerType(new cMockDescriptor);
+    
     }
 
     void TearDown() override {
         cpgs.clear();
         bofs.clear();
+        delete containerType;
     }
 
     // ATTRIBUTES
     std::vector<cCodePropertyGraph*> cpgs;
     std::vector<cBufferOverflow> bofs;
-    cCPGExplorer* explorer;
+    cContainerType* containerType;
 };
 
-TEST_F(CPGExplorerTest, Inspect) {
-    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
-    EXPECT_EQ(result, "5;1;0;0;0;-1;-1;-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;-1;-1;-1;-1;");
+TEST_F(ContainerTypeTest, None) {
+    ASSERT_EQ(containerType->ExtractFeature(*cpgs[0], bofs[0]), "0;");
+
 }
 
-TEST_F(CPGExplorerTest, Constructor) {
-    EXPECT_TRUE(explorer != nullptr);
+TEST_F(ContainerTypeTest, Array) {
+    ASSERT_EQ(containerType->ExtractFeature(*cpgs[0], bofs[1]), "1;");
+
+}
+TEST_F(ContainerTypeTest, Struct) {
+    ASSERT_EQ(containerType->ExtractFeature(*cpgs[0], bofs[2]), "2;");
+
+}
+TEST_F(ContainerTypeTest, Union) {
+    ASSERT_EQ(containerType->ExtractFeature(*cpgs[0], bofs[3]), "2;");
+
 }
 
 
-
-TEST_F(CPGExplorerTest, SetDescriptor) {
-    cMockDescriptor* mock = new cMockDescriptor();
-    explorer->SetDescriptor(*mock);
-    std::string result = explorer->Inspect(*cpgs[0], bofs[0]);
-    EXPECT_EQ(result, "");
-}
+// TODO ¿Other?
 
 }
 

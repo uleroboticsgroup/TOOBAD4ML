@@ -127,6 +127,14 @@ int main(int argc, const char **argv) {
 
     IO::cInputManager* inputManager = new IO::cInputManager();
     IO::sCmdLineArguments arguments = inputManager->GetSourceFromCommandLine(argc, argv);
+    TOOBAD4ML::description::cDescriptorFactory descriptionFactory;
+    TOOBAD4ML::description::IDescriptor* descriptor = descriptionFactory.CreateDescriptor(arguments.getFlags()[TOOBAD4ML::IO::eFlagsType::DESCRIPTOR_SET]);
+
+    if (!descriptor) {
+        std::cout << "Invalid descriptor.\nExecution aborted.\n";
+        return -1;
+    }
+
     std::vector<std::string> currentSources;
     bool firstWrite = true;
 
@@ -141,15 +149,13 @@ int main(int argc, const char **argv) {
         }
 
         TOOBAD4ML::analysis::cClangTool tool(*currentArguments);
-        
-        TOOBAD4ML::description::cDescriptorFactory descriptionFactory;
-        TOOBAD4ML::description::IDescriptor* descriptor = descriptionFactory.CreateDescriptor(arguments.getFlags()[TOOBAD4ML::IO::eFlagsType::DESCRIPTOR_SET]);
 
         TOOBAD4ML::analysis::cModelBOFAction* action = new TOOBAD4ML::analysis::cModelBOFAction(descriptor);
         TOOBAD4ML::analysis::cModelBOFFrontendActionFactory* factory = new TOOBAD4ML::analysis::cModelBOFFrontendActionFactory(*action);
         tool.Run(factory);
 
         currentSources.pop_back();
+
 
     }
    

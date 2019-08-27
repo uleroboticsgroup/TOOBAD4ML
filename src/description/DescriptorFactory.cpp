@@ -14,10 +14,15 @@ IDescriptor* cDescriptorFactory::CreateDescriptor(std::string descriptor) {
         cPadmanabhuniBuilder builder;
         return builder.CreateDescriptor();
     }
+    else if (descriptorType == eDescriptor::UNKNOWN) {
+        return nullptr;
+    }
 }
 
 eDescriptor cDescriptorFactory::getDescriptor(std::string descriptor) {
     if (descriptor == "Padmanabhuni") {
         return eDescriptor::PADMANABHUNI;
     }
+
+    return eDescriptor::UNKNOWN;
 }
