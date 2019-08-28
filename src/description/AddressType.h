@@ -7,7 +7,7 @@ namespace TOOBAD4ML {
 namespace description {
 	
 /*!
- * \class cIndexType
+ * \class cAddressType
  *
  * \brief
  * It classifies the type of the address using to access a pointer

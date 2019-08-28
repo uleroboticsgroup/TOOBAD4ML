@@ -7,7 +7,7 @@ namespace TOOBAD4ML {
 namespace description {
 	
 /*!
- * \class cIndexType
+ * \class cLengthType
  *
  * \brief
  * It classifies the type of the length in <CODE>memcpy</CODE> function

@@ -7,7 +7,7 @@ project(analysis_test)
 # -----------------------------------------------------------------------------
 
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME}
     ModelBOFActionTest.cpp
     ModelBOFConsumerTest.cpp
     ModelBOFFrontendActionFactoryTest.cpp

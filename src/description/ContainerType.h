@@ -7,7 +7,7 @@ namespace TOOBAD4ML {
 namespace description {
 	
 /*!
- * \class cIndexType
+ * \class cContainerType
  *
  * \brief
  * It classifies the type of container that holds the buffer

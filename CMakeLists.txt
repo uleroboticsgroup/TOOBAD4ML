@@ -52,6 +52,27 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # user options
 option(TOOBAD4ML_ENABLE_TESTING    "Build tests" OFF)
 option(TOOBAD4ML_FORCE_CONAN       "Force use dependencies from Conan" OFF)
+option(TOOBAD4ML_GENERATE_DOCS "Build documentation" OFF)
+
+# documentation
+if (TOOBAD4ML_GENERATE_DOCS)
+	find_package(Doxygen)
+	if (DOXYGEN_FOUND)
+		set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
+		set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+		configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+		message("DOXYGEN BUILD STARTED. GENERATING DOCS...")
+
+		add_custom_target( doc_doxygen ALL 
+			COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+				WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+				COMMENT "Generating API documentation with Doxygen")
+
+	else (DOXYGEN_FOUND)
+		message("Doxygen need to be installed to generate the doxygen documentation")
+	endif (DOXYGEN_FOUND)
+endif (TOOBAD4ML_GENERATE_DOCS)
 
 
 # Modules
@@ -70,7 +91,4 @@ add_subdirectory(src)
 if (TOOBAD4ML_ENABLE_TESTING)
     enable_testing()
     add_subdirectory(tests)
-endif()
-
-# documentation
-# TODO: generate doxygen and uml diagrams
+endif(TOOBAD4ML_ENABLE_TESTING)

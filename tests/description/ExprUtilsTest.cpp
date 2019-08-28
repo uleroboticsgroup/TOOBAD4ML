@@ -41,18 +41,20 @@ protected:
             cpg = new cCodePropertyGraph(*(vuln.first));
             
             for (auto const& vulnLOCIter : vuln.second) {
-                bof = &(BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg));
-
-                break;
+                bofs.push_back(BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg));
             }
             break;
         }
         exprUtils = cExprUtils::GetInstance();
     }
 
+    void TearDown() override {
+        bofs.clear();
+        delete cpg;
+    }
 
     // ATTRIBUTES
-    cBufferOverflow *bof;
+    std::vector<cBufferOverflow> bofs;
     cCodePropertyGraph *cpg;
     cExprUtils* exprUtils;
 };
@@ -63,7 +65,7 @@ TEST_F(ExprUtilsTest, GetInstance) {
 }
 
 TEST_F(ExprUtilsTest, GuessBufferSizeConstantArray) {
-    EXPECT_EQ(256, exprUtils->guessBufferSize(bof->GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
+    EXPECT_EQ(256, exprUtils->guessBufferSize(bofs[0].GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
 }
 /** 
  * TODO
@@ -80,17 +82,59 @@ TEST_F(ExprUtilsTest, GuessBufferSizeConstantArray) {
 
 
 TEST_F(ExprUtilsTest, GuessArgumentSizeDeclRefExprClass) {
-    EXPECT_EQ(256, exprUtils->guessArgumentSize(bof->GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
+    EXPECT_EQ(256, exprUtils->guessArgumentSize(bofs[0].GetBuffer(BufferType::DST), cpg->GetAST().getASTContext()));
 }
 
+TEST_F(ExprUtilsTest, GuessArgumentSizeIntegerLiteral) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[2].GetSink());
+    EXPECT_EQ(2, exprUtils->guessArgumentSize(sink->getRHS(), cpg->GetAST().getASTContext()));
+}
 /*
+TODO
 
-    TODO
-
-
-    TEST_F(ExprUtilsTest, GuessArgumentSizeUnaryExprOrTypeTraitExpr) {
-    }
-
-    TEST_F(ExprUtilsTest, GuessArgumentSizeIntegerLiteral) {
-    }
+TEST_F(ExprUtilsTest, GuessArgumentSizeUnaryExprOrTypeTraitExpr) {
+}
 */
+
+TEST_F(ExprUtilsTest, GetValueFromDeclRefExpr) {
+    EXPECT_EQ("x", exprUtils->getValueFromDeclRefExpr(bofs[0].GetBuffer(BufferType::DST))->getNameAsString());
+}
+
+
+TEST_F(ExprUtilsTest, GetValueFromIntegerLiteral) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[2].GetSink());
+    EXPECT_EQ(2, exprUtils->getValueFromIntegerLiteral(sink->getRHS()));
+}
+
+TEST_F(ExprUtilsTest, GetExprFromUnaryOperator) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[1].GetSink());
+    clang::Expr* expr = exprUtils->getExprFromUnaryOperator(sink->getRHS());
+    
+    EXPECT_EQ("a", exprUtils->getValueFromDeclRefExpr(expr)->getNameAsString());
+}
+
+TEST_F(ExprUtilsTest, GetIndexFromArraySubscriptExpr) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[1].GetSink());
+    clang::Expr* expr = exprUtils->getIndexFromArraySubscriptExpr(sink->getLHS());
+    
+    EXPECT_EQ(285, exprUtils->getValueFromIntegerLiteral(expr));
+}
+
+TEST_F(ExprUtilsTest, GetArrayFromArraySubscriptExpr) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[1].GetSink());
+    clang::Expr* expr = exprUtils->getArrayFromArraySubscriptExpr(sink->getLHS());
+    
+    EXPECT_EQ("z", exprUtils->getValueFromDeclRefExpr(expr)->getNameAsString());}
+
+TEST_F(ExprUtilsTest, GetFromComparisonBinaryOperator) {
+    clang::BinaryOperator* sink = llvm::dyn_cast<clang::BinaryOperator>(bofs[3].GetSink());
+    std::vector<clang::Expr*> found = exprUtils->getFromComparisonBinaryOperator(sink, clang::Stmt::StmtClass::ArraySubscriptExprClass);
+
+    EXPECT_EQ(2, found.size());
+    std::vector<std::string> expected = {"z", "x"};
+
+    for(int i = 0; i < 2; i++) {
+        clang::Expr* expr = exprUtils->getArrayFromArraySubscriptExpr(found[i]);
+        EXPECT_EQ(expected[i], exprUtils->getValueFromDeclRefExpr(expr)->getNameAsString());
+    }
+}

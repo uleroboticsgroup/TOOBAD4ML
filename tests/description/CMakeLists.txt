@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
     AddressTypeTest.cpp
     IndexTypeTest.cpp
     ContainerTypeTest.cpp
+    DescriptorFactoryTest.cpp
     CPGExplorerTest.cpp
 )
 target_include_directories(${PROJECT_NAME}
