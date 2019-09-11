@@ -11,9 +11,10 @@
 // -----------------------------------------------------------------------------
 #include "io/FileManager.h"
 #include "io/CmdLineArguments.h"
+#include "io/Logger.h"
 // -----------------------------------------------------------------------------
 #include <iostream>
-
+#include "clang/Lex/Lexer.h"
 // -----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace analysis;
@@ -31,6 +32,7 @@ cModelBOFConsumer::cModelBOFConsumer(description::IDescriptor& model)
 // -----------------------------------------------------------------------------
 
 void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
+    IO::cLogger* logger = IO::cLogger::GetInstance();
     // traverse the source's translation unit to extract all tagged lines of
     // code (LOC)
 	ASTTraversal::cExtractVulnerabilitiesVisitor visitor(context);
@@ -44,8 +46,11 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
     for (auto const& functionIter : vulnerabilities) {
         // we need one CPG per function in order to perform the analysis
         description::cCodePropertyGraph cpg(*(functionIter.first));
+        
+        logger->Write(IO::eLogLevel::INFO, "Vulnerabilities found: " + std::to_string(functionIter.second.size()));
 
         for (auto const& vulnLOCIter : functionIter.second) {
+            logger->Write(IO::eLogLevel::DEBUG, "Analyzing vulnerable expression: " + clang::Lexer::getSourceText(clang::CharSourceRange((*vulnLOCIter).getSourceRange(), true), context.getSourceManager(), context.getLangOpts()).str());
             std::cout << ".";
             // encapsulate the data related to the current vulnerable LOC
             description::cBufferOverflowBuilder BOFBuilder;
@@ -53,6 +58,7 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
             // and finally use the previous elements to start the analysis and
             // store the corresponding result
 			std::string descriptor = m_CPGExplorer.Inspect(cpg, BOF);
+            logger->Write(IO::eLogLevel::INFO, "Descriptor: " + descriptor);
 			m_dataset.push_back(descriptor);
 		}
 	}
@@ -64,10 +70,12 @@ void cModelBOFConsumer::HandleTranslationUnit(clang::ASTContext& context) {
 // -------------------------------------------------------------------------
 
 bool cModelBOFConsumer::Output(IO::sCmdLineArguments& args) {
+    IO::cLogger* logger = IO::cLogger::GetInstance();
     IO::cFileManager *fm = IO::cFileManager::GetInstance();
     IO::cFileManager fileManager = *fm;
 
     bool success = fileManager.Write(m_dataset, args.getStrategy(), args.getFilename(), args.getAppend()); 
+    logger->Write(IO::eLogLevel::INFO, "Writing output. Result: " + std::string(success ? "success" : "failure"));
 
     if (!success) {
         std::cout << "An error occurred while writing the results." <<  "\n";

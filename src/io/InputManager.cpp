@@ -2,6 +2,7 @@
 #include <clang/Tooling/Tooling.h>
 #include "io/InputManager.h"
 #include "io/CmdLineArguments.h"
+#include "io/Logger.h"
 // ------------------------------------------------------------------------
 #include <iostream>
 // ------------------------------------------------------------------------
@@ -11,12 +12,15 @@ using namespace IO;
 // CLASS METHODS
 // ------------------------------------------------------------------------
 sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char** argv) {
+    IO::cLogger* logger = IO::cLogger::GetInstance();
+
     // define the arguments to be extracted
     llvm::cl::list<std::string> sources(
             llvm::cl::Positional,
             llvm::cl::desc("<source0> [...<sourceN>]"),
             llvm::cl::OneOrMore
     );
+    llvm::cl::opt<std::string> logLevel("l", llvm::cl::desc("Specify log level: \n\tDEBUG\n\tINFO\n\tWARN\n\tERROR\n\tFATAL"));
 
     llvm::cl::opt<std::string> Descriptor("d", llvm::cl::desc("Specify descriptor: \n\tPadmanabhuni"), llvm::cl::Required);
 
@@ -29,19 +33,34 @@ sCmdLineArguments& cInputManager::GetSourceFromCommandLine(int argc, const char*
     
     std::map<eFlagsType, std::string> flags;
 
+    if (logLevel.getValue() != "") {
+        if(!logger->SetLogLevel(logLevel.getValue())) {
+            std::cout << "Log level not valid. Using INFO level.\n";
+            logger->Write(IO::eLogLevel::WARN, "Log level not valid. Using INFO level.");
+        }
+    }
+
+    logger->Write(IO::eLogLevel::INFO, "User input:");
+
     flags.insert(std::make_pair(eFlagsType::OUTPUT_EXTENSION, OutputFormat.getValue()));
+    logger->Write(IO::eLogLevel::INFO, "Output extension type:   " +  OutputFormat.getValue());
 
     if (OutputFormat.getValue() != "STD") {
         flags.insert(std::make_pair(eFlagsType::OUTPUT_FILENAME, OutputFilename.getValue()));
+        logger->Write(IO::eLogLevel::INFO, "Output file name:        " +  OutputFilename.getValue());
     }
     else {
-        if (OutputFilename.getValue() != "") std::cout << "Output type not specified. Using standard output" << "\n\n";
+        if (OutputFilename.getValue() != ""){
+            logger->Write(IO::eLogLevel::WARN, "Output type not specified. Using standard output");
+            std::cout << "Output type not specified. Using standard output" << "\n\n";
+        } 
 
         flags.insert(std::make_pair(eFlagsType::OUTPUT_FILENAME, ""));     
     }
 
     flags.insert(std::make_pair(eFlagsType::DESCRIPTOR_SET, Descriptor.getValue()));
-    
+    logger->Write(IO::eLogLevel::INFO, "Descriptor selected:     " +  Descriptor.getValue());
+
     sCmdLineArguments *cmdLine = new sCmdLineArguments(sources, flags);
     return *cmdLine;
     

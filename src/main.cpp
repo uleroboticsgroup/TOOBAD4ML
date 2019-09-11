@@ -112,8 +112,7 @@
 #include "io/InputManager.h"
 #include "description/DescriptorFactory.h"
 #include "description/Descriptor.h"
-#include <iostream>
-
+#include "io/Logger.h"
 // ----------------------------------------------------------------------------
 
 #include <clang/Tooling/Tooling.h>
@@ -125,6 +124,8 @@ using namespace TOOBAD4ML;
 
 int main(int argc, const char **argv) {
 
+    IO::cLogger* logger = IO::cLogger::GetInstance();
+
     IO::cInputManager* inputManager = new IO::cInputManager();
     IO::sCmdLineArguments arguments = inputManager->GetSourceFromCommandLine(argc, argv);
     TOOBAD4ML::description::cDescriptorFactory descriptionFactory;
@@ -132,6 +133,7 @@ int main(int argc, const char **argv) {
 
     if (!descriptor) {
         std::cout << "Invalid descriptor.\nExecution aborted.\n";
+        logger->Write(IO::eLogLevel::ERROR, "Invalid descriptor.Execution aborted.");
         return -1;
     }
 
@@ -139,6 +141,7 @@ int main(int argc, const char **argv) {
     bool firstWrite = true;
 
     for (std::string source: arguments.getSources()) {
+        logger->Write(IO::eLogLevel::INFO, "Processing file " + source);
         currentSources.push_back(source);
         IO::sCmdLineArguments* currentArguments = new IO::sCmdLineArguments(currentSources, arguments.getFlags());
 
@@ -155,10 +158,10 @@ int main(int argc, const char **argv) {
         tool.Run(factory);
 
         currentSources.pop_back();
-
-
+        logger->Write(IO::eLogLevel::INFO, "File processed.");
     }
    
+    logger->Write(IO::eLogLevel::INFO, "Finished.");
 
     return 0;
 

@@ -21,6 +21,7 @@ add_library(${PROJECT_NAME}
         CmdLineArguments.cpp
         FormatStrategyFactory.cpp
 	    InputManager.cpp
+        Logger.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
