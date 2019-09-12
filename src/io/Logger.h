@@ -39,16 +39,18 @@ public:
     static cLogger* GetInstance();
     bool Write(eLogLevel, std::string);
     bool SetLogLevel(std::string); 
+    void SetFilename(std::string);
     // CONSTRUCTORS & DESTRUCTORS
     // ------------------------------------------------------------------------
 private:
-    cLogger(): m_level(eLogLevel::INFO) {};
+    cLogger(): m_level(eLogLevel::INFO), m_filename("toobad4ml.log") {};
 
     // ATTRIBUTES
     // ------------------------------------------------------------------------
 private:
     static std::unique_ptr<cLogger> m_instance;
     eLogLevel m_level;
+    std::string m_filename;
 };
 
 } /* IO */

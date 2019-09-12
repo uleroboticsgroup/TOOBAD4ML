@@ -7,6 +7,7 @@ project(io_test)
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}
+    LoggerTest.cpp
     CSVOutputFormatStrategyTest.cpp
     STDOutputFormatStrategyTest.cpp
     FormatStrategyFactoryTest.cpp

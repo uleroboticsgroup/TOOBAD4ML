@@ -39,7 +39,7 @@ bool cLogger::Write(eLogLevel level, std::string message) {
         std::error_code ec;
         llvm::sys::fs::OpenFlags mode = llvm::sys::fs::F_Append;
 
-        llvm::raw_fd_ostream fd_stream(llvm::StringRef("toobad4ml.log"), ec, mode);
+        llvm::raw_fd_ostream fd_stream(llvm::StringRef(m_filename), ec, mode);
         
         time_t *current_time = new time_t;
         struct tm * timeinfo; 
@@ -72,4 +72,8 @@ bool cLogger::SetLogLevel(std::string level) {
 
     m_level = logLevelStrings[level];
     return true;
+}
+
+void cLogger::SetFilename(std::string name) {
+    m_filename = name;
 }
