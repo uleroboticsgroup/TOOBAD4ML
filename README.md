@@ -1,6 +1,12 @@
 # TOOBAD4ML - TOOl to Buffer overflow Analysis and Description FOR Machine Learning
 
-A tool for describing buffer overflow vulnerabilities (previously tagged in C source code) in order to further analyze them with Machine Learning techniques.
+A tool for extracting characteristics of Buffer Overflow vulnerabilities written in C code in order to further analyze them with Machine Learning techniques.
+
+## Build status
+
+| Branch | CI |
+|--------|----|
+| master | [![Build Status](http://ciserver.unileon.es:8080/buildStatus/icon?job=secure-coding%2Ftoobad4ml)](http://ciserver.unileon.es:8080/job/secure-coding/job/toobad4ml/) |
 
 ## Getting Started
 
@@ -19,7 +25,7 @@ The following libraries are used by TOOBAD4ML:
 You can optionally use [Conan](https://conan.io) to manage these dependencies. However, please note that Clang is not currently available in the official repositories. To get it, you must add the following remote repository *before* running the `conan install` command:
 
 ```
-conan remote add manu343726 https://api.bintray.com/conan/manu343726/conan-packages
+conan remote add roboticsgroup http://ciserver.unileon.es:8080/artifactory/api/conan/conan-dev
 ```
 
 ### Installing dependencies with Conan
@@ -27,7 +33,7 @@ conan remote add manu343726 https://api.bintray.com/conan/manu343726/conan-packa
 If you don't plan to use Conan you can ignore this step. Otherwise, first go to the `build` directory and then type the following command *before* using CMake:
 
 ```
-conan install .. --build=missing -s compiler.libcxx=libstdc++11
+conan install ..
 ```
 
 ### Building the project
@@ -75,8 +81,19 @@ ctest -VV
 ## Usage
 
 ```
-./TOOBAD4ML <path_to_file_or_to_multiple_files.c> --
+./TOOBAD4ML <path_to_file_or_to_multiple_files.c> -f=FORMAT -o=FILENAME --
 ```
+
+### Flags
+
+* Format:
+    * STD: Standard output
+    * CSV: CSV format
+
+* Filename:
+    * The name of the output file
+
+*NOTE*: if filename is provided and format flag is set to `STD`, filename is ignored.
 
 ### Sample tagged source file
 
@@ -88,9 +105,10 @@ Please check the wiki :-)
 
 ## Credits
 
-This project has been founded by the [Research Institute of Applied Sciences in Cybersecurity](http://riasc.unileon.es) (RIASC) from the [Universidad de León](https://www.unileon.es) and developed by:
+This tool has been developed by:
 
 * Gonzalo Esteban
+* David Fernández
 * Razvan Raducu
 * Flavio Rodrigues
 
