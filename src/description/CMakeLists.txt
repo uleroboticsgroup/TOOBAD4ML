@@ -55,6 +55,7 @@ add_library(${PROJECT_NAME}
         IndexType.cpp
         LengthType.cpp
         AddressType.cpp
+        PointerDeference.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
