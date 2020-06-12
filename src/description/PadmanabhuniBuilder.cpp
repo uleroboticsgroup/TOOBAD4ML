@@ -34,6 +34,7 @@
 #include "description/LengthType.h"
 #include "description/AddressType.h"
 #include "description/PointerDeference.h"
+#include "description/MemoryAccess.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -48,6 +49,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cMemoryAccess(
 		new cPointerDeference(
 		new cAddressType(
 		new cLengthType(
@@ -80,6 +82,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	)))))))))))))))))))))))));
+	))))))))))))))))))))))))));
 
 }
