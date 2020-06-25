@@ -113,19 +113,21 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink, BufferT
 			clang::BinaryOperator* sinkBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(&sink);
 			if(sinkBinaryOperator) {
 				clang::Expr* bufferExpr = (bufferType == BufferType::DST) ? sinkBinaryOperator->getLHS()->IgnoreCasts() : sinkBinaryOperator->getRHS()->IgnoreCasts();
-				switch(bufferExpr->getStmtClass()) {
-					case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
-						// The buffer is the base of the the sink node's left handed side expression.
-						buffer = llvm::dyn_cast<clang::DeclRefExpr>(llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts());
+				bool checker = true;
+				while(buffer == NULL && checker) {
+					switch(bufferExpr->getStmtClass()) {
+						case clang::Stmt::StmtClass::ArraySubscriptExprClass:
+							bufferExpr = llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts();
+						break;
+						case clang::Stmt::StmtClass::MemberExprClass:
+							bufferExpr = llvm::dyn_cast<clang::MemberExpr>(bufferExpr)->getBase()->IgnoreCasts();
+						break;
+						case clang::Stmt::StmtClass::DeclRefExprClass:
+							buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
+						break;
+						default:
+							checker = false;
 					}
-					break;
-					case clang::Stmt::StmtClass::DeclRefExprClass:
-						buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
-					break;
-					default: { // TODO Not default -- Use the concrete class
-						// TODO *(p + n) = 0; -- UnaryOperatorClass ??
-					}
-					break;
 				}
 			}
 		}
