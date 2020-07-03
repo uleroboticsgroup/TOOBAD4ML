@@ -58,6 +58,7 @@ add_library(${PROJECT_NAME}
         PointerDeference.cpp
         MemoryAccess.cpp
         Container.cpp
+        ViolatedBound.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -36,6 +36,7 @@
 #include "description/PointerDeference.h"
 #include "description/MemoryAccess.h"
 #include "description/Container.h"
+#include "description/ViolatedBound.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -50,6 +51,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cViolatedBound(
 		new cContainer(
 		new cMemoryAccess(
 		new cPointerDeference(
@@ -84,6 +86,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	)))))))))))))))))))))))))));
+	))))))))))))))))))))))))))));
 
 }
