@@ -115,15 +115,28 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink, BufferT
 				clang::Expr* bufferExpr = (bufferType == BufferType::DST) ? sinkBinaryOperator->getLHS()->IgnoreCasts() : sinkBinaryOperator->getRHS()->IgnoreCasts();
 				bool checker = true;
 				while(buffer == NULL && checker) {
-					switch(bufferExpr->getStmtClass()) {
+					switch(bufferExpr->IgnoreCasts()->IgnoreParens()->getStmtClass()) {
 						case clang::Stmt::StmtClass::ArraySubscriptExprClass:
-							bufferExpr = llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts();
+							bufferExpr = llvm::dyn_cast<clang::ArraySubscriptExpr>(bufferExpr)->getBase()->IgnoreCasts()->IgnoreParens();
 						break;
 						case clang::Stmt::StmtClass::MemberExprClass:
-							bufferExpr = llvm::dyn_cast<clang::MemberExpr>(bufferExpr)->getBase()->IgnoreCasts();
+							bufferExpr = llvm::dyn_cast<clang::MemberExpr>(bufferExpr)->getBase()->IgnoreCasts()->IgnoreParens();
 						break;
 						case clang::Stmt::StmtClass::DeclRefExprClass:
 							buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
+						break;
+						case clang::Stmt::StmtClass::BinaryOperatorClass: {
+							clang::BinaryOperator* bop = llvm::dyn_cast<clang::BinaryOperator>(bufferExpr->IgnoreCasts()->IgnoreParens());
+							if (bop->getLHS()->IgnoreCasts()->IgnoreParens()->getStmtClass() != clang::Stmt::StmtClass::IntegerLiteralClass) {
+								bufferExpr = bop->getLHS()->IgnoreCasts()->IgnoreParens();
+							}
+							else if(bop->getRHS()->IgnoreCasts()->IgnoreParens()->getStmtClass() != clang::Stmt::StmtClass::IntegerLiteralClass){
+								bufferExpr = bop->getRHS()->IgnoreCasts()->IgnoreParens();
+							}
+						}
+						break;
+						case clang::Stmt::StmtClass::UnaryOperatorClass:
+							bufferExpr = llvm::dyn_cast<clang::UnaryOperator>(bufferExpr->IgnoreCasts()->IgnoreParens())->getSubExpr();
 						break;
 						default:
 							checker = false;

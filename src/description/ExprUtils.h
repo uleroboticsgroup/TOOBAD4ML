@@ -33,6 +33,13 @@ public:
     static cExprUtils* GetInstance();
 
     /*!
+     * 
+     * This function retrieves the final value to operate
+     * @param expr The Binary Operator
+     * @returns The final amount
+     */
+    int getTotalOfBinaryOperator(clang::Expr*);
+    /*!
      * This functions obtains the size of a buffer.
      *
      * @param buffer The buffer itself
