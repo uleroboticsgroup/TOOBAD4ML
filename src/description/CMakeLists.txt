@@ -59,6 +59,7 @@ add_library(${PROJECT_NAME}
         MemoryAccess.cpp
         Container.cpp
         ViolatedBound.cpp
+        DataType.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
