@@ -44,6 +44,23 @@ std::string cViolatedBound::ExtractFeature(
                 }
             }
         }
+        else if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
+            if("*" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts())->getOpcode()).str()) {
+                clang::Expr* innerExpr = llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts()->IgnoreParens())->getSubExpr();
+                if (innerExpr->IgnoreCasts()->IgnoreParens()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+                    int total = utils->getTotalOfBinaryOperator(innerExpr->IgnoreCasts()->IgnoreParens());
+
+                    if (total < 0) {
+                        feature = "0";
+                    }
+                    else if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= total) {
+                        std::cout << total << std::endl;
+                        feature = "1";
+                    }
+
+                }
+            }
+        }
     }
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

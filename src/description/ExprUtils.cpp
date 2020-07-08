@@ -149,3 +149,46 @@ std::vector<clang::Expr*> cExprUtils::getFromComparisonBinaryOperator(clang::Bin
 
 	return matches;
 }
+
+int cExprUtils::getTotalOfBinaryOperator(clang::Expr* expr){
+	clang::BinaryOperator* bop = llvm::dyn_cast_or_null<clang::BinaryOperator>(expr);
+
+	int total = 0;
+	int secondValue = 0;
+	if(bop) {
+		switch(bop->getLHS()->IgnoreCasts()->getStmtClass()){
+			case clang::Stmt::StmtClass::BinaryOperatorClass:
+				total = this->getTotalOfBinaryOperator(bop->getLHS()->IgnoreCasts());
+			break;
+			case clang::Stmt::StmtClass::IntegerLiteralClass:
+				total = llvm::dyn_cast_or_null<clang::IntegerLiteral>(bop->getLHS()->IgnoreCasts())->getValue().getLimitedValue();
+			break;
+		}
+
+		std::string operation = bop->getOpcodeStr().str();
+
+		switch(bop->getRHS()->IgnoreCasts()->getStmtClass()){
+			case clang::Stmt::StmtClass::BinaryOperatorClass:
+				secondValue = this->getTotalOfBinaryOperator(bop->getRHS()->IgnoreCasts());
+			break;
+			case clang::Stmt::StmtClass::IntegerLiteralClass:
+				secondValue = llvm::dyn_cast_or_null<clang::IntegerLiteral>(bop->getRHS()->IgnoreCasts())->getValue().getLimitedValue();
+			break;
+		}
+
+		if (operation == "+") {
+			return total + secondValue;
+		}
+		else if (operation == "-") {
+			return total - secondValue;
+		}
+		else if (operation == "*") {
+			return total * secondValue;
+		}
+		else if (operation == "/") {
+			return total / secondValue;
+		}
+	}
+
+	return NULL;
+}
