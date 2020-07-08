@@ -60,6 +60,7 @@ add_library(${PROJECT_NAME}
         Container.cpp
         ViolatedBound.cpp
         DataType.cpp
+        IndexComplexity.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

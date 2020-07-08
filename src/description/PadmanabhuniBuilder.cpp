@@ -38,6 +38,7 @@
 #include "description/Container.h"
 #include "description/ViolatedBound.h"
 #include "description/DataType.h"
+#include "description/IndexComplexity.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -52,6 +53,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cIndexComplexity(
 		new cDataType(
 		new cViolatedBound(
 		new cContainer(
@@ -88,6 +90,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	)))))))))))))))))))))))))))));
+	))))))))))))))))))))))))))))));
 
 }
