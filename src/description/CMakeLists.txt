@@ -61,6 +61,7 @@ add_library(${PROJECT_NAME}
         ViolatedBound.cpp
         DataType.cpp
         IndexComplexity.cpp
+        LimitComplexity.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

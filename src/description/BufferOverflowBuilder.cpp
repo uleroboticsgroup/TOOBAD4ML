@@ -85,12 +85,11 @@ clang::DeclRefExpr* cBufferOverflowBuilder::getBuffer(clang::Expr& sink, BufferT
 					if (index == -1) break;
 
 					clang::Expr* bufferExpr = sinkCallExpr->getArg(index)->IgnoreCasts();
-					
 					if(bufferExpr) {
 						// Check the type of the buffer
 						switch (bufferExpr->getStmtClass()) {
 							case clang::Stmt::StmtClass::DeclRefExprClass: {
-								if (bufferExpr->getType().getTypePtr()->isArrayType()) {
+								if (bufferExpr->getType().getTypePtr()->isArrayType() || bufferExpr->getType().getTypePtr()->isPointerType()) {
 									buffer = llvm::dyn_cast<clang::DeclRefExpr>(bufferExpr);
 								}
 							}

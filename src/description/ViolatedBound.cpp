@@ -54,7 +54,6 @@ std::string cViolatedBound::ExtractFeature(
                         feature = "0";
                     }
                     else if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= total) {
-                        std::cout << total << std::endl;
                         feature = "1";
                     }
 
