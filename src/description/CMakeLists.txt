@@ -62,6 +62,8 @@ add_library(${PROJECT_NAME}
         DataType.cpp
         IndexComplexity.cpp
         LimitComplexity.cpp
+        Magnitude.cpp
+        DataSize.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

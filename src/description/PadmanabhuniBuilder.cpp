@@ -40,6 +40,8 @@
 #include "description/DataType.h"
 #include "description/IndexComplexity.h"
 #include "description/LimitComplexity.h"
+#include "description/Magnitude.h"
+#include "description/DataSize.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -54,6 +56,8 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cDataSize(
+		new cMagnitude(
 		new cLimitComplexity(
 		new cIndexComplexity(
 		new cDataType(
@@ -92,6 +96,6 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	)))))))))))))))))))))))))))))));
+	)))))))))))))))))))))))))))))))));
 
 }
