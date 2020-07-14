@@ -22,44 +22,47 @@ std::string cViolatedBound::ExtractFeature(
 
     cExprUtils* utils = cExprUtils::GetInstance();
 	std::string feature = "-1";
-	
-	if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-        clang::BinaryOperator* bo = llvm::dyn_cast_or_null<clang::BinaryOperator>(bof.GetSink()->IgnoreCasts());
 
-        if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass){
-            clang::ArraySubscriptExpr* dstBuffer = llvm::dyn_cast<clang::ArraySubscriptExpr>(bo->getLHS()->IgnoreCasts());
-            
-            clang::Expr* arrayValue = utils->getIndexFromArraySubscriptExpr(dstBuffer);
+    if(bof.GetBuffer(BufferType::DST)) {
+        if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+            clang::BinaryOperator* bo = llvm::dyn_cast_or_null<clang::BinaryOperator>(bof.GetSink()->IgnoreCasts());
 
-            if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
-                if("-" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(arrayValue)->getOpcode()).str()) {
-                    feature = "0";
-                }
-            }
-            else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
-                int value = utils->getValueFromIntegerLiteral(arrayValue);
-               
-                if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= value) {
-                    feature = "1";
-                }
-            }
-        }
-        else if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
-            if("*" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts())->getOpcode()).str()) {
-                clang::Expr* innerExpr = llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts()->IgnoreParens())->getSubExpr();
-                if (innerExpr->IgnoreCasts()->IgnoreParens()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-                    int total = utils->getTotalOfBinaryOperator(innerExpr->IgnoreCasts()->IgnoreParens());
+            if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass){
+                clang::ArraySubscriptExpr* dstBuffer = llvm::dyn_cast<clang::ArraySubscriptExpr>(bo->getLHS()->IgnoreCasts());
+                
+                clang::Expr* arrayValue = utils->getIndexFromArraySubscriptExpr(dstBuffer);
 
-                    if (total < 0) {
+                if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
+                    if("-" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(arrayValue)->getOpcode()).str()) {
                         feature = "0";
                     }
-                    else if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= total) {
+                }
+                else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
+                    int value = utils->getValueFromIntegerLiteral(arrayValue);
+
+                    if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= value) {
                         feature = "1";
                     }
+                }
+            }
+            else if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
+                if("*" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts())->getOpcode()).str()) {
+                    clang::Expr* innerExpr = llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts()->IgnoreParens())->getSubExpr();
+                    if (innerExpr->IgnoreCasts()->IgnoreParens()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+                        int total = utils->getTotalOfBinaryOperator(innerExpr->IgnoreCasts()->IgnoreParens());
 
+                        if (total < 0) {
+                            feature = "0";
+                        }
+                        else if (utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext()) <= total) {
+                            feature = "1";
+                        }
+
+                    }
                 }
             }
         }
     }
+    
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

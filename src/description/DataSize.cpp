@@ -23,61 +23,64 @@ std::string cDataSize::ExtractFeature(
 
     cExprUtils* utils = cExprUtils::GetInstance();
 	std::string feature = "0";
-    int baseSize = utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext());
 
 	clang::DeclRefExpr* dstBuffer = bof.GetBuffer(BufferType::DST);
-    if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-        clang::BinaryOperator* bo = llvm::dyn_cast_or_null<clang::BinaryOperator>(bof.GetSink()->IgnoreCasts());
+    if(dstBuffer) {
+        int baseSize = utils->guessBufferSize(bof.GetBuffer(BufferType::DST), cpg.GetAST().getASTContext());
 
-        if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass){
-            clang::ArraySubscriptExpr* dstBuffer = llvm::dyn_cast<clang::ArraySubscriptExpr>(bo->getLHS()->IgnoreCasts());
-            
-            clang::Expr* arrayValue = utils->getIndexFromArraySubscriptExpr(dstBuffer);
+        if (bof.GetSink()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+            clang::BinaryOperator* bo = llvm::dyn_cast_or_null<clang::BinaryOperator>(bof.GetSink()->IgnoreCasts());
 
-            if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
-                clang::UnaryOperator* innerExpr = llvm::dyn_cast<clang::UnaryOperator>(arrayValue);
+            if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::ArraySubscriptExprClass){
+                clang::ArraySubscriptExpr* dstBuffer = llvm::dyn_cast<clang::ArraySubscriptExpr>(bo->getLHS()->IgnoreCasts());
+                
+                clang::Expr* arrayValue = utils->getIndexFromArraySubscriptExpr(dstBuffer);
+                if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
+                    clang::UnaryOperator* innerExpr = llvm::dyn_cast<clang::UnaryOperator>(arrayValue);
 
-                if (innerExpr->getSubExpr()->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
-                    int value = utils->getValueFromIntegerLiteral(innerExpr);
+                    if (innerExpr->getSubExpr()->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
+                        int value = utils->getValueFromIntegerLiteral(innerExpr->getSubExpr());
 
-                    if("-" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(arrayValue)->getOpcode()).str()) {
-                        feature = std::to_string(-value);
+                        if("-" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(arrayValue)->getOpcode()).str()) {
+                            feature = std::to_string(-value);
+                        }
+
                     }
-
                 }
-            }
-            else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
-                int value = utils->getValueFromIntegerLiteral(arrayValue);
-                feature = std::to_string(value - baseSize);
-            }
-            else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-                int total = utils->getTotalOfBinaryOperator(arrayValue->IgnoreCasts()->IgnoreParens());
-                feature = std::to_string(total - baseSize);
-            }
-            else if(arrayValue->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-                clang::ValueDecl* vd = llvm::dyn_cast<clang::DeclRefExpr>(arrayValue->IgnoreCasts())->getDecl();
-
-                if(vd->getKind() == clang::Decl::Kind::Var) {
-                    const clang::Expr* innerinnerExpr = llvm::dyn_cast<clang::VarDecl>(vd)->getAnyInitializer();
-
-                    int value = llvm::dyn_cast_or_null<clang::IntegerLiteral>(innerinnerExpr)->getValue().getLimitedValue();
+                else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::IntegerLiteralClass) {
+                    int value = utils->getValueFromIntegerLiteral(arrayValue);
                     feature = std::to_string(value - baseSize);
                 }
+                else if (arrayValue->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+                    int total = utils->getTotalOfBinaryOperator(arrayValue->IgnoreCasts()->IgnoreParens());
+                    feature = std::to_string(total - baseSize);
+                }
+                else if(arrayValue->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
+                    clang::ValueDecl* vd = llvm::dyn_cast<clang::DeclRefExpr>(arrayValue->IgnoreCasts())->getDecl();
+
+                    if(vd->getKind() == clang::Decl::Kind::Var) {
+                        const clang::Expr* innerinnerExpr = llvm::dyn_cast<clang::VarDecl>(vd)->getAnyInitializer();
+
+                        int value = llvm::dyn_cast_or_null<clang::IntegerLiteral>(innerinnerExpr)->getValue().getLimitedValue();
+                        feature = std::to_string(value - baseSize);
+                    }
+                }
+
             }
+            else if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
+                if("*" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts())->getOpcode()).str()) {
+                    clang::Expr* innerExpr = llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts()->IgnoreParens())->getSubExpr();
+                    if (innerExpr->IgnoreCasts()->IgnoreParens()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+                        int total = utils->getTotalOfBinaryOperator(innerExpr->IgnoreCasts()->IgnoreParens());
 
-        }
-        else if (bo->getLHS()->IgnoreCasts()->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
-            if("*" == clang::UnaryOperator::getOpcodeStr(llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts())->getOpcode()).str()) {
-                clang::Expr* innerExpr = llvm::dyn_cast_or_null<clang::UnaryOperator>(bo->getLHS()->IgnoreCasts()->IgnoreParens())->getSubExpr();
-                if (innerExpr->IgnoreCasts()->IgnoreParens()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-                    int total = utils->getTotalOfBinaryOperator(innerExpr->IgnoreCasts()->IgnoreParens());
+                        feature == std::to_string(total - baseSize);
 
-                    feature == std::to_string(total - baseSize);
-
+                    }
                 }
             }
         }
     }
+
 
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

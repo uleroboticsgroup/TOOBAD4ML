@@ -64,6 +64,7 @@ add_library(${PROJECT_NAME}
         LimitComplexity.cpp
         Magnitude.cpp
         DataSize.cpp
+        ExploitCountermeasures.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

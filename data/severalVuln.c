@@ -2,8 +2,8 @@
 void echo(){
 char buffer[256];
 printf("Type your input:");
-gets("%s", buffer);
-gets("%s", buffer);
+gets(buffer);
+gets(buffer);
 printf("Input given: %s", buffer);
 }
 int main(){
@@ -13,7 +13,7 @@ return 0;
 
 /// ###BEGIN_VULNERABLE_LINES###
 
-/// 5,1;5,18
+/// 5,1;5,12
 
-/// 6,1;6,18
+/// 6,1;6,12
  
