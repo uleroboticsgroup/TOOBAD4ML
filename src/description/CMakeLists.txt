@@ -65,6 +65,7 @@ add_library(${PROJECT_NAME}
         Magnitude.cpp
         DataSize.cpp
         ExploitCountermeasures.cpp
+        HasDefensiveLimits.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
