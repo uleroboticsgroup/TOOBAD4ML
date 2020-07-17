@@ -66,6 +66,7 @@ add_library(${PROJECT_NAME}
         DataSize.cpp
         ExploitCountermeasures.cpp
         HasDefensiveLimits.cpp
+        SameSrcDstSize.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
