@@ -40,6 +40,14 @@ public:
      */
     int getTotalOfBinaryOperator(clang::Expr*);
     /*!
+     * 
+     * This function retrieves the expression or buffer from an unary operator
+     * @param expr The Unary Operator
+     * @returns The buffer or expr
+     */
+    clang::Expr* getBufferFromUnaryOperator(clang::Expr*);
+    
+    /*!
      * This functions obtains the size of a buffer.
      *
      * @param buffer The buffer itself

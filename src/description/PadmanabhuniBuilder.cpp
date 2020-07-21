@@ -45,6 +45,7 @@
 #include "description/ExploitCountermeasures.h"
 #include "description/HasDefensiveLimits.h"
 #include "description/SameSrcDstSize.h"
+#include "description/InputCount.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -59,6 +60,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cInputCount(
 		new cSameSrcDstSize(
 		new cHasDefensiveLimits(
 		new cExploitCounter(
@@ -102,5 +104,5 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	))))))))))))))))))))))))))))))))))));
+	)))))))))))))))))))))))))))))))))))));
 }

@@ -192,3 +192,35 @@ int cExprUtils::getTotalOfBinaryOperator(clang::Expr* expr){
 
 	return NULL;
 }
+
+clang::Expr* cExprUtils::getBufferFromUnaryOperator(clang::Expr* uop) {
+	clang::Expr* target = nullptr;
+	clang::UnaryOperator* currentUnary = llvm::dyn_cast_or_null<clang::UnaryOperator>(uop);
+
+	while(!target) {
+		clang::Expr* current = currentUnary->getSubExpr()->IgnoreParens()->IgnoreCasts();
+		if(current->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+			clang::BinaryOperator* currentBop = llvm::dyn_cast<clang::BinaryOperator>(current);
+
+			std::vector<clang::Expr*> queue;
+			queue.push_back(currentBop->getLHS()->IgnoreCasts()->IgnoreParens());
+			queue.push_back(currentBop->getRHS()->IgnoreCasts()->IgnoreParens());
+
+			for(clang::Expr* expr: queue){
+				if(expr->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
+					target = expr;
+					break;
+				}
+				else if(expr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+					queue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getLHS()->IgnoreCasts()->IgnoreParens());
+					queue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getRHS()->IgnoreCasts()->IgnoreParens());
+				}
+			}
+		}
+		else if(current->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
+			target = current;
+		}
+	}
+
+	return target;
+}
