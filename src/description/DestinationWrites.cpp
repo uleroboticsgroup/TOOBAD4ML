@@ -1,23 +1,24 @@
-#include "description/InputCount.h"
+#include "description/DestinationWrites.h"
 #include "description/BufferOverflow.h"
 #include "description/CodePropertyGraph.h"
 #include "description/ExprUtils.h"
+#include "iostream"
 // ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
 
 // CONSTRUCTOR
 // ------------------------------------------------------------------------
-cInputCount::cInputCount(
+cDestinationWrites::cDestinationWrites(
 		IDescriptor* decoratedComponent) :
 		cDescriptorDecorator(decoratedComponent) {
 };
 
 // INHERITED METHODS
 // ------------------------------------------------------------------------
-std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
+std::string cDestinationWrites::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow& bof) {
 	std::string decoratedFeature = cDescriptorDecorator::ExtractFeature(cpg, bof);
-    int feature = 0;
+    int feature = -1;
     
     std::map<std::string, int> sinkTypes = {
     { "strcpy", 0 }, { "strncpy", 0 },
@@ -30,7 +31,7 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
     cExprUtils* exprUtils = cExprUtils::GetInstance();
     SinkPathGraph spg = cpg.GetSPG(*(bof.GetSink()));
 
-    if (bof.GetBuffer(BufferType::SRC)) {
+    if(bof.GetBuffer(BufferType::DST)){
         for(clang::CFGStmt stmt: spg) {
             if (stmt.getStmt()->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* bop = const_cast<clang::BinaryOperator*>(llvm::dyn_cast<clang::BinaryOperator>(stmt.getStmt()));
@@ -39,7 +40,7 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
                     clang::Expr* current = llvm::dyn_cast<clang::ArraySubscriptExpr>(leftPart)->getLHS()->IgnoreCasts();
                     switch(current->getStmtClass()) {
                         case clang::Stmt::StmtClass::DeclRefExprClass: {
-                            if(llvm::dyn_cast<clang::DeclRefExpr>(current)->getDecl() == bof.GetBuffer(BufferType::SRC)->getDecl()){
+                            if(llvm::dyn_cast<clang::DeclRefExpr>(current)->getDecl() == bof.GetBuffer(BufferType::DST)->getDecl()){
                                 feature += 1;
                             }
                         }
@@ -49,14 +50,14 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
 
                             switch(innerMemberExpr->getStmtClass()) {
                                 case clang::Stmt::StmtClass::DeclRefExprClass: {
-                                    if(llvm::dyn_cast<clang::DeclRefExpr>(innerMemberExpr)->getDecl() == bof.GetBuffer(BufferType::SRC)->getDecl()){
+                                    if(llvm::dyn_cast<clang::DeclRefExpr>(innerMemberExpr)->getDecl() == bof.GetBuffer(BufferType::DST)->getDecl()){
                                         feature += 1;
                                     }
                                 }
                                 break;
                                 case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
                                     clang::DeclRefExpr* innerArraySubExpr = llvm::dyn_cast_or_null<clang::DeclRefExpr>(llvm::dyn_cast<clang::ArraySubscriptExpr>(leftPart)->getLHS()->IgnoreCasts());
-                                    if(innerArraySubExpr && innerArraySubExpr->getDecl() == bof.GetBuffer(BufferType::SRC)->getDecl()){
+                                    if(innerArraySubExpr && innerArraySubExpr->getDecl() == bof.GetBuffer(BufferType::DST)->getDecl()){
                                         feature += 1;
                                     }
                                 }
@@ -68,8 +69,7 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
                 }
                 else if (leftPart->getStmtClass() == clang::Stmt::StmtClass::UnaryOperatorClass) {
                     clang::Expr* expr = exprUtils->getBufferFromUnaryOperator(leftPart);
-
-                    if(expr && llvm::dyn_cast<clang::DeclRefExpr>(expr)->getDecl() == bof.GetBuffer(BufferType::SRC)->getDecl()) {
+                    if(expr && llvm::dyn_cast<clang::DeclRefExpr>(expr)->getDecl() == bof.GetBuffer(BufferType::DST)->getDecl()) {
                         feature += 1;
                     }
                 }
@@ -84,7 +84,7 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
                     }
                     
                     if(arg->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-                        if(llvm::dyn_cast<clang::DeclRefExpr>(arg)->getDecl() == bof.GetBuffer(BufferType::SRC)->getDecl()){
+                        if(llvm::dyn_cast<clang::DeclRefExpr>(arg)->getDecl() == bof.GetBuffer(BufferType::DST)->getDecl()){
                             feature += 1;
                         }
                     }
@@ -92,6 +92,13 @@ std::string cInputCount::ExtractFeature(cCodePropertyGraph& cpg, cBufferOverflow
 
             }
         }
+    }
+
+    if(feature > 0) {
+        feature = 1;
+    }
+    else if(feature < 0) {
+        feature = 0;
     }
 
     return decoratedFeature.append(std::to_string(feature)).append(cDescriptorDecorator::FEATURE_SEPARATOR);    

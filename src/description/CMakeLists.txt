@@ -68,6 +68,7 @@ add_library(${PROJECT_NAME}
         HasDefensiveLimits.cpp
         SameSrcDstSize.cpp
         InputCount.cpp
+        DestinationWrites.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

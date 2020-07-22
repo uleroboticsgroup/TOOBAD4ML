@@ -81,6 +81,5 @@ std::string cDataSize::ExtractFeature(
         }
     }
 
-
 	return decoratedFeature.append(feature).append(cDescriptorDecorator::FEATURE_SEPARATOR);
 }

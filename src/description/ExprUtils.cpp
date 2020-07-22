@@ -220,6 +220,9 @@ clang::Expr* cExprUtils::getBufferFromUnaryOperator(clang::Expr* uop) {
 		else if(current->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
 			target = current;
 		}
+		else {
+			break;
+		}
 	}
 
 	return target;

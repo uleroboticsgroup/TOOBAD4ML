@@ -9,7 +9,7 @@ union Data {
    int i;
    float f;
    char y[20];
-}
+};
 
 int main() {
 	struct Coordinate list[256];
