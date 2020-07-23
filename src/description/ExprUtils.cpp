@@ -193,6 +193,37 @@ int cExprUtils::getTotalOfBinaryOperator(clang::Expr* expr){
 	return NULL;
 }
 
+
+bool cExprUtils::isExprInsideExpr(clang::Expr* recipient, clang::Expr* target){
+	if(recipient == target){
+		return true;
+	}
+
+	switch(recipient->getStmtClass()) {
+		case clang::Stmt::StmtClass::DeclRefExprClass: {
+			if(llvm::dyn_cast_or_null<clang::DeclRefExpr>(target) && llvm::dyn_cast<clang::DeclRefExpr>(recipient)->getDecl() == llvm::dyn_cast_or_null<clang::DeclRefExpr>(target)->getDecl()){
+				return true;
+			}
+		}
+		break;
+		case clang::Stmt::StmtClass::ArraySubscriptExprClass: {
+			return this->isExprInsideExpr(llvm::dyn_cast<clang::ArraySubscriptExpr>(recipient)->getLHS()->IgnoreCasts()->IgnoreParens(), target);
+		}
+		break;
+		case clang::Stmt::StmtClass::BinaryOperatorClass: {
+			return this->isExprInsideExpr(llvm::dyn_cast<clang::BinaryOperator>(recipient)->getLHS()->IgnoreCasts()->IgnoreParens(), target) ||
+				   this->isExprInsideExpr(llvm::dyn_cast<clang::BinaryOperator>(recipient)->getRHS()->IgnoreCasts()->IgnoreParens(), target);
+		}
+		break;
+		case clang::Stmt::StmtClass::UnaryOperatorClass: {
+			return this->isExprInsideExpr(llvm::dyn_cast<clang::UnaryOperator>(recipient)->getSubExpr()->IgnoreCasts()->IgnoreParens(), target);
+		}
+		break;
+	}
+
+	return false;
+}
+
 clang::Expr* cExprUtils::getBufferFromUnaryOperator(clang::Expr* uop) {
 	clang::Expr* target = nullptr;
 	clang::UnaryOperator* currentUnary = llvm::dyn_cast_or_null<clang::UnaryOperator>(uop);

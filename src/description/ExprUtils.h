@@ -66,6 +66,15 @@ public:
     int guessArgumentSize(clang::Expr* arg, clang::ASTContext& context);
 
     /*!
+     * This checks wether there is an expression nested in the other expression
+     *
+     * @param recipient The expr where to look for the other one
+     * @param target The one we are looking for
+     * @returns Found or not
+     */
+    bool isExprInsideExpr(clang::Expr*, clang::Expr*);
+
+    /*!
      * Obtains the <CODE>clang::ValueDecl</CODE> inside a <CODE>clang::DeclRefExpr</CODE>
      *
      * @param expr The <CODE>clang::DeclRefExpr</CODE> containing the <CODE>clang::ValueDecl</CODE>

@@ -69,6 +69,7 @@ add_library(${PROJECT_NAME}
         SameSrcDstSize.cpp
         InputCount.cpp
         DestinationWrites.cpp
+        Declaration.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

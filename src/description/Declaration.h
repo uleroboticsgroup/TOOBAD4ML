@@ -17,7 +17,7 @@ namespace description {
  *  This class inherits from <CODE>TOOBAD4ML::description::cDescriptorDecorator</CODE>
  *  and it's an implementation of the Decorator pattern.
  * 
- *  Whether the source and destination buffers have the same size.
+ *  Type of declaration of the destination buffer
  * 
  * -1: Not applicable
  *  0: static
