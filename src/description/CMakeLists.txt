@@ -70,6 +70,8 @@ add_library(${PROJECT_NAME}
         InputCount.cpp
         DestinationWrites.cpp
         Declaration.cpp
+        Validation.cpp
+        InputDependentPredicates.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

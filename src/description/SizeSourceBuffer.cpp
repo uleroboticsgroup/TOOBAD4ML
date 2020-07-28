@@ -24,7 +24,6 @@ std::string cSizeSourceBuffer::ExtractFeature(cCodePropertyGraph& cpg, cBufferOv
 
     if (srcBuffer) {
         for (clang::Expr* sanitizationExpr: bof.GetSinkSanitizations()) {
-            //std::cout << "\n";
             if (sanitizationExpr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
                 clang::BinaryOperator* condBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(sanitizationExpr);
                 

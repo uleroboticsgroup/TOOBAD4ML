@@ -1,4 +1,5 @@
 #include "description/ExprUtils.h"
+#include "iostream"
 // ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -219,6 +220,20 @@ bool cExprUtils::isExprInsideExpr(clang::Expr* recipient, clang::Expr* target){
 			return this->isExprInsideExpr(llvm::dyn_cast<clang::UnaryOperator>(recipient)->getSubExpr()->IgnoreCasts()->IgnoreParens(), target);
 		}
 		break;
+		case clang::Stmt::StmtClass::CallExprClass: {
+			clang::CallExpr* callExpr = llvm::dyn_cast<clang::CallExpr>(recipient);
+			clang::Expr** args = callExpr->getArgs();
+			int numArgs = callExpr->getNumArgs();
+			int i = 0;
+			bool found = false;
+
+			while(i < numArgs && !found) {
+				found = this->isExprInsideExpr(args[i]->IgnoreCasts()->IgnoreParens(), target);
+				i++;
+			}
+
+			if (found) return true;
+		}
 	}
 
 	return false;
@@ -234,19 +249,29 @@ clang::Expr* cExprUtils::getBufferFromUnaryOperator(clang::Expr* uop) {
 			clang::BinaryOperator* currentBop = llvm::dyn_cast<clang::BinaryOperator>(current);
 
 			std::vector<clang::Expr*> queue;
-			queue.push_back(currentBop->getLHS()->IgnoreCasts()->IgnoreParens());
-			queue.push_back(currentBop->getRHS()->IgnoreCasts()->IgnoreParens());
+			std::vector<clang::Expr*> newQueue;
 
-			for(clang::Expr* expr: queue){
-				if(expr->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
-					target = expr;
-					break;
-				}
-				else if(expr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
-					queue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getLHS()->IgnoreCasts()->IgnoreParens());
-					queue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getRHS()->IgnoreCasts()->IgnoreParens());
+			newQueue.push_back(currentBop->getLHS()->IgnoreCasts()->IgnoreParens());
+			newQueue.push_back(currentBop->getRHS()->IgnoreCasts()->IgnoreParens());
+
+			while(newQueue.size() != 0) {
+				queue = newQueue;
+				newQueue.clear();
+
+				for(clang::Expr* expr: queue){
+					if(expr->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
+						target = expr;
+						break;
+					}
+					else if(expr->getStmtClass() == clang::Stmt::StmtClass::BinaryOperatorClass) {
+						newQueue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getLHS()->IgnoreCasts()->IgnoreParens());
+						newQueue.push_back(llvm::dyn_cast<clang::BinaryOperator>(expr)->getRHS()->IgnoreCasts()->IgnoreParens());
+					}
 				}
 			}
+
+
+
 		}
 		else if(current->getStmtClass() == clang::Stmt::StmtClass::DeclRefExprClass) {
 			target = current;
