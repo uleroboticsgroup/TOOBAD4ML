@@ -19,7 +19,7 @@ cBufferOverflow& cBufferOverflowBuilder::CreateBufferOverflow(clang::Expr& sink,
 	//clang::LangOptions options;
 	//cpg.GetCFG().dump(options, true);
 
-	std::vector<clang::Expr*> sinkSanitizations = getSinkSanitizations(dstBuffer, srcBuffer,cpg.GetSPG(sink));
+	std::vector<clang::Expr*> sinkSanitizations = getSinkSanitizations(dstBuffer, srcBuffer,cpg.GetSPG(sink), cpg);
 
     std::vector<clang::CallExpr*> inputs = getInputs(*dstBuffer, cpg.GetSPG(sink));
     return *(new cBufferOverflow(&sink, dstBuffer, srcBuffer, inputs, sinkSanitizations));
@@ -171,7 +171,7 @@ bool isBufferInside(clang::Expr* sideExpr, clang::DeclRefExpr* buffer) {
 			return isBufferInside(unaryExprOrTypeTraitExpr->getArgumentExpr()->IgnoreParens(), buffer);
 		}
 		break;
-
+ST
 		case clang::Stmt::StmtClass::CallExprClass: {
 			clang::CallExpr* callExpr = llvm::dyn_cast<clang::CallExpr>(sideExpr);
 			bool found = false;
@@ -191,41 +191,49 @@ bool isBufferInside(clang::Expr* sideExpr, clang::DeclRefExpr* buffer) {
 }
 */
  
-std::vector<clang::Expr*> cBufferOverflowBuilder::getSinkSanitizations(clang::DeclRefExpr* dstBuffer, clang::DeclRefExpr* srcBuffer, SinkPathGraph spg) {
+std::vector<clang::Expr*> cBufferOverflowBuilder::getSinkSanitizations(clang::DeclRefExpr* dstBuffer, clang::DeclRefExpr* srcBuffer, SinkPathGraph spg, cCodePropertyGraph& cpg) {
 	std::vector<clang::Expr*> sanitizations;
 	//std::cout << "----------------------------------------------\n\n";
 
 	for(clang::CFGStmt cfgStmt: spg)  {
 		clang::Stmt* stmt = const_cast<clang::Stmt*>(cfgStmt.getStmt());
+		const clang::Stmt* parent;
 		//stmt->dumpColor();
 		//std::cout << "\n";
-		switch	(stmt->getStmtClass()) {
-			case clang::Stmt::StmtClass::BinaryOperatorClass: {
-				clang::BinaryOperator* conditionBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(stmt);
+		const auto& parents = cpg.GetAST().getASTContext().getParents(*stmt);
+		if (!parents.empty()) {
+			parent = parents[0].get<clang::Stmt>();
+        }
 
-				ASTTraversal::cFindVariableVisitor dstVisitor(dstBuffer);
-				dstVisitor.TraverseStmt(stmt);
-				ASTTraversal::cFindVariableVisitor srcVisitor(srcBuffer);
-				srcVisitor.TraverseStmt(stmt);
+		if (parent && parent->getStmtClass() == clang::Stmt::StmtClass::IfStmtClass) {
+			switch	(stmt->getStmtClass()) {
+				case clang::Stmt::StmtClass::BinaryOperatorClass: {
+					clang::BinaryOperator* conditionBinaryOperator = llvm::dyn_cast<clang::BinaryOperator>(stmt);
 
-				if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
-					sanitizations.push_back(conditionBinaryOperator);
+					ASTTraversal::cFindVariableVisitor dstVisitor(dstBuffer);
+					dstVisitor.TraverseStmt(stmt);
+					ASTTraversal::cFindVariableVisitor srcVisitor(srcBuffer);
+					srcVisitor.TraverseStmt(stmt);
+
+					if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
+						sanitizations.push_back(conditionBinaryOperator);
+					}
 				}
-			}
-			break;
-			case clang::Stmt::StmtClass::CallExprClass: {
-				clang::CallExpr* callExpr = llvm::dyn_cast<clang::CallExpr>(stmt);
-				ASTTraversal::cFindVariableVisitor dstVisitor(dstBuffer);
-				dstVisitor.TraverseStmt(stmt);
-				ASTTraversal::cFindVariableVisitor srcVisitor(srcBuffer);
-				srcVisitor.TraverseStmt(stmt);
+				break;
+				case clang::Stmt::StmtClass::CallExprClass: {
+					clang::CallExpr* callExpr = llvm::dyn_cast<clang::CallExpr>(stmt);
+					ASTTraversal::cFindVariableVisitor dstVisitor(dstBuffer);
+					dstVisitor.TraverseStmt(stmt);
+					ASTTraversal::cFindVariableVisitor srcVisitor(srcBuffer);
+					srcVisitor.TraverseStmt(stmt);
 
-				if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
-					sanitizations.push_back(callExpr);
+					if (dstVisitor.IsFound() || srcVisitor.IsFound()) {
+						sanitizations.push_back(callExpr);
+					}
 				}
+				break;
+				//TODO Other cases switchCase
 			}
-			break;
-			//TODO Other cases switchCase
 		}
 	}
 

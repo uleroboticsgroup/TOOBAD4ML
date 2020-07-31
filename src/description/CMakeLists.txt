@@ -72,6 +72,7 @@ add_library(${PROJECT_NAME}
         Declaration.cpp
         Validation.cpp
         InputDependentPredicates.cpp
+        SourceBufferPredicates.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

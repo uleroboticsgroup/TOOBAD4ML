@@ -67,7 +67,7 @@ private:
      * @param spg The sink path graph of the sink.
      * @returns A list of all the Exprs that are sanitizations.
      * */   
-    std::vector<clang::Expr*> getSinkSanitizations(clang::DeclRefExpr*, clang::DeclRefExpr*, SinkPathGraph);
+    std::vector<clang::Expr*> getSinkSanitizations(clang::DeclRefExpr*, clang::DeclRefExpr*, SinkPathGraph, cCodePropertyGraph&);
 };
 
 }
