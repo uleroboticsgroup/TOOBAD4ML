@@ -73,6 +73,9 @@ add_library(${PROJECT_NAME}
         Validation.cpp
         InputDependentPredicates.cpp
         SourceBufferPredicates.cpp
+        DestinationBufferPredicates.cpp
+        SourceBufferAmbiguous.cpp
+        DestinationBufferAmbiguous.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

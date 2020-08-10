@@ -51,6 +51,9 @@
 #include "description/Validation.h"
 #include "description/InputDependentPredicates.h"
 #include "description/SourceBufferPredicates.h"
+#include "description/DestinationBufferPredicates.h"
+#include "description/SourceBufferAmbiguous.h"
+#include "description/DestinationBufferAmbiguous.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -65,6 +68,9 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cDestinationBufferAmbiguous(
+		new cSourceBufferAmbiguous(
+		new cDestinationBufferPredicates(
 		new cSourceBufferPredicates(
 		new cInputDependentPredicates(
 		new cValidation(
@@ -114,5 +120,5 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	))))))))))))))))))))))))))))))))))))))))));
+	)))))))))))))))))))))))))))))))))))))))))))));
 }
