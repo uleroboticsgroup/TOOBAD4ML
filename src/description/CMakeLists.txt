@@ -79,6 +79,7 @@ add_library(${PROJECT_NAME}
         ControlFlow.cpp
         SecondaryControlFlow.cpp
         SurroundingLoops.cpp
+        LoopComplexity.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
