@@ -2,7 +2,6 @@
 #include "description/BufferOverflow.h"
 #include "description/CodePropertyGraph.h"
 #include "description/ExprUtils.h"
-#include "iostream"
 // ------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;

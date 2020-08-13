@@ -80,6 +80,9 @@ add_library(${PROJECT_NAME}
         SecondaryControlFlow.cpp
         SurroundingLoops.cpp
         LoopComplexity.cpp
+        LoopDepth.cpp
+        ConditionDepth.cpp
+        Reach.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

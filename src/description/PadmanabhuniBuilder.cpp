@@ -58,6 +58,9 @@
 #include "description/SecondaryControlFlow.h"
 #include "description/SurroundingLoops.h"
 #include "description/LoopComplexity.h"
+#include "description/LoopDepth.h"
+#include "description/ConditionDepth.h"
+#include "description/Reach.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -72,6 +75,9 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		//new cReach(
+		new cConditionDepth(
+		new cLoopDepth(
 		new cLoopComplexity(
 		new cSurroundingLoops(
 		new cSecondaryControlFlow(
@@ -128,5 +134,5 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	)))))))))))))))))))))))))))))))))))))))))))))))));
+	)))))))))))))))))))))))))))))))))))))))))))))))))));
 }
