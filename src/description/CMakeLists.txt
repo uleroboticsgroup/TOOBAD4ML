@@ -83,6 +83,7 @@ add_library(${PROJECT_NAME}
         LoopDepth.cpp
         ConditionDepth.cpp
         Reach.cpp
+        InputsWithLimiting.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
