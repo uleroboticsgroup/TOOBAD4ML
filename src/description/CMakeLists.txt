@@ -84,6 +84,9 @@ add_library(${PROJECT_NAME}
         ConditionDepth.cpp
         Reach.cpp
         InputsWithLimiting.cpp
+        SourceDependentLoopTermination.cpp
+        SourceNullTerminated.cpp
+        DestinationNullTerminated.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
