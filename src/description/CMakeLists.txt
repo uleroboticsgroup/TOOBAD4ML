@@ -87,6 +87,7 @@ add_library(${PROJECT_NAME}
         SourceDependentLoopTermination.cpp
         SourceNullTerminated.cpp
         DestinationNullTerminated.cpp
+        DestinationBufferAlias.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

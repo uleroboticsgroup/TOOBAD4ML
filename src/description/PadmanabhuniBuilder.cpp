@@ -65,6 +65,7 @@
 #include "description/SourceDependentLoopTermination.h"
 #include "description/SourceNullTerminated.h"
 #include "description/DestinationNullTerminated.h"
+#include "description/DestinationBufferAlias.h"
 // ----------------------------------------------------------------------------
 using namespace TOOBAD4ML;
 using namespace description;
@@ -79,6 +80,7 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 	// the comments characteristics are not implemented
 
     return // new cResetsInControlPredicates(
+		new cDestinationBufferAlias(
 		new cDestinationNullTerminated(
 		new cSourceNullTerminated(
 		new cSourceDependentLoopTermination(
@@ -142,5 +144,5 @@ IDescriptor* cPadmanabhuniBuilder::CreateDescriptor() {
 		new cCommandLine(
 		new cSinkClassification(
 		new cMockDescriptor)
-	))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+	)))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 }
