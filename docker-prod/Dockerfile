@@ -1,0 +1,6 @@
+FROM ubuntu:18.04
+
+COPY ./bin/TOOBAD4ML /bin/TOOBAD4ML
+COPY ./lib/* /lib/
+
+ENTRYPOINT [ "TOOBAD4ML" ]
