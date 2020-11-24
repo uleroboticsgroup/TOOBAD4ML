@@ -1,33 +1,38 @@
+#####################################################################
 #
-#   CMakeLists.txt - CMake file for the "ASTTraversal" module. This file
-#                    provides the following target:
+#   src/asttraversal/CMakeLists.txt
 #
-#                           * ASTTraversal
+#   Build target for the asttraversal submodule.
 #
+#   Definitions:
+#       toobad4ml::astraversal  (target | library)
+#
+#####################################################################
 
-cmake_minimum_required(VERSION 3.1)
+# Target definition
+# -------------------------------------------------------------------
 
-project(ASTTraversal)
+add_library(toobad4ml_asttraversal
+    # sources
+    ${CMAKE_CURRENT_LIST_DIR}/ExtractVulnerabilitiesVisitor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FindSelectedASTNodesVisitor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FindVariableVisitor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FindStmtVisitor.cpp
+    # headers
+    ${CMAKE_CURRENT_LIST_DIR}/ExtractVulnerabilitiesVisitor.h
+    ${CMAKE_CURRENT_LIST_DIR}/FindSelectedASTNodesVisitor.h
+    ${CMAKE_CURRENT_LIST_DIR}/FindVariableVisitor.h
+    ${CMAKE_CURRENT_LIST_DIR}/FindStmtVisitor.h
+)
+add_library(toobad4ml::astraversal ALIAS toobad4ml_asttraversal)
 
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_library(${PROJECT_NAME}
-    SHARED
-        ExtractVulnerabilitiesVisitor.cpp
-        FindSelectedASTNodesVisitor.cpp
-        FindVariableVisitor.cpp
-        FindStmtVisitor.cpp
+target_include_directories(toobad4ml_asttraversal
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
 )
 
-target_include_directories(${PROJECT_NAME}
+target_link_libraries(toobad4ml_asttraversal
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        LibTooling
+        ClangLibTooling
 )

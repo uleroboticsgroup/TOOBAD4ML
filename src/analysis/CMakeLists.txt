@@ -1,37 +1,42 @@
-# ------------------------------------------------------------------------------
+#####################################################################
 #
-#   CMakeLists.txt - CMake file for the "analysis" module. This file
-#                    provides the following target:
+#   src/analysis/CMakeLists.txt
 #
-#                           * analysis
+#   Build target for the analysis submodule.
 #
-# ------------------------------------------------------------------------------
+#   Definitions:
+#       toobad4ml::analysis (target | library)
+#
+#####################################################################
 
-cmake_minimum_required(VERSION 3.1)
+# Target definition
+# -------------------------------------------------------------------
 
-project(analysis)
+add_library(toobad4ml_analysis
+    # sources
+    ClangTool.cpp
+    ModelBOFAction.cpp
+    ModelBOFConsumer.cpp
+    ModelBOFFrontendActionFactory.cpp
+    # headers
+    ClangTool.h
+    ModelBOFAction.h
+    ModelBOFConsumer.h
+    ModelBOFFrontendActionFactory.h
+)
+add_library(toobad4ml::analysis ALIAS toobad4ml_analysis)
 
-
-# TARGET
-# -----------------------------------------------------------------------------
-
-add_library(${PROJECT_NAME}
-    STATIC
-        ClangTool.cpp
-        ModelBOFAction.cpp
-        ModelBOFConsumer.cpp
-        ModelBOFFrontendActionFactory.cpp
+target_include_directories(toobad4ml_analysis
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
 )
 
-target_include_directories(${PROJECT_NAME}
+target_link_libraries(toobad4ml_analysis
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        ASTTraversal
-        description
-        io
+        toobad4ml_asttraversal
+        toobad4ml_description
+        toobad4ml_io
+    PRIVATE
+        ClangLibTooling
 )

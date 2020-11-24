@@ -1,28 +1,27 @@
+#####################################################################
 #
-#   GoogleTest.cmake - CMake script for configuring GoogleTest dependency. This
-#                      file provides the following target:
+#   cmake/GoogleTest.cmake
 #
-#                             * GoogleTest
+#   Module for configuring GoogleTest dependency.
 #
-#   @author Gonzalo Esteban
-#   @author Razvan Raducu
-#   @author Flavio Rodrigues
+#   Definitions:
+#       GoogleTest (target | library)
 #
-
+#####################################################################
 
 # Options
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------
 
 # list of imported targets in order to wrap the dependencies
 set(GOOGLETEST_IMPORTED_TARGETS "")
 
 
-# GoogleTest target
-# -----------------------------------------------------------------------------
+# Target definition
+# -------------------------------------------------------------------
 
-add_library(LibGoogleTest INTERFACE)
+add_library(LibGoogleTest INTERFACE IMPORTED)
 
-# 1. import Google Test target from its dependency
+# step 1: import Google Test target from its dependency
 if (NOT TOOBAD4ML_FORCE_CONAN)
     find_package(GTest)
 endif()
@@ -41,7 +40,7 @@ else()
     set(GOOGLETEST_IMPORTED_TARGETS gtest::gtest)
 endif()
 
-# 2. configure our target by wrapping the imported one
+# step 2: configure our target by wrapping the imported one
 target_link_libraries(LibGoogleTest
     INTERFACE
         ${GOOGLETEST_IMPORTED_TARGETS}

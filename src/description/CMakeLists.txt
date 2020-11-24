@@ -1,103 +1,178 @@
+#####################################################################
 #
-#   CMakeLists.txt - CMake file for the TOOBAD4ML::description module. This
-#                    file provides the following target:
+#   src/description/CMakeLists.txt
 #
-#                           * description
+#   Build target for the description submodule.
 #
+#   Definitions:
+#       toobad4ml::description  (target | library)
+#
+#####################################################################
 
-cmake_minimum_required(VERSION 3.1)
+# Target definition
+# -------------------------------------------------------------------
 
-project(description)
+add_library(toobad4ml_description
+    # sources
+    BufferOverflow.cpp
+    BufferOverflowBuilder.cpp
+    CodePropertyGraph.cpp
+    ExprUtils.cpp
+    CPGExplorer.cpp
+    MockDescriptor.cpp
+    DescriptorDecorator.cpp
+    SinkClassification.cpp
+    CommandLine.cpp
+    EnvironmentVariable.cpp
+    File.cpp
+    Network.cpp
+    InputValidationClassification.cpp
+    BufferSizePredicateClassification.cpp
+    DataBufferDeclaration.cpp
+    ArrayWriteIndexWithinBounds.cpp
+    FormatStringPrecisionWithinBounds.cpp
+    NumberOfElementsCopiedWithinBounds.cpp
+    StringCopyWithinBounds.cpp
+    DataDependentOnDestinationBufferSize.cpp
+    DataDependentOnDestinationBufferSizeVariant.cpp
+    IsCharacterCaseConversionSink.cpp
+    ResetsInControlPredicates.cpp
+    PadmanabhuniBuilder.cpp
+    StringLengthSourceBuffer.cpp
+    NULLCheck.cpp
+    SizeSourceBuffer.cpp
+    EOFCheck.cpp
+    CharacterCheck.cpp
+    CharacterOccurrenceStringCheck.cpp
+    StringComparison.cpp
+    SizeDestinationBuffer.cpp
+    SizeDestinationBufferMinusOne.cpp
+    SizeDestinationBufferMinusX.cpp
+    StringLengthDestinationBuffer.cpp
+    DescriptorFactory.cpp
+    ContainerType.cpp
+    IndexType.cpp
+    LengthType.cpp
+    AddressType.cpp
+    PointerDeference.cpp
+    MemoryAccess.cpp
+    Container.cpp
+    ViolatedBound.cpp
+    DataType.cpp
+    IndexComplexity.cpp
+    LimitComplexity.cpp
+    Magnitude.cpp
+    DataSize.cpp
+    ExploitCountermeasures.cpp
+    HasDefensiveLimits.cpp
+    SameSrcDstSize.cpp
+    InputCount.cpp
+    DestinationWrites.cpp
+    Declaration.cpp
+    Validation.cpp
+    InputDependentPredicates.cpp
+    SourceBufferPredicates.cpp
+    DestinationBufferPredicates.cpp
+    SourceBufferAmbiguous.cpp
+    DestinationBufferAmbiguous.cpp
+    ControlFlow.cpp
+    SecondaryControlFlow.cpp
+    SurroundingLoops.cpp
+    LoopComplexity.cpp
+    LoopDepth.cpp
+    ConditionDepth.cpp
+    Reach.cpp
+    InputsWithLimiting.cpp
+    SourceDependentLoopTermination.cpp
+    SourceNullTerminated.cpp
+    DestinationNullTerminated.cpp
+    DestinationBufferAlias.cpp
+    # headers
+    BufferOverflow.h
+    BufferOverflowBuilder.h
+    CodePropertyGraph.h
+    ExprUtils.h
+    CPGExplorer.h
+    MockDescriptor.h
+    DescriptorDecorator.h
+    SinkClassification.h
+    CommandLine.h
+    EnvironmentVariable.h
+    File.h
+    Network.h
+    InputValidationClassification.h
+    BufferSizePredicateClassification.h
+    DataBufferDeclaration.h
+    ArrayWriteIndexWithinBounds.h
+    FormatStringPrecisionWithinBounds.h
+    NumberOfElementsCopiedWithinBounds.h
+    StringCopyWithinBounds.h
+    DataDependentOnDestinationBufferSize.h
+    DataDependentOnDestinationBufferSizeVariant.h
+    IsCharacterCaseConversionSink.h
+    ResetsInControlPredicates.h
+    PadmanabhuniBuilder.h
+    StringLengthSourceBuffer.h
+    NULLCheck.h
+    SizeSourceBuffer.h
+    EOFCheck.h
+    CharacterCheck.h
+    CharacterOccurrenceStringCheck.h
+    StringComparison.h
+    SizeDestinationBuffer.h
+    SizeDestinationBufferMinusOne.h
+    SizeDestinationBufferMinusX.h
+    StringLengthDestinationBuffer.h
+    DescriptorFactory.h
+    ContainerType.h
+    IndexType.h
+    LengthType.h
+    AddressType.h
+    PointerDeference.h
+    MemoryAccess.h
+    Container.h
+    ViolatedBound.h
+    DataType.h
+    IndexComplexity.h
+    LimitComplexity.h
+    Magnitude.h
+    DataSize.h
+    ExploitCountermeasures.h
+    HasDefensiveLimits.h
+    SameSrcDstSize.h
+    InputCount.h
+    DestinationWrites.h
+    Declaration.h
+    Validation.h
+    InputDependentPredicates.h
+    SourceBufferPredicates.h
+    DestinationBufferPredicates.h
+    SourceBufferAmbiguous.h
+    DestinationBufferAmbiguous.h
+    ControlFlow.h
+    SecondaryControlFlow.h
+    SurroundingLoops.h
+    LoopComplexity.h
+    LoopDepth.h
+    ConditionDepth.h
+    Reach.h
+    InputsWithLimiting.h
+    SourceDependentLoopTermination.h
+    SourceNullTerminated.h
+    DestinationNullTerminated.h
+    DestinationBufferAlias.h
+)
+add_library(toobad4ml::description ALIAS toobad4ml_description)
 
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_library(${PROJECT_NAME}
-    SHARED
-        BufferOverflow.cpp
-        BufferOverflowBuilder.cpp
-        CodePropertyGraph.cpp
-        ExprUtils.cpp
-        CPGExplorer.cpp
-        MockDescriptor.cpp
-        DescriptorDecorator.cpp
-        SinkClassification.cpp
-        CommandLine.cpp
-        EnvironmentVariable.cpp
-        File.cpp
-        Network.cpp
-        InputValidationClassification.cpp
-        BufferSizePredicateClassification.cpp
-        DataBufferDeclaration.cpp
-        ArrayWriteIndexWithinBounds.cpp
-        FormatStringPrecisionWithinBounds.cpp
-        NumberOfElementsCopiedWithinBounds.cpp
-        StringCopyWithinBounds.cpp
-        DataDependentOnDestinationBufferSize.cpp
-        DataDependentOnDestinationBufferSizeVariant.cpp
-        IsCharacterCaseConversionSink.cpp
-        ResetsInControlPredicates.cpp
-        PadmanabhuniBuilder.cpp
-        StringLengthSourceBuffer.cpp
-        NULLCheck.cpp
-        SizeSourceBuffer.cpp
-        EOFCheck.cpp
-        CharacterCheck.cpp
-        CharacterOccurrenceStringCheck.cpp
-        StringComparison.cpp
-        SizeDestinationBuffer.cpp
-        SizeDestinationBufferMinusOne.cpp
-        SizeDestinationBufferMinusX.cpp
-        StringLengthDestinationBuffer.cpp
-        DescriptorFactory.cpp
-        ContainerType.cpp
-        IndexType.cpp
-        LengthType.cpp
-        AddressType.cpp
-        PointerDeference.cpp
-        MemoryAccess.cpp
-        Container.cpp
-        ViolatedBound.cpp
-        DataType.cpp
-        IndexComplexity.cpp
-        LimitComplexity.cpp
-        Magnitude.cpp
-        DataSize.cpp
-        ExploitCountermeasures.cpp
-        HasDefensiveLimits.cpp
-        SameSrcDstSize.cpp
-        InputCount.cpp
-        DestinationWrites.cpp
-        Declaration.cpp
-        Validation.cpp
-        InputDependentPredicates.cpp
-        SourceBufferPredicates.cpp
-        DestinationBufferPredicates.cpp
-        SourceBufferAmbiguous.cpp
-        DestinationBufferAmbiguous.cpp
-        ControlFlow.cpp
-        SecondaryControlFlow.cpp
-        SurroundingLoops.cpp
-        LoopComplexity.cpp
-        LoopDepth.cpp
-        ConditionDepth.cpp
-        Reach.cpp
-        InputsWithLimiting.cpp
-        SourceDependentLoopTermination.cpp
-        SourceNullTerminated.cpp
-        DestinationNullTerminated.cpp
-        DestinationBufferAlias.cpp
+target_include_directories(toobad4ml_description
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
 )
 
-target_include_directories(${PROJECT_NAME}
+target_link_libraries(toobad4ml_description
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        ASTTraversal
-        LibTooling
+        toobad4ml_asttraversal
+    PRIVATE
+        ClangLibTooling
 )

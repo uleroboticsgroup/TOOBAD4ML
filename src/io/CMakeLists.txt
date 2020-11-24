@@ -1,36 +1,46 @@
-#   CMakeLists.txt - CMake file for the "io" module. This file
-#                    provides the following target:
+#####################################################################
 #
-#                           * io
+#   src/io/CMakeLists.txt
 #
+#   Build target for the io submodule.
+#
+#   Definitions:
+#       toobad4ml::io   (target | library)
+#
+#####################################################################
 
-cmake_minimum_required(VERSION 3.1)
+# Target definition
+# -------------------------------------------------------------------
 
-project(io)
+add_library(toobad4ml_io
+    # sources
+    FileManager.cpp
+    FunctionTypeTranslator.cpp
+    CSVOutputFormatStrategy.cpp
+    STDOutputFormatStrategy.cpp
+    CmdLineArguments.cpp
+    FormatStrategyFactory.cpp
+    InputManager.cpp
+    Logger.cpp
+    # headers
+    FileManager.h
+    FunctionTypeTranslator.h
+    CSVOutputFormatStrategy.h
+    STDOutputFormatStrategy.h
+    CmdLineArguments.h
+    FormatStrategyFactory.h
+    InputManager.h
+    Logger.h
+)
+add_library(toobad4ml::io ALIAS toobad4ml_io)
 
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_library(${PROJECT_NAME}
-    STATIC
-        FileManager.cpp
-        FunctionTypeTranslator.cpp
-        CSVOutputFormatStrategy.cpp
-        STDOutputFormatStrategy.cpp
-        CmdLineArguments.cpp
-        FormatStrategyFactory.cpp
-	    InputManager.cpp
-        Logger.cpp
+target_include_directories(toobad4ml_io
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
 )
 
-target_include_directories(${PROJECT_NAME}
+target_link_libraries(toobad4ml_io
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        LibTooling
+        ClangLibTooling
 )

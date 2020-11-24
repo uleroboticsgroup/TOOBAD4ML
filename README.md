@@ -1,6 +1,6 @@
 # TOOBAD4ML - TOOl to Buffer overflow Analysis and Description FOR Machine Learning
 
-A tool for extracting characteristics of Buffer Overflow vulnerabilities written in C code in order to further analyze them with Machine Learning techniques.
+A tool for extracting features of Buffer Overflow vulnerabilities written in C code in order to further analyze them with Machine Learning techniques.
 
 ## Build status
 
@@ -25,7 +25,7 @@ The following libraries are used by TOOBAD4ML:
 You can optionally use [Conan](https://conan.io) to manage these dependencies. However, please note that Clang is not currently available in the official repositories. To get it, you must add the following remote repository *before* running the `conan install` command:
 
 ```
-conan remote add roboticsgroup http://ciserver.unileon.es:8080/artifactory/api/conan/conan-dev
+conan remote add roboticsgroup https://ciserver.unileon.es:8082/artifactory/api/conan/conan-dev
 ```
 
 ### Installing dependencies with Conan
@@ -33,7 +33,7 @@ conan remote add roboticsgroup http://ciserver.unileon.es:8080/artifactory/api/c
 If you don't plan to use Conan you can ignore this step. Otherwise, first go to the `build` directory and then type the following command *before* using CMake:
 
 ```
-conan install ..
+conan install .. -s compiler.libcxx=libstdc++11
 ```
 
 ### Building the project
@@ -76,6 +76,14 @@ It is recommended to run the unit tests with CTest; although all the tests execu
 
 ```
 ctest -VV
+```
+
+### Generate documentation
+
+Doxygen documentation can be enabled by adding the argument `-DTOOBAD4ML_GENERATE_DOCS=ON` to the CMake configuration command:
+
+```
+cmake .. -G "Ninja" -DTOOBAD4ML_GENERATE_DOCS=ON
 ```
 
 ## Usage

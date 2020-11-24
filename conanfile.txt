@@ -1,10 +1,15 @@
+#####################################################################
+#
+#   conanfile.txt
+#
+#   Conan packaging configuration.
+#
+#####################################################################
+
 [requires]
-gtest/1.8.1@bincrafters/stable
-clang/6.0.0@Manu343726/testing
+gtest/1.10.0
+
+libclang/6.0.1@Manu343726/testing
 
 [generators]
 cmake_find_package
-
-[options]
-gtest:shared=False
-

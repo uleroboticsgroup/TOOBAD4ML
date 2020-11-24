@@ -1,31 +1,30 @@
+#####################################################################
 #
-#   CMakeLists.txt - CMake file to build TOOBAD4ML. This file provides the
-#                    following target:
+#   src/CMakeLists.txt
 #
-#                            * TOOBAD4ML
+#   Main build target for the TOOBAD4ML tool.
 #
+#   Definitions:
+#       toobad4ml   (target | executable)
+#
+#####################################################################
 
-# Dependencies
-# -----------------------------------------------------------------------------
+# Targets definition
+# -------------------------------------------------------------------
 
-set(TOOBAD4ML_MODULES
-    ASTTraversal
-    description
-    analysis
-    io
-)
+# submodules targets
+add_subdirectory(asttraversal)
+add_subdirectory(description)
+add_subdirectory(analysis)
+add_subdirectory(io)
 
-foreach(MODULE IN LISTS TOOBAD4ML_MODULES)
-    add_subdirectory(${MODULE})
-endforeach()
+# main build target
+add_executable(toobad4ml main.cpp)
 
-
-# Target
-# ----------------------------------------------------------------------------
-
-add_executable(${PROJECT_NAME} main.cpp)
-
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        ${TOOBAD4ML_MODULES}
+target_link_libraries(toobad4ml
+    toobad4ml_asttraversal
+    toobad4ml_description
+    toobad4ml_analysis
+    toobad4ml_io
+    ClangLibTooling
 )
