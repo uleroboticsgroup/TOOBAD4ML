@@ -1,38 +1,26 @@
-cmake_minimum_required(VERSION 3.1)
+#####################################################################
+#
+#   tests/analysis/CMakeLists.txt
+#
+#   Sources definition related to the analysis module.
+#
+#####################################################################
 
-project(analysis_test)
-
-
-# Target
-# -----------------------------------------------------------------------------
-
-
-add_library(${PROJECT_NAME}
-    ModelBOFActionTest.cpp
-    ModelBOFConsumerTest.cpp
-    ModelBOFFrontendActionFactoryTest.cpp
-    ClangToolTest.cpp
+target_sources(toobad4ml_tests
+    PRIVATE
+        # sources
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFActionTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFConsumerTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFFrontendActionFactoryTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ClangToolTest.cpp
+        # headers
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFActionTestHelper.h
 )
-
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        analysis
-	    io
-        LibGoogleTest
-)
-
-# TODO we temporary need this to link the test main with the test suites
-set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 1)
 
 # Register the test for CMake
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------
 
 add_test(
-    NAME    ${PROJECT_NAME}
-    COMMAND ${PROJECT_NAME}
+    NAME    toobad4ml_analysis_test
+    COMMAND toobad4ml_tests
 )

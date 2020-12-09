@@ -19,7 +19,9 @@ add_subdirectory(analysis)
 add_subdirectory(io)
 
 # main build target
-add_executable(toobad4ml main.cpp)
+add_executable(toobad4ml
+    ${CMAKE_CURRENT_LIST_DIR}/main.cpp
+)
 
 target_link_libraries(toobad4ml
     toobad4ml_asttraversal

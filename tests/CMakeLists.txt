@@ -1,39 +1,53 @@
+#####################################################################
 #
-#   CMakeLists.txt - CMake file to build unit tests for TOOBAD4ML. This file
-#                    provides the following target:
+#   tests/CMakeLists.txt
 #
-#                           * tests
+#   Main build target for the TOOBAD4ML unit tests.
 #
+#   Definitions:
+#       toobad4ml_tests   (target | executable)
+#
+#####################################################################
 
-
-# Modules
-# -----------------------------------------------------------------------------
+# Dependencies
+# -------------------------------------------------------------------
 
 include(GoogleTest)
 
+# Target definition
+# -------------------------------------------------------------------
 
-# Test suites
-# -----------------------------------------------------------------------------
+# main build target
+add_executable(toobad4ml_tests
+    ${CMAKE_CURRENT_LIST_DIR}/test_main.cpp
+)
+add_subdirectory(asttraversal)
+add_subdirectory(analysis)
+add_subdirectory(description)
+add_subdirectory(io)
 
-# TODO add test suites for each module
-set(TOOBAD4ML_TEST_SUITES
-    analysis
-    ASTTraversal
-    description
-    io
+target_include_directories(toobad4ml_tests
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-foreach(TEST_SUITE IN LISTS TOOBAD4ML_TEST_SUITES)
-    add_subdirectory(${TEST_SUITE})
-endforeach()
-
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_executable(tests test_main.cpp)
-
-target_link_libraries(tests
-    PUBLIC
+target_link_libraries(toobad4ml_tests
+    PRIVATE
+        toobad4ml::asttraversal
+        toobad4ml::analysis
+        toobad4ml::description
+        toobad4ml::io
         LibGoogleTest
 )
+
+# Code coverage (with gcovr)
+# -------------------------------------------------------------------
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_gcovr_xml(
+        NAME coverage
+        EXECUTABLE toobad4ml_tests
+    )
+endif()

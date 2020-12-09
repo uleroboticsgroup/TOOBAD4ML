@@ -1,38 +1,25 @@
-cmake_minimum_required(VERSION 3.1)
+#####################################################################
+#
+#   tests/asttraversal/CMakeLists.txt
+#
+#   Sources definition related to the ASTTraversal module.
+#
+#####################################################################
 
-project(ASTTraversal_test)
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_executable(${PROJECT_NAME}
-   # FindVariableVisitorTest.cpp
-    ExtractVulnerabilitesVisitorTest.cpp
-    FindSelectedASTNodesVisitorTest.cpp
+target_sources(toobad4ml_tests
+    PRIVATE
+        #${CMAKE_CURRENT_LIST_DIR}/FindVariableVisitorTest.cpp
+        #${CMAKE_CURRENT_LIST_DIR}/FindVariableVisitorTest.h
+        ${CMAKE_CURRENT_LIST_DIR}/ExtractVulnerabilitesVisitorTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FindSelectedASTNodesVisitorTest.cpp
+        #${CMAKE_CURRENT_LIST_DIR}/VisitorTest.cpp
+        #${CMAKE_CURRENT_LIST_DIR}/VisitorTest.h
 )
-#        VisitorTest.cpp
-#    ../analysis/StubModelBOFAction.cpp
-#    ../analysis/MockModelBOFConsumer.cpp
-
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-    	analysis
-        ASTTraversal
-        LibGoogleTest
-)
-
-# TODO we temporary need this to link the test main with the test suites
-set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 1)
 
 # Register the test for CMake
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------
 
 add_test(
-    NAME    ${PROJECT_NAME}
-    COMMAND ${PROJECT_NAME}
+    NAME    toobad4ml_asttraversal_test
+    COMMAND toobad4ml_tests
 )

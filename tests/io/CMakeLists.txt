@@ -1,39 +1,26 @@
-cmake_minimum_required(VERSION 3.1)
+#####################################################################
+#
+#   tests/asttraversal/CMakeLists.txt
+#
+#   Sources definition related to the io module.
+#
+####################################################################
 
-project(io_test)
-
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_executable(${PROJECT_NAME}
-    LoggerTest.cpp
-    CSVOutputFormatStrategyTest.cpp
-    STDOutputFormatStrategyTest.cpp
-    FormatStrategyFactoryTest.cpp
-    FileManagerTest.cpp
-    InputManagerTest.cpp
-    CmdLineArgumentsTest.cpp
+target_sources(toobad4ml_tests
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/LoggerTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CSVOutputFormatStrategyTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/STDOutputFormatStrategyTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FormatStrategyFactoryTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FileManagerTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InputManagerTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CmdLineArgumentsTest.cpp
 )
-
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-	    io
-        LibGoogleTest
-)
-
-# TODO we temporary need this to link the test main with the test suites
-set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 1)
 
 # Register the test for CMake
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------
 
 add_test(
-    NAME    ${PROJECT_NAME}
-    COMMAND ${PROJECT_NAME}
+    NAME    toobad4ml_io_test
+    COMMAND toobad4ml_tests
 )

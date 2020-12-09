@@ -31,7 +31,7 @@ if (GTEST_FOUND)
 
     # TODO Since gtest 1.8.0, gtest and gmock are integrated. CMake 3.10+
     # supports this, so for lower versions we must implement some workaround...
-    set(GOOGLETEST_IMPORTED_TARGETS GTest::GTest GTest::Main)
+    set(GOOGLETEST_IMPORTED_TARGETS GTest::GTest)
 else()
     message(STATUS "Using Google Test dependency from Conan ...")
 

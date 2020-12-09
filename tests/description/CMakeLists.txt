@@ -1,58 +1,47 @@
-cmake_minimum_required(VERSION 3.1)
+#####################################################################
+#
+#   tests/asttraversal/CMakeLists.txt
+#
+#   Sources definition related to the description module.
+#
+#####################################################################
 
-project(description_test)
-
-# Target
-# -----------------------------------------------------------------------------
-
-add_executable(${PROJECT_NAME}
-    ExprUtilsTest.cpp
-    IsCharacterCaseConversionSinkTest.cpp
-    CommandLineTest.cpp
-    BufferOverflowTest.cpp
-    CodePropertyGraphTest.cpp
-    BufferOverflowBuilderTest.cpp
-    StringLengthSourceBufferTest.cpp
-    SinkClassificationTest.cpp
-    NumberOfElementsCopiedWithinBoundsTest.cpp
-    ArrayWriteIndexWithinBoundsTest.cpp
-    FormatStringPrecisionWithinBoundsTest.cpp
-    StringCopyWithinBoundsTest.cpp
-    SizeSourceBufferTest.cpp
-    NULLCheckTest.cpp
-    EOFCheckTest.cpp
-    CharacterCheckTest.cpp
-    CharacterOccurrenceStringCheckTest.cpp
-    StringComparisonTest.cpp
-    SizeDestinationBufferTest.cpp
-    SizeDestinationBufferMinusOneTest.cpp
-    SizeDestinationBufferMinusXTest.cpp
-    StringLengthDestinationBufferTest.cpp
-    LengthTypeTest.cpp
-    AddressTypeTest.cpp
-    IndexTypeTest.cpp
-    ContainerTypeTest.cpp
-    DescriptorFactoryTest.cpp
-    CPGExplorerTest.cpp
+target_sources(toobad4ml_tests
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/ExprUtilsTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/IsCharacterCaseConversionSinkTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CommandLineTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflowTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodePropertyGraphTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflowBuilderTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthSourceBufferTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SinkClassificationTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/NumberOfElementsCopiedWithinBoundsTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ArrayWriteIndexWithinBoundsTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FormatStringPrecisionWithinBoundsTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringCopyWithinBoundsTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeSourceBufferTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/NULLCheckTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/EOFCheckTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterCheckTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterOccurrenceStringCheckTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringComparisonTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusOneTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusXTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthDestinationBufferTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LengthTypeTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/AddressTypeTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/IndexTypeTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ContainerTypeTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DescriptorFactoryTest.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CPGExplorerTest.cpp
 )
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-    	description
-        LibGoogleTest
-)
-
-# TODO we temporary need this to link the test main with the test suites
-set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 1)
 
 # Register the test for CMake
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------
 
 add_test(
-    NAME    ${PROJECT_NAME}
-    COMMAND ${PROJECT_NAME}
+    NAME    toobad4ml_description_test
+    COMMAND toobad4ml_tests
 )

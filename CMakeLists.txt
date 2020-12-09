@@ -32,8 +32,8 @@ endif()
 
 # default build type
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release
-        CACHE STRING "Default build type set to Release" FORCE)
+    set(CMAKE_BUILD_TYPE Debug
+        CACHE STRING "Default build type set to Debug" FORCE)
 endif()
 
 # project directories
