@@ -40,6 +40,13 @@ target_link_libraries(toobad4ml_tests
         LibGoogleTest
 )
 
+# copy data assets inside build directory
+add_custom_command(
+    TARGET toobad4ml_tests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/data ${CMAKE_BINARY_DIR}
+)
+
 # Code coverage (with gcovr)
 # -------------------------------------------------------------------
 
