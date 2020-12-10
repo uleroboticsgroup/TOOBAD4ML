@@ -8,6 +8,7 @@
 #include "description/MockDescriptor.h"
 #include "description/BufferOverflow.h"
 #include "description/BufferOverflowBuilder.h"
+#include "stdio.h"
 
 namespace TOOBAD4ML{
 
@@ -20,8 +21,10 @@ protected:
 
     void SetUp() override {
         clang::tooling::FixedCompilationDatabase Compilations("/", std::vector<std::string>());
-
         std::vector<std::string> Sources;
+        cBufferOverflowBuilder BOFBuilder;
+
+        //Sources.push_back(std::string(my_argv[1]) + "/sinkTypes.c");
         Sources.push_back("data/test.c");
 
         clang::tooling::ClangTool Tool(Compilations, Sources);
@@ -38,13 +41,14 @@ protected:
         ASTTraversal::BOFNodesPerFunctionMap vulnerabilities =
             visitor.GetVulnerabilities();
         
+        
         for (auto const& vuln: vulnerabilities) {
             cpg = new cCodePropertyGraph(*(vuln.first));
+    
             for (auto const& vulnLOCIter : vuln.second) {
+                bof = std::unique_ptr<cBufferOverflow>(& BOFBuilder.CreateBufferOverflow(*vulnLOCIter, *cpg));
                 sink = vulnLOCIter;
-                break;
             }
-            break;
         }
     }
 
@@ -52,15 +56,15 @@ protected:
     // ATTRIBUTES
     cCodePropertyGraph *cpg;
     clang::Expr* sink;
+    std::unique_ptr<cBufferOverflow> bof;
 };
 
 TEST_F(BufferOverflowBuilderTest, CreateBufferOverflow){
     cBufferOverflowBuilder BOFBuilder;
-    cBufferOverflow bof = BOFBuilder.CreateBufferOverflow(*sink, *cpg);
 
-    std::vector<clang::CallExpr*> bof_input = bof.GetInput();
-    clang::DeclRefExpr* bof_buffer = bof.GetBuffer(BufferType::DST);
-    clang::Expr* bof_sink = bof.GetSink();
+    std::vector<clang::CallExpr*> bof_input = bof->GetInput();
+    clang::DeclRefExpr* bof_buffer = bof->GetBuffer(BufferType::DST);
+    clang::Expr* bof_sink = bof->GetSink();
 
     EXPECT_EQ(sink, bof_sink);
 
