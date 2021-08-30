@@ -12,36 +12,26 @@
 # Options
 # -------------------------------------------------------------------
 
-# list of imported targets in order to wrap the dependencies
-set(GOOGLETEST_IMPORTED_TARGETS "")
-
+# list of imported targets in order to wrap the dependency
+set (GOOGLETEST_IMPORTED_TARGETS "")
 
 # Target definition
 # -------------------------------------------------------------------
 
-add_library(LibGoogleTest INTERFACE IMPORTED)
+add_library (GoogleTest INTERFACE IMPORTED)
 
 # step 1: import Google Test target from its dependency
-if (NOT TOOBAD4ML_FORCE_CONAN)
-    find_package(GTest)
-endif()
-
-if (GTEST_FOUND)
-    message(STATUS "Found Google Test (v ${GTEST_VERSION})")
-
-    # TODO Since gtest 1.8.0, gtest and gmock are integrated. CMake 3.10+
-    # supports this, so for lower versions we must implement some workaround...
-    set(GOOGLETEST_IMPORTED_TARGETS GTest::GTest)
-else()
-    message(STATUS "Using Google Test dependency from Conan ...")
-
-    find_package(gtest REQUIRED)
-
-    set(GOOGLETEST_IMPORTED_TARGETS gtest::gtest)
-endif()
+if (TARGET CONAN_PKG::gtest)
+    message (STATUS "Using Google Test dependency from Conan ...")
+    set(GOOGLETEST_IMPORTED_TARGETS CONAN_PKG::gtest)
+else ()
+    find_package (GTest REQUIRED)
+    message (STATUS "Found Google Test (v${GTEST_VERSION})")
+    set (GOOGLETEST_IMPORTED_TARGETS GTest::GTest)
+endif ()
 
 # step 2: configure our target by wrapping the imported one
-target_link_libraries(LibGoogleTest
+target_link_libraries (GoogleTest
     INTERFACE
         ${GOOGLETEST_IMPORTED_TARGETS}
 )

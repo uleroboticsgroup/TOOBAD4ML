@@ -24,3 +24,7 @@ add_test(
     NAME    toobad4ml_io_test
     COMMAND toobad4ml_tests
 )
+set_tests_properties(toobad4ml_io_test
+    PROPERTIES
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)

@@ -1,4 +1,9 @@
-PROJECT_NAME        = "TOOBAD4ML"
-INPUT			    = ./src
-OUTPUT_DIRECTORY	= ./docs
-RECURSIVE		    = YES
+DOXYFILE_ENCODING   = UTF-8
+PROJECT_NAME        = TOOBAD4ML
+PROJECT_NUMBER      = 0.1.0
+OUTPUT_LANGUAGE     = English
+INPUT               = "./" "../src"
+IMAGE_PATH          = "assets"
+OUTPUT_DIRECTORY    = @CMAKE_BINARY_DIR@/doxygen
+RECURSIVE           = YES
+EXCLUDE_PATTERNS    = */tests/*

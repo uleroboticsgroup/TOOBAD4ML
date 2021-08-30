@@ -1,0 +1,179 @@
+#####################################################################
+#
+#   src/description/CMakeLists.txt
+#
+#   Build target for the description submodule.
+#
+#   Definitions:
+#       toobad4ml::description  (target | library)
+#
+#####################################################################
+
+# Target definition
+# -------------------------------------------------------------------
+
+add_library(toobad4ml_description
+    OBJECT
+        # sources
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflow.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflowBuilder.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodePropertyGraph.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ExprUtils.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CPGExplorer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MockDescriptor.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DescriptorDecorator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SinkClassification.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CommandLine.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/EnvironmentVariable.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/File.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Network.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InputValidationClassification.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/BufferSizePredicateClassification.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DataBufferDeclaration.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ArrayWriteIndexWithinBounds.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FormatStringPrecisionWithinBounds.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/NumberOfElementsCopiedWithinBounds.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringCopyWithinBounds.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DataDependentOnDestinationBufferSize.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DataDependentOnDestinationBufferSizeVariant.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/IsCharacterCaseConversionSink.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ResetsInControlPredicates.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/PadmanabhuniBuilder.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthSourceBuffer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/NULLCheck.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeSourceBuffer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/EOFCheck.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterCheck.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterOccurrenceStringCheck.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringComparison.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBuffer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusOne.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusX.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthDestinationBuffer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DescriptorFactory.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ContainerType.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/IndexType.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LengthType.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/AddressType.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/PointerDeference.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MemoryAccess.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Container.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ViolatedBound.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DataType.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/IndexComplexity.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LimitComplexity.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Magnitude.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DataSize.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ExploitCountermeasures.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/HasDefensiveLimits.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SameSrcDstSize.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InputCount.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationWrites.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Declaration.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Validation.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InputDependentPredicates.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SourceBufferPredicates.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferPredicates.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SourceBufferAmbiguous.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferAmbiguous.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ControlFlow.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SecondaryControlFlow.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SurroundingLoops.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LoopComplexity.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LoopDepth.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ConditionDepth.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Reach.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InputsWithLimiting.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SourceDependentLoopTermination.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SourceNullTerminated.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationNullTerminated.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferAlias.cpp
+        # headers
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflow.h
+        ${CMAKE_CURRENT_LIST_DIR}/BufferOverflowBuilder.h
+        ${CMAKE_CURRENT_LIST_DIR}/CodePropertyGraph.h
+        ${CMAKE_CURRENT_LIST_DIR}/ExprUtils.h
+        ${CMAKE_CURRENT_LIST_DIR}/CPGExplorer.h
+        ${CMAKE_CURRENT_LIST_DIR}/MockDescriptor.h
+        ${CMAKE_CURRENT_LIST_DIR}/DescriptorDecorator.h
+        ${CMAKE_CURRENT_LIST_DIR}/SinkClassification.h
+        ${CMAKE_CURRENT_LIST_DIR}/CommandLine.h
+        ${CMAKE_CURRENT_LIST_DIR}/EnvironmentVariable.h
+        ${CMAKE_CURRENT_LIST_DIR}/File.h
+        ${CMAKE_CURRENT_LIST_DIR}/Network.h
+        ${CMAKE_CURRENT_LIST_DIR}/InputValidationClassification.h
+        ${CMAKE_CURRENT_LIST_DIR}/BufferSizePredicateClassification.h
+        ${CMAKE_CURRENT_LIST_DIR}/DataBufferDeclaration.h
+        ${CMAKE_CURRENT_LIST_DIR}/ArrayWriteIndexWithinBounds.h
+        ${CMAKE_CURRENT_LIST_DIR}/FormatStringPrecisionWithinBounds.h
+        ${CMAKE_CURRENT_LIST_DIR}/NumberOfElementsCopiedWithinBounds.h
+        ${CMAKE_CURRENT_LIST_DIR}/StringCopyWithinBounds.h
+        ${CMAKE_CURRENT_LIST_DIR}/DataDependentOnDestinationBufferSize.h
+        ${CMAKE_CURRENT_LIST_DIR}/DataDependentOnDestinationBufferSizeVariant.h
+        ${CMAKE_CURRENT_LIST_DIR}/IsCharacterCaseConversionSink.h
+        ${CMAKE_CURRENT_LIST_DIR}/ResetsInControlPredicates.h
+        ${CMAKE_CURRENT_LIST_DIR}/PadmanabhuniBuilder.h
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthSourceBuffer.h
+        ${CMAKE_CURRENT_LIST_DIR}/NULLCheck.h
+        ${CMAKE_CURRENT_LIST_DIR}/SizeSourceBuffer.h
+        ${CMAKE_CURRENT_LIST_DIR}/EOFCheck.h
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterCheck.h
+        ${CMAKE_CURRENT_LIST_DIR}/CharacterOccurrenceStringCheck.h
+        ${CMAKE_CURRENT_LIST_DIR}/StringComparison.h
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBuffer.h
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusOne.h
+        ${CMAKE_CURRENT_LIST_DIR}/SizeDestinationBufferMinusX.h
+        ${CMAKE_CURRENT_LIST_DIR}/StringLengthDestinationBuffer.h
+        ${CMAKE_CURRENT_LIST_DIR}/DescriptorFactory.h
+        ${CMAKE_CURRENT_LIST_DIR}/ContainerType.h
+        ${CMAKE_CURRENT_LIST_DIR}/IndexType.h
+        ${CMAKE_CURRENT_LIST_DIR}/LengthType.h
+        ${CMAKE_CURRENT_LIST_DIR}/AddressType.h
+        ${CMAKE_CURRENT_LIST_DIR}/PointerDeference.h
+        ${CMAKE_CURRENT_LIST_DIR}/MemoryAccess.h
+        ${CMAKE_CURRENT_LIST_DIR}/Container.h
+        ${CMAKE_CURRENT_LIST_DIR}/ViolatedBound.h
+        ${CMAKE_CURRENT_LIST_DIR}/DataType.h
+        ${CMAKE_CURRENT_LIST_DIR}/IndexComplexity.h
+        ${CMAKE_CURRENT_LIST_DIR}/LimitComplexity.h
+        ${CMAKE_CURRENT_LIST_DIR}/Magnitude.h
+        ${CMAKE_CURRENT_LIST_DIR}/DataSize.h
+        ${CMAKE_CURRENT_LIST_DIR}/ExploitCountermeasures.h
+        ${CMAKE_CURRENT_LIST_DIR}/HasDefensiveLimits.h
+        ${CMAKE_CURRENT_LIST_DIR}/SameSrcDstSize.h
+        ${CMAKE_CURRENT_LIST_DIR}/InputCount.h
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationWrites.h
+        ${CMAKE_CURRENT_LIST_DIR}/Declaration.h
+        ${CMAKE_CURRENT_LIST_DIR}/Validation.h
+        ${CMAKE_CURRENT_LIST_DIR}/InputDependentPredicates.h
+        ${CMAKE_CURRENT_LIST_DIR}/SourceBufferPredicates.h
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferPredicates.h
+        ${CMAKE_CURRENT_LIST_DIR}/SourceBufferAmbiguous.h
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferAmbiguous.h
+        ${CMAKE_CURRENT_LIST_DIR}/ControlFlow.h
+        ${CMAKE_CURRENT_LIST_DIR}/SecondaryControlFlow.h
+        ${CMAKE_CURRENT_LIST_DIR}/SurroundingLoops.h
+        ${CMAKE_CURRENT_LIST_DIR}/LoopComplexity.h
+        ${CMAKE_CURRENT_LIST_DIR}/LoopDepth.h
+        ${CMAKE_CURRENT_LIST_DIR}/ConditionDepth.h
+        ${CMAKE_CURRENT_LIST_DIR}/Reach.h
+        ${CMAKE_CURRENT_LIST_DIR}/InputsWithLimiting.h
+        ${CMAKE_CURRENT_LIST_DIR}/SourceDependentLoopTermination.h
+        ${CMAKE_CURRENT_LIST_DIR}/SourceNullTerminated.h
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationNullTerminated.h
+        ${CMAKE_CURRENT_LIST_DIR}/DestinationBufferAlias.h
+)
+add_library(toobad4ml::description ALIAS toobad4ml_description)
+
+target_include_directories(toobad4ml_description
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
+)
+
+target_link_libraries(toobad4ml_description
+    PUBLIC
+        toobad4ml_asttraversal
+    PRIVATE
+        ClangLibTooling
+)

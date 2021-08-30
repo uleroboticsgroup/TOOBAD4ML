@@ -1,6 +1,6 @@
 #####################################################################
 #
-#   doc/CMakeLists.txt
+#   docs/CMakeLists.txt
 #
 #   Build target for the TOOBAD4ML documentation.
 #

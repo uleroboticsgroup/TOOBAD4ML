@@ -2,124 +2,153 @@
 
 A tool for extracting features of Buffer Overflow vulnerabilities written in C code in order to further analyze them with Machine Learning techniques.
 
-## Build status
+## Overview
 
-| Branch | CI |
-|--------|----|
-| master | [![Build Status](http://ciserver.unileon.es:8080/buildStatus/icon?job=secure-coding%2Ftoobad4ml)](http://ciserver.unileon.es:8080/job/secure-coding/job/toobad4ml/) |
+![TOOBAD4ML overview](docs/assets/overview.png)
 
-## Getting Started
+The input consists of one or several *.c* files that are processed for lexical analysis. The aim of this analysis is to extract an arbitrary number of features that describe a Buffer Overflow. To do so, the input must be pre-tagged: either manually or by means of static code analysis. Finally, the output is a set of vector descriptors, which can be exported to various formats in order to create a dataset suitable to be analyzed using Machine Learning techniques.
+
+## Getting started
 
 ### Prerequisites
 
-* [CMake](https://cmake.org) 3.1 or later is required to build the project.
-* In-source builds are not allowed. So before building TOOBAD4ML you *must* create a separate directory for the build files.
+| Tool                       | Version | Required           | Description            |
+|----------------------------|---------|--------------------|------------------------|
+| [CMake](https://cmake.org) | 3.1+    | :heavy_check_mark: | Build automation       |
+| [Conan](https://conan.io/) | 1.27+   |                    | C++ dependency manager |
+| [Doxygen](https://www.doxygen.nl/) | 1.20.0+ |            | Document generation|
 
 ### Dependencies
 
 The following libraries are used by TOOBAD4ML:
 
-* [Clang](https://clang.llvm.org) version 5.0.0 or later;
-* [Google Test](https://github.com/google/googletest) version 1.8.1 or later (only for testing);
+* [Clang LibTooling](https://clang.llvm.org/docs/LibTooling.html) version 5.0.0 or later.
+* [Google Test](https://github.com/google/googletest) version 1.10.0 or later (only for testing).
 
 You can optionally use [Conan](https://conan.io) to manage these dependencies. However, please note that Clang is not currently available in the official repositories. To get it, you must add the following remote repository *before* running the `conan install` command:
 
-```
+```bash
 conan remote add roboticsgroup https://ciserver.unileon.es:8082/artifactory/api/conan/conan-dev
 ```
 
-### Installing dependencies with Conan
+## Building the project
 
-If you don't plan to use Conan you can ignore this step. Otherwise, first go to the `build` directory and then type the following command *before* using CMake:
+In order to build the project you have two options: CMake or Conan.
 
+### CMake
+
+Before building TOOBAD4ML you must create a separate directory for the build files because in-source builds are not allowed. Then go to that directory (as all the building process must be done inside it) and type:
+
+```bash
+mkdir build && cd build
 ```
+
+If you plan to use Conan only to manage dependencies, type the following command *before* using CMake:
+
+```bash
 conan install .. -s compiler.libcxx=libstdc++11
 ```
 
-### Building the project
+Once set, you can build TOOBAD4ML using your preferred generator. For instance, to build with [Ninja](https://ninja-build.org), type:
 
-You can build TOOBAD4ML using your preferred generator, just be sure that you run any CMake commands inside the `build` directory. For instance, to build with [Ninja](https://ninja-build.org), type:
-
-```
+```bash
 cmake .. -G "Ninja"
 ```
 
-Note that CMake automatically searches the system for installed dependencies during the configuration process. However, if you want to force it to use Conan's dependencies, simply add the argument `-DTOOBAD4ML_FORCE_CONAN=ON` to the previous command:
+Additionally, you can add the following CMake options to the previous command as compile definitions:
 
-```
-cmake .. -G "Ninja" -DTOOBAD4ML_FORCE_CONAN=ON
+| Option                   | Values    | Description         |
+|--------------------------|-----------|---------------------|
+| TOOBAD4ML_ENABLE_TESTING | [ON, OFF] | Build unit tests    |
+| TOOBAD4ML_GENERATE_DOCS  | [ON, OFF] | Build documentation |
+
+For instance, to build TOOBAD4ML unit tests you should type:
+
+```bash
+cmake .. -G "Ninja" -DTOOBAD4ML_ENABLE_TESTING=ON
 ```
 
 Finally, build the project with:
 
-```
+```bash
 cmake --build .
 ```
 
-The binary can be found in the `<TOOBAD4ML_ROOT_DIR>/bin` directory.
+If unit tests are built, it is recommended to run them with CTest. CMake generates the CTest configuration files inside the `build` directory, so in order to run it just type:
 
-### Testing the project
-
-Tests can be enabled by adding the argument `-DTOOBAD4ML_ENABLE_TESTING=ON` to the CMake configuration command:
-
-```
-cmake .. -G "Ninja" -DTOOBAD4ML_ENABLE_TESTING=ON
-```
-
-To build all unit tests, type:
-
-```
-cmake --build . --target tests
-```
-
-It is recommended to run the unit tests with CTest; although all the tests executables can be found in the `<TOOBAD4ML_ROOT_DIR>/bin/tests` directory. CMake generates the CTest configuration files inside the `build` directory, so in order to run it just type:
-
-```
+```bash
 ctest -VV
 ```
 
-### Generate documentation
+### Conan
 
-Doxygen documentation can be enabled by adding the argument `-DTOOBAD4ML_GENERATE_DOCS=ON` to the CMake configuration command:
+A Conan recipe is included to facilitate the building process. Just type:
 
+```bash
+conan create . toobad4ml/0.1.0@ -s compiler.libcxx=libstdc++11
 ```
-cmake .. -G "Ninja" -DTOOBAD4ML_GENERATE_DOCS=ON
+
+You can also build TOOBAD4ML with the following options:
+
+| Option      | Values        | Description         |
+|-------------|---------------|---------------------|
+| build_tests | [True, False] | Build unit tests    |
+| build_docs  | [True, False] | Build documentation |
+
+For instance, to build TOOBAD4ML unit tests you should type:
+
+```bash
+conan create . toobad4ml/0.1.0@ -s compiler.libcxx=libstdc++11 -o build_tests=True
 ```
+
+Please note that Conan will build TOOBAD4ML in the local cache. In order to access the binary, you should deploy it by typing:
+
+```bash
+conan install toobad4ml/0.1.0@ -s compiler.libcxx=libstdc++11 -if=bin
+```
+
+The tool will be deployed inside `bin` directory.
 
 ## Usage
 
+```bash
+./toobad4ml_exe <path_to_file_or_to_multiple_files.c> -d=DESCRIPTOR -f=FORMAT -o=FILENAME --
 ```
-./TOOBAD4ML <path_to_file_or_to_multiple_files.c> -f=FORMAT -o=FILENAME --
+
+### Supported arguments
+
+| Argument | Value | Description |
+|----------|-------|-------------|
+| -d       | Padmanabhuni | Descriptor model proposed by [Padmanabhuni and Tan (2015)](https://doi.org/10.1109/COMPSAC.2014.62) |
+| -f       | STD   | Standard output |
+|          | CSV   | CSV format      |
+| -o       |       | Name of the output file¹ |
+
+¹ *Only valid if filename is provided and `format` argument is different from STD. Otherwise, this flag is ignored.*
+
+### Tagged source files format
+
+The tool accepts pre-tagged *.c* files that contain comments appended at the end of each file. Such comments (see code below) start with line `/// ###BEGIN_VULNERABLE_LINES###` and is followed by several lines with the format `/// starting_line,starting_offset;ending_line,ending_offset` (with offset being the column).
+
+```c
+/// ###BEGIN_VULNERABLE_LINES###
+
+/// 1126,3;1126,9
+
+/// 1153,9;1153,15
+
+/// 1341,9;1341,15
+
+/// 1734,6;1734,12
 ```
 
-### Flags
-
-* Format:
-    * STD: Standard output
-    * CSV: CSV format
-
-* Filename:
-    * The name of the output file
-
-*NOTE*: if filename is provided and format flag is set to `STD`, filename is ignored.
-
-### Sample tagged source file
-
-TODO
-
-## FAQ
-
-Please check the wiki :-)
+These lines represent the lines of code that TOOBAD4ML will analyze and extract features from. For a list of examples, please check the `data` directory.
 
 ## Credits
 
-This tool has been developed by:
+This tool is licensed under [MIT license](https://choosealicense.com/licenses/mit/). It has been funded by the Addendum no. 4 to the Universidad de León-Instituto Nacional de Ciberseguridad (INCIBE) Convention Framework on the "Detection of new threats and unknown patterns" and was originally designed and developed by the following people:
 
 * Gonzalo Esteban
 * David Fernández
 * Razvan Raducu
 * Flavio Rodrigues
-
-## License
-
-TBD :-)

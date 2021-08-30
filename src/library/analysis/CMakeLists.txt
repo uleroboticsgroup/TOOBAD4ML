@@ -1,6 +1,6 @@
 #####################################################################
 #
-#   src/analysis/CMakeLists.txt
+#   src/library/analysis/CMakeLists.txt
 #
 #   Build target for the analysis submodule.
 #
@@ -13,14 +13,15 @@
 # -------------------------------------------------------------------
 
 add_library(toobad4ml_analysis
-    ${CMAKE_CURRENT_LIST_DIR}/ClangTool.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ClangTool.h
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFAction.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFAction.h
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFConsumer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFConsumer.h
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFFrontendActionFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ModelBOFFrontendActionFactory.h
+    OBJECT
+        ${CMAKE_CURRENT_LIST_DIR}/ClangTool.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ClangTool.h
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFAction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFAction.h
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFConsumer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFConsumer.h
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFFrontendActionFactory.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ModelBOFFrontendActionFactory.h
 )
 add_library(toobad4ml::analysis ALIAS toobad4ml_analysis)
 
